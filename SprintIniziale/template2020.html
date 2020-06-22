@@ -1,0 +1,507 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 90%;
+}
+h4 {
+	background-color: #ffffcc;
+    font-size: 100%;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+	font-weight: bold;
+    font-size: 90%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 90%;
+	background-color: #fcf8c7;
+	border: 1px solid blue;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}         
+    
+  -->
+</style>
+    
+<head>
+   
+<title>Lab ...</title></head>
+    
+<body>
+<div id="top">
+<h1>LABORATORIO DI SISTEMI SOFTWARE <font size="5"></font> </h1>
+</div>  
+
+<div class="body"> 
+<h2>Introduction</h2>
+ Remember our motto:<br/>   <k>there is no code without a project, no project
+without problem analysis and no problem without requirements</k>.
+ 
+ 
+<h2>Requirements</h2>
+
+The <em>manager</em> of a <em>tearoom</em> intends to regulate the access to the service by means of a ddr robot (<em>waiter</em>).
+<br/><br/>
+The <em>tearoom</em> is a rectangular room that includes:
+
+<ul>
+<li>an <em>entrancedoor</em> to enter in the room and an <em>exitdoor</em> to exit form it;</li>
+<li>a number <tt>N (N=2)</tt> of <em>teatable</em>;</li>
+<li>a <em>serviceare</em> including a <em>servicedesk</em> at which works a <em>barman</em>;</li>
+<li>a <em>hall</em> equipped with a <em>presencedetector</em>, i.e. a device (e.g. a sonar) that can detect the presence of 
+a person (or some other entity) in it.</li>
+</ul>
+
+The <em>waiter</em> can freely move along the borders of the tearoom, since there are no obstacles there. 
+
+<center><img src="img/tearoom20.png" alt="tearoom20.png" width="75%" height="32%"/></center>
+
+
+<h3>User stories</h3>
+As a <em>client</em>,:
+<ul>
+<li>I intend to <em>notify</em> my interest in <em>entering</em> in a <em>safe tearoom</em>, <em>sitting</em> at a free teatable,  <em>ordering</em> 
+some tea,  <em>consuming</em> it  (within a limited amount of time <em>maxstaytime</em>)  <em>paying</em> the service
+with my credit card and finally <em>leaving</em> the room.</li>
+<li>For <em>safe tearoom</em>, I intend a tearoom with clean tea-tables posed at a proper distance; the room is populated by human clients 
+whose body temperature is less than <tt>37.5</tt> degrees. </li>
+<li>I can submit my notification of interest by hitting the <em>smartbell</em> located near the  <em>entrancedoor</em> 
+that will automatically measure my body temperature and send a request message to the <em>waiter</em>, by giving to me an unique <em>clientidentifier</em>.
+</li>
+<li>I my body temperature is ok, but my request cannot be immediately satisfied (since the room is full), I will be <em>informed</em> by the <em>waiter</em> 
+aabout the maximum waiting time.</li>
+</ul>
+
+As a <em>manager</em>:
+<ul>
+<li>I intend to be able to see the <em>current state</em> of the <em>tearoom</em> by using  a browser connected to a web-server 
+associated to the application.
+</li>
+</ul>
+
+
+<h3>Requirements</h3>
+
+The <em>waiter</em> should perform the following tasks:
+<ul>
+ 
+<li><em>accept</em> the request of a client to enter in the tearoom if there is at least one teatable in the state <em>tableclean</em>, i.e.
+the table is free and has been properly cleaned; </li>
+<li><em>inform</em> the client about the maximum waiting time if there is no <em>tableclean</em>;</li> 
+<li><em>reach</em> the <em>entrance door</em> and <em>convoy</em> the accepted client to the selected teatable;</li>
+<li><em>take</em> the order of the client and transmit it (using a wifi-device) to the <em>barman</em>; </li>
+<li><em>serve</em>  the client when the <em>barman</em> says that the requested drink is ready;</li>
+<li><em>collect</em> the payment from the client when he/she has finished to consume or when the <em>maxstaytime</em> is expired;</li>
+<li><em>convoy</em> the client to the <em>exitdoor</em>;</li>
+<li><em>clean</em> the tea-table just freed  by the client;</li>
+<li><em>rest</em> at my <em>home</em> when there is nothing to do.</li>
+</ul>
+
+Since the room could contain <tt>N</tt> clients at the time, the <em>waiter</em> should reduce as much as possible the waiting time
+of the requests coming from each client.
+   
+<h3>Optional: one client in the hall</h3>
+The <em>waiter</em> must open the <em>exitdoor</em> only when the hall is free, i.e. it must
+not open that door if the hall is already engaged by a client waiting to enter at the <em>entrancedoor</em>.   
+
+<h2>Non functional requirements</h2>  
+<ol>
+<li>The ideal work team is composed of 3 persons. Teams of 1 or 2 persons (<bc>NOT</bc> 4 or more) are also allowed. </li>
+<li>The team must present a workplan as the result of the requirement/problem analysis,
+including some significant <bc>TestPlan</bc>.</li>
+<li>The team must present the sequence of SPRINT performed, with appropriate motivations.</li>
+<li>The team must present (in synthetic, schematic way) the specific activity of each team-component.</li>
+</ol>	
+
+<h2>Requirement analysis</h2>
+
+<ol>
+<li><h4>clarify the meaning of <i>names</i> and <i>verbs</i> in the requirement text</h4>
+<ul>
+
+<li><em>current state</em>: dopo aver parlato con il committente per stato della <em>teamroom</em> si intende:
+<ol>
+<li>Stato pulizia tavoli </li>
+<li>Barman occupato o no</li>
+<li>Tavoli occupati</li>
+<li>Se si sta eseguendo un ordine o no (se intende il task o no?)</li>
+</ol>
+
+</ul>
+</li>
+
+<li><h4>Analisi dei task del committente</h4>
+<ul>
+
+<table>
+<thead>
+  <tr>
+    <th class="tg-0lax"></th>
+    <th class="tg-0lax">cosa fa</th>
+    <th class="tg-0lax">tempo qualitativo</th>
+    <th class="tg-0lax">tempo quantitativo</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax">accept</td>
+    <td class="tg-0lax">controlla lo stato del tavolo</td>
+    <td class="tg-0lax">poco</td>
+    <td class="tg-0lax">2s</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">inform</td>
+    <td class="tg-0lax">dice al cliente quanto tempo aspettare<br></td>
+    <td class="tg-0lax">poco</td>
+    <td class="tg-0lax">2s</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">reach</td>
+    <td class="tg-0lax">raggiungere la porta di ingresso e prede il cliente (accettato)</td>
+    <td class="tg-0lax">alto<br></td>
+    <td class="tg-0lax">60s</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">take</td>
+    <td class="tg-0lax">prendere + trasmettere ordine al barista</td>
+    <td class="tg-0lax">poco</td>
+    <td class="tg-0lax">8s</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">serve</td>
+    <td class="tg-0lax">servire il cliente quando il barista dice che la bevanda è pronta</td>
+    <td class="tg-0lax">medio</td>
+    <td class="tg-0lax">30s</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">collect</td>
+    <td class="tg-0lax">riscuotere il pagamento</td>
+    <td class="tg-0lax">poco</td>
+    <td class="tg-0lax">8s<br></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">convoy</td>
+    <td class="tg-0lax">accompagnare il cliente alla porta</td>
+    <td class="tg-0lax">alto</td>
+    <td class="tg-0lax">60s</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">clean</td>
+    <td class="tg-0lax">pulire il tavolo</td>
+    <td class="tg-0lax">medio</td>
+    <td class="tg-0lax">35s</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">rest</td>
+    <td class="tg-0lax">andare in home se non c'è niente da fare</td>
+    <td class="tg-0lax">alto<br></td>
+    <td class="tg-0lax">70s</td>
+  </tr>
+</tbody>
+</table>
+
+</ul>
+</li>
+
+<li><h4>define a first working prototype (and a first set of <k>functional TestPlan</k>) as a formal model of the requirements.</h4>
+
+<b>ASSUNZIONI: SERVO SOLO 1 CLIENTE SITUAZIONE OTTIMALE = IL WAITER NON VIENE INTERROTTO, TAVOLI LIBERI, IL CLIENTE ORDINA, PAGA E VA VIA PRIMA DELLA FINE MAXSTAYTIME</b>
+<br/>
+<img src="img/Immagine.png" alt="tearoom20.png" width="75%" height="32%"/>
+<br/>
+In questo i messaggi sarebbero i seguenti:
+<br/><br/>
+<table>
+<thead>
+  <tr>
+    <th class="tg-0lax">nome</th>
+    <th class="tg-0lax">tipo messaggio</th>
+    <th class="tg-0lax">sender-receiver</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax">smartbell</td>
+    <td class="tg-0lax">request-reply</td>
+    <td class="tg-0lax">client-waiter</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">orderClient</td>
+    <td class="tg-0lax">dispatch</td>
+    <td class="tg-0lax">client-waiter</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">orderBarman</td>
+    <td class="tg-0lax">request-reply</td>
+    <td class="tg-0lax">waiter-barman</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">payment</td>
+    <td class="tg-0lax">dispatch</td>
+    <td class="tg-0lax">client-waiter</td>
+  </tr>
+</tbody>
+</table>
+
+</li>
+</ol>
+
+
+<h2>Problem analysis</h2>
+
+Dall’analisi del requisiti emerge che la struttura del sistema avrà di sicuro due componenti:
+– waiter (robot);
+– webserver.
+La loro interazione avviene mediante lo scambio di messaggi, rispetto alla tabella mostrata nell'analisi dei requisiti.
+La probabilità di perdita dell’informazione è bassa, dovuta solo a problemi di rete. Ciò dipende dal fatto che tutti i messaggi
+verranno messi all’interno di una coda nel caso in cui il ricevente sia già
+occupato. Non abbiamo usato gli eventi perchè potrebbero avere più di un destinatario, ma non è
+questo il caso.
+Dall’analisi dei requisiti si deduce che il webserver lavorerà in un contesto separato
+rispetto a quello del waiter perchè deve essere accessibile tramite web-browser.
+Per realizzare un prototipo utilizzeremo un linguaggio custom realizzato dalla
+nostra software house chiamato QActor .
+
+<li><h4>Analisi dei task</h4>
+<ul>
+
+Dopo una discussione con il committente sull'interompibilità dei task:
+<table>
+<thead>
+  <tr>
+    <th class="tg-0lax"></th>
+    <th class="tg-0lax">è interrompibile?</th>
+    <th class="tg-0lax">è opportuno?</th>
+    <th class="tg-0lax">priorità</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax">accept</td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-</td>
+    <td class="tg-0lax">-</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">inform</td>
+    <td class="tg-0lax">no<br></td>
+    <td class="tg-0lax">-</td>
+    <td class="tg-0lax">-</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">reach</td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-<br></td>
+    <td class="tg-0lax"></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">take</td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-</td>
+    <td class="tg-0lax">-</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">serve</td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">1° cliente vuole entrare e c'è il tavolo</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">collect</td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">1° cliente vuole entrare e c'è il tavolo<br></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">convoy</td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">solo se non ho già cominciato</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">clean</td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">(da chiedere) 1° cliente vuole entrare e c'è il tavolo, 2° cliente vuole pagare, 3° cliente vuole ordinare 4° ordine da portare al cliente</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">rest</td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">si<br></td>
+    <td class="tg-0lax">per qualsiasi motivo</td>
+  </tr>
+</tbody>
+</table>
+
+<h2>Test plans</h2> 
+<div class="remark">
+<ks>GOAL</ks>: give a formal description (for example, by using <ks>JUnit</ks>) of the <k>functional TestPlans</k>, with reference to the <k>logical architecture</k> of the system .
+</div>
+
+<h2>Project</h2> 
+<div class="remark">
+<ks>GOAL</ks>: define the concrete architecture of the system and the behavior of each component  .
+</div>
+
+<h2>Testing</h2> 
+<div class="remark">
+<ks>GOAL</ks>: complete the <k>functional TestPlans</k> according to the project code and execute them.
+</div>
+
+<h2>Deployment</h2> 
+
+<div class="remark">
+<ks>GOAL</ks>: prepare a software application to run and operate in a specific environment. 
+It involves installation, configuration, testing and making changes to optimize the performance of the software. 
+It can either be carried out manually or (hopefully) through automated systems.
+</div>
+
+
+
+<h2>Maintenance</h2> 
+<div class="remark">
+<ks>GOAL</ks>: modify the software product after delivery to correct faults, 
+to improve performance or other attributes. 
+A common perception of maintenance is that it merely involves fixing defects. 
+However, one study indicated that over 80% of maintenance effort is used for non-corrective actions.
+</div>
+
+
+<table style="width:100%" border="1">
+<tr>
+<td style="width:50%">
+</td>
+<td></td>
+</tr>
+</table>
+	      	
+<br/><br/> 	
+</div>  
+
+<div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
+By studentName email: student@studio.unibo.it  
+<img src="./img/emiglio.png" alt="mbot" width="15%" height="15%">
+</div> 
+</body>
+</html>
