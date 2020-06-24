@@ -155,11 +155,6 @@ table, th, td {
 
 <div class="body"> 
 <h2>Introduction</h2>
- Remember our motto:<br/>   <k>there is no code without a project, no project
-without problem analysis and no problem without requirements</k>.
- 
- 
-<h2>Requirements</h2>
 
 The <em>manager</em> of a <em>tearoom</em> intends to regulate the access to the service by means of a ddr robot (<em>waiter</em>).
 <br/><br/>
@@ -200,8 +195,7 @@ associated to the application.
 </li>
 </ul>
 
-
-<h3>Requirements</h3>
+<h2>Requirements</h2>
 
 The <em>waiter</em> should perform the following tasks:
 <ul>
@@ -236,157 +230,189 @@ including some significant <bc>TestPlan</bc>.</li>
 
 <h2>Requirement analysis</h2>
 
+Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em>. Per portare a termine questo incarico è necessario che svolga diversi task. Analizziamo tutti i requisiti posti dal committente:
+
 <ol>
-<li><h4>clarify the meaning of <i>names</i> and <i>verbs</i> in the requirement text</h4>
-<ul>
+	<li><h4><em>accept</em> the request of a client to enter in the tearoom if there is at least one teatable in the state <em>tableclean</em>, i.e. the table is free and has been properly cleaned</h4>
+	In questo requisito ci accorgiamo che le parole fondamentali sono: <b>cliente</b> e <b>tavolo</b>.
+	<ul>
+		<li>Il <b>cliente</b> per entrare deve fare una richiesta e quindi inviare un messaggio che il <em>waiter</em> dovrà gestire.
+			E' opportuno pensare al cliente come un'entità esterna che interagisce con il <em>waiter</em> tramite una coppia di messaggi: richiesta di un cliente per entrare e risposta positiva/negativa da parte del <em>waiter</em>.</li>
+		<li>Il <b>tavolo</b> può trovarsi nello stato pulito o sporco. All'inizio lo modelliamo come un oggetto perchè in questo modo non imponiamo vincoli progettuali troppo stringenti.</li>
+	</ul>
 
-<li><em>current state</em>: dopo aver parlato con il committente per stato della <em>teamroom</em> si intende:
-<ol>
-<li>Stato pulizia tavoli </li>
-<li>Barman occupato o no</li>
-<li>Tavoli occupati</li>
-<li>Se si sta eseguendo un ordine o no (se intende il task o no?)</li>
+	<li><h4><em>inform</em> the client about the maximum waiting time if there is no <em>tableclean</em></h4></li>
+	In assenza di tavoli puliti il task <em>accept</em> non può essere eseguito; il <em>waiter</em> non accoglie il cliente ma lo informerà riguardo a quanto tempo deve aspettare.
+	<em>maxwaittime</em> dipende dalla situazione attuale della <em>teamroom</em> e consiste nel tempo dopo il quale si prevede che ci sarà un tavolo pulito.
+	
+	<li><h4><em>reach</em> the <em>entrance door</em> and <em>convoy</em> the accepted client to the selected teatable</h4>
+	La prima cosa che si deduce leggendo questo requisito è la necessità di gestire il movimento del <em>waiter</em> e la posizione delle entità della <em>teamroom</em>, si potrebbe pensare all'introduzione di una mappa. Il fatto di selezionare un tavolo significa che il water conosce lo stato dei tavolo.
+
+	<li><h4><em>take</em> the order of the client and transmit it (using a wifi-device) to the <em>barman</em></h4>
+	Il committente ci ha detto che per prendere l'ordine dal cliente, il <em>waiter</em> si deve spostare fisicamente (gestione del movimento, posizione degli ostacoli e mappa di cui abbiamo parlato nel requisito precedente).
+	Vediamo la necessità di introdurre un nuovo messaggio quando il cliente deve chiamare il <em>waiter</em>.
+	Sempre da questo requisito la trasmissione da <em>waiter</em> a <em>barman</em> ci indica l'introduzione di un altro messaggio.
+	
+	<li><h4><em>serve</em> the client when the <em>barman</em> says that the requested drink is ready</h4>
+	Abbiamo chiesto al committente e ci ha detto che il <em>waiter</em> deve portare il drink dal <em>barman</em> al cliente e questo implica lo spostamento del <em>waiter</em> di cui abbiamo parlato nei punti precedenti.
+	Abbiamo bisogno di un nuovo messaggio tra <em>barman</em>-<em>waiter</em> per comunicare al <em>waiter</em> che il drink è pronto.
+	
+	<li><h4><em>collect</em> the payment from the client when he/she has finished to consume or when the <em>maxstaytime</em> is expired</h4>
+	Il pagamento secondo il committente consiste nell'avvicinarsi al tavolo da parte del <em>waiter</em>. Affinchè il cliente indichi al <em>waiter</em> quando ha finito è necessario un nuovo messaggio.
+	Potrebbe accadere che il tempo (<em>maxstaytime</em>) a disposizione del cliente finisca. <em>maxstaytime</em> è stato spiegato dal committente nel seguente modo:
+	quando il cliente viene portato al tavolo faccio partire un cronometro. Da questo momento in poi, tutte le perdite di tempo sono di sua responsabilità. Ad esempio, se il cliente non fa mai un ordine, la colpa è sua e  non del <em>waiter</em> o del <em>barman</em>. Invece, quando fa l'ordine, il cronometro viene bloccato per poi ripartire quando il drink arriva al tavolo. 
+
+	<li><h4><em>convoy</em> the client to the <em>exitdoor</em></h4>
+	C'è la necessità che il <em>waiter</em> si sposti come nei requisiti precedenti per cui serve conoscere la posizione del tavolo e di <em>exitdoor</em>.
+	
+	<li><h4><em>clean</em> the tea-table just freed by the client</h4>
+	Questo task inizia solo dopo il task <em>convoy</em>. Alla fine lo stato del tavolo cambia.
+	Per pulizia si intende togliere il bicchiere, eventuali altre cose lasciate dal cliente e sanificare il tavolo.
+	
+	<li><h4><em>rest</em> at my <em>home</em> when there is nothing to do</h4>
+	Se il <em>waiter</em> non deve svolgere niente può andare nella posizione <em>home</em>
+	
+	<li><h4>Nell'introduzione, troviamo anche un altro requisito: il <em>manager</em> vuole vedere lo stato della <em>teamroom</em></h4>
+	Dopo una discussione con il committente, per <em>current state</em> si intende:
+	<ol>
+		<li>Stato pulizia tavoli; </li>
+		<li>Barman occupato o no;</li>
+		<li>Tavoli occupati;</li>
+		<li>Il task che il waiter sta eseguendo;</li>
+		<li>Numero di clienti accettati/rifiutati.</li>
+	</ol>
+	
+	<li><h4>Riassumiamo i task indicando sia il tempo qualitativo che quello quantitativo e prendiamo come caso di riferimento quello peggiore</h4></li>
+	<table>
+		<thead>
+			<tr>
+				<th class="tg-0lax">nome task</th>
+				<th class="tg-0lax">cosa fa</th>
+				<th class="tg-0lax">tempo qualitativo</th>
+				<th class="tg-0lax">tempo quantitativo</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="tg-0lax"><em>accept</em></td>
+				<td class="tg-0lax">conferma la richiesta del cliente se è presente un tavolo nello stato <em>tableclean</em></td>
+				<td class="tg-0lax">poco</td>
+				<td class="tg-0lax">2s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>inform</em></td>
+				<td class="tg-0lax">informa al cliente il tempo massimo di attesa <em>maxwaittime</em> nel caso non sia possibile il task <em>accept</em>  <br></td>
+				<td class="tg-0lax">poco</td>
+				<td class="tg-0lax">2s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>reach</em></td>
+				<td class="tg-0lax">raggiungere la porta di ingresso e accompagna il cliente (accettato) al tavolo selezionato</td>
+				<td class="tg-0lax">alto<br></td>
+				<td class="tg-0lax">60s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>take</em></td>
+				<td class="tg-0lax">andare al tavolo del cliente, prendere l'ordine e trasmettere ordine al barista</td>
+				<td class="tg-0lax">poco</td>
+				<td class="tg-0lax">8s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>serve</em></td>
+				<td class="tg-0lax">servire il cliente quando il barista dice che la bevanda è pronta</td>
+				<td class="tg-0lax">medio</td>
+				<td class="tg-0lax">30s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>collect</em></td>
+				<td class="tg-0lax">andata al tavolo del cliente per riscuotere il pagamento</td>
+				<td class="tg-0lax">poco</td>
+				<td class="tg-0lax">8s<br></td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>convoy</em></td>
+				<td class="tg-0lax">accompagnare il cliente alla porta</td>
+				<td class="tg-0lax">alto</td>
+				<td class="tg-0lax">60s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>clean</em></td>
+				<td class="tg-0lax">pulire il tavolo</td>
+				<td class="tg-0lax">medio</td>
+				<td class="tg-0lax">35s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>rest</em></td>
+				<td class="tg-0lax">andare in home se non c'è niente da fare</td>
+				<td class="tg-0lax">medio/alto<br></td>
+				<td class="tg-0lax">variabile</td>
+			</tr>
+		</tbody>
+	</table>
+
+<li><h4>Riassumiamo i messaggi che sono emersi dall'analisi dei requisiti</h4></li>
+	<table>
+		<thead>
+			<tr>
+				<th class="tg-0lax">nome messaggio</th>
+				<th class="tg-0lax">tipo messaggio</th>
+				<th class="tg-0lax">mittente-destinatario</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="tg-0lax"><em>smartbell</em></td>
+				<td class="tg-0lax">request-reply</td>
+				<td class="tg-0lax">client-waiter</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>orderClient</em></td>
+				<td class="tg-0lax">dispatch</td>
+				<td class="tg-0lax">client-waiter</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>orderBarman</em></td>
+				<td class="tg-0lax">request-reply</td>
+				<td class="tg-0lax">waiter-barman</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>payment</em></td>
+				<td class="tg-0lax">dispatch</td>
+				<td class="tg-0lax">client-waiter</td>
+			</tr>
+		</tbody>
+	</table>
+	Non abbiamo usato gli eventi perchè potrebbero avere più di un destinatario, ma non è questo il caso.
 </ol>
-
-</ul>
-</li>
-
-<li><h4>Analisi dei task del committente</h4>
-<ul>
-
-<table>
-<thead>
-  <tr>
-    <th class="tg-0lax"></th>
-    <th class="tg-0lax">cosa fa</th>
-    <th class="tg-0lax">tempo qualitativo</th>
-    <th class="tg-0lax">tempo quantitativo</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td class="tg-0lax">accept</td>
-    <td class="tg-0lax">controlla lo stato del tavolo</td>
-    <td class="tg-0lax">poco</td>
-    <td class="tg-0lax">2s</td>
-  </tr>
-  <tr>
-    <td class="tg-0lax">inform</td>
-    <td class="tg-0lax">dice al cliente quanto tempo aspettare<br></td>
-    <td class="tg-0lax">poco</td>
-    <td class="tg-0lax">2s</td>
-  </tr>
-  <tr>
-    <td class="tg-0lax">reach</td>
-    <td class="tg-0lax">raggiungere la porta di ingresso e prede il cliente (accettato)</td>
-    <td class="tg-0lax">alto<br></td>
-    <td class="tg-0lax">60s</td>
-  </tr>
-  <tr>
-    <td class="tg-0lax">take</td>
-    <td class="tg-0lax">prendere + trasmettere ordine al barista</td>
-    <td class="tg-0lax">poco</td>
-    <td class="tg-0lax">8s</td>
-  </tr>
-  <tr>
-    <td class="tg-0lax">serve</td>
-    <td class="tg-0lax">servire il cliente quando il barista dice che la bevanda è pronta</td>
-    <td class="tg-0lax">medio</td>
-    <td class="tg-0lax">30s</td>
-  </tr>
-  <tr>
-    <td class="tg-0lax">collect</td>
-    <td class="tg-0lax">riscuotere il pagamento</td>
-    <td class="tg-0lax">poco</td>
-    <td class="tg-0lax">8s<br></td>
-  </tr>
-  <tr>
-    <td class="tg-0lax">convoy</td>
-    <td class="tg-0lax">accompagnare il cliente alla porta</td>
-    <td class="tg-0lax">alto</td>
-    <td class="tg-0lax">60s</td>
-  </tr>
-  <tr>
-    <td class="tg-0lax">clean</td>
-    <td class="tg-0lax">pulire il tavolo</td>
-    <td class="tg-0lax">medio</td>
-    <td class="tg-0lax">35s</td>
-  </tr>
-  <tr>
-    <td class="tg-0lax">rest</td>
-    <td class="tg-0lax">andare in home se non c'è niente da fare</td>
-    <td class="tg-0lax">alto<br></td>
-    <td class="tg-0lax">70s</td>
-  </tr>
-</tbody>
-</table>
-
-</ul>
-</li>
-
-<li><h4>define a first working prototype (and a first set of <k>functional TestPlan</k>) as a formal model of the requirements.</h4>
-
-<b>ASSUNZIONI: SERVO SOLO 1 CLIENTE SITUAZIONE OTTIMALE = IL WAITER NON VIENE INTERROTTO, TAVOLI LIBERI, IL CLIENTE ORDINA, PAGA E VA VIA PRIMA DELLA FINE MAXSTAYTIME</b>
-<br/>
-<img src="img/Immagine.png" alt="tearoom20.png" width="75%" height="32%"/>
-<br/>
-In questo i messaggi sarebbero i seguenti:
-<br/><br/>
-<table>
-<thead>
-  <tr>
-    <th class="tg-0lax">nome</th>
-    <th class="tg-0lax">tipo messaggio</th>
-    <th class="tg-0lax">sender-receiver</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td class="tg-0lax">smartbell</td>
-    <td class="tg-0lax">request-reply</td>
-    <td class="tg-0lax">client-waiter</td>
-  </tr>
-  <tr>
-    <td class="tg-0lax">orderClient</td>
-    <td class="tg-0lax">dispatch</td>
-    <td class="tg-0lax">client-waiter</td>
-  </tr>
-  <tr>
-    <td class="tg-0lax">orderBarman</td>
-    <td class="tg-0lax">request-reply</td>
-    <td class="tg-0lax">waiter-barman</td>
-  </tr>
-  <tr>
-    <td class="tg-0lax">payment</td>
-    <td class="tg-0lax">dispatch</td>
-    <td class="tg-0lax">client-waiter</td>
-  </tr>
-</tbody>
-</table>
-
-</li>
-</ol>
-
 
 <h2>Problem analysis</h2>
+Analizzando i requisiti emerge che il componente fondamentale, il waiter, interagisce tramite messaggi con altre entità. 
+Dovendo avere un comportamento autonomo è quindi opportuno modellarlo come attore. 
+Il waiter deve essere: 
+- proattivo, capace di intraprendere task di propria iniziativa
+- reattivo, reagire agli stimoli esterni
+I task Clean e Rest costituiscono la componente proattiva dell'agente. 
+Durante l'esecuzione dei task il waiter deve essere in ascolto di nuovi messaggi.
+Facendo zooming nell'acrhitettura del waiter possiamo definire due parti:
+-una che gestisca l'esecuzione dei task
+-una che stia in ascolto dei messaggi e li gestisca tramite un coda
+Pensiamo alla parte che esegue i task come un "engine" e alla parte che sta in ascolto e gestisce la coda dei messaggi come "mind".
+Sarà quindi il "mind" a gestire lo scheduling dei task.
 
-Dall’analisi del requisiti emerge che la struttura del sistema avrà di sicuro due componenti:
-– waiter (robot);
-– webserver.
-La loro interazione avviene mediante lo scambio di messaggi, rispetto alla tabella mostrata nell'analisi dei requisiti.
-La probabilità di perdita dell’informazione è bassa, dovuta solo a problemi di rete. Ciò dipende dal fatto che tutti i messaggi
-verranno messi all’interno di una coda nel caso in cui il ricevente sia già
-occupato. Non abbiamo usato gli eventi perchè potrebbero avere più di un destinatario, ma non è
-questo il caso.
-Dall’analisi dei requisiti si deduce che il webserver lavorerà in un contesto separato
-rispetto a quello del waiter perchè deve essere accessibile tramite web-browser.
-Per realizzare un prototipo utilizzeremo un linguaggio custom realizzato dalla
-nostra software house chiamato QActor .
 
-<li><h4>Analisi dei task</h4>
-<ul>
+Durante l'analisi dei requisiti è emersa la necessità di conoscere la posizione delle entità nella tearoom e un sistema di navigazione 
+che permetta il movimento da un punto A a un punto B. Questo comporta l'introduzione di una mappa che dovrà essere gestita da un componente.
+Questo componente può anche essere lo stesso a mantenere e a restiruire a eventuali richiedenti lo stato della tearoom.
+Uno di questi richiedenti sarà il manager che tramite una web-server (come da requisiti) vorrà vedere lo stato globale.
+Approfondiremo la sua trattazione nei prossimi sprint.
 
-Dopo una discussione con il committente sull'interompibilità dei task:
+
+Dato che il committente ha chiesto di ridurre al minimo il tempo di attesa dei clienti, si intuisce che alcuni 
+task sono più prioritari di altri.
+Questo implica che durante l'esecuzione di un task non prioritario si possa scegliere di interrompere il task 
+(e riprendelo successivamente) in favore di un altro che riduce l'attesa di un cliente.
+Serve quindi, come prima cosa, vedere quali task sono interrompibili:
+
 <table>
 <thead>
   <tr>
@@ -417,27 +443,27 @@ Dopo una discussione con il committente sull'interompibilità dei task:
   </tr>
   <tr>
     <td class="tg-0lax">take</td>
+    <td class="tg-0lax">si</td>
     <td class="tg-0lax">no</td>
-    <td class="tg-0lax">-</td>
     <td class="tg-0lax">-</td>
   </tr>
   <tr>
     <td class="tg-0lax">serve</td>
     <td class="tg-0lax">si</td>
-    <td class="tg-0lax">si</td>
-    <td class="tg-0lax">1° cliente vuole entrare e c'è il tavolo</td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-</td>
   </tr>
   <tr>
     <td class="tg-0lax">collect</td>
     <td class="tg-0lax">si</td>
-    <td class="tg-0lax">si</td>
-    <td class="tg-0lax">1° cliente vuole entrare e c'è il tavolo<br></td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-<br></td>
   </tr>
   <tr>
     <td class="tg-0lax">convoy</td>
-    <td class="tg-0lax">si</td>
-    <td class="tg-0lax">si</td>
-    <td class="tg-0lax">solo se non ho già cominciato</td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-</td>
+    <td class="tg-0lax">-</td>
   </tr>
   <tr>
     <td class="tg-0lax">clean</td>
@@ -454,37 +480,26 @@ Dopo una discussione con il committente sull'interompibilità dei task:
 </tbody>
 </table>
 
+Nella tabella sono segnati come interrompibili i task che potrebbe avere senso interrompere e i task 
+segnati come opportuni sono i task interrompibili concordati con il committente: "clean" e "rest". 
+
+Nel caso del task Clean l'agente deve essere in grado di memorizzare lo stato corrente 
+del tavolo e riprendere, dal punto di interruzione, l'esecuzione una volta terminati i task più prioritari.
+Distinguiamo tre punti di sincronizzazione del task Clean:
+-tabledirty
+-tablecleared
+-tablesanitized
+Scegliamo di modellare il tavolo come un oggetto che possiete un attributo "stato" che memorizza, 
+il punto di sinconizzazione corrente o si trova in uno di questi due stati:
+-tableclean (tavolo pulito)
+-tableoccupied
+
+
+
+
 <h2>Test plans</h2> 
 <div class="remark">
 <ks>GOAL</ks>: give a formal description (for example, by using <ks>JUnit</ks>) of the <k>functional TestPlans</k>, with reference to the <k>logical architecture</k> of the system .
-</div>
-
-<h2>Project</h2> 
-<div class="remark">
-<ks>GOAL</ks>: define the concrete architecture of the system and the behavior of each component  .
-</div>
-
-<h2>Testing</h2> 
-<div class="remark">
-<ks>GOAL</ks>: complete the <k>functional TestPlans</k> according to the project code and execute them.
-</div>
-
-<h2>Deployment</h2> 
-
-<div class="remark">
-<ks>GOAL</ks>: prepare a software application to run and operate in a specific environment. 
-It involves installation, configuration, testing and making changes to optimize the performance of the software. 
-It can either be carried out manually or (hopefully) through automated systems.
-</div>
-
-
-
-<h2>Maintenance</h2> 
-<div class="remark">
-<ks>GOAL</ks>: modify the software product after delivery to correct faults, 
-to improve performance or other attributes. 
-A common perception of maintenance is that it merely involves fixing defects. 
-However, one study indicated that over 80% of maintenance effort is used for non-corrective actions.
 </div>
 
 
