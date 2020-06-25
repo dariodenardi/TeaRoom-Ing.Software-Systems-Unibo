@@ -246,7 +246,7 @@ Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em
 	<em>maxwaittime</em> dipende dalla situazione attuale della <em>teamroom</em> e consiste nel tempo dopo il quale si prevede che ci sarà un tavolo pulito.
 	
 	<li><h4><em>reach</em> the <em>entrance door</em> and <em>convoy</em> the accepted client to the selected teatable</h4>
-	La prima cosa che si deduce leggendo questo requisito è la necessità di gestire il movimento del <em>waiter</em> e la posizione delle entità della <em>teamroom</em>, si potrebbe pensare all'introduzione di una mappa. Il fatto di selezionare un tavolo significa che il water conosce lo stato dei tavolo.
+	La prima cosa che si deduce leggendo questo requisito è la necessità di gestire il movimento del <em>waiter</em> e di conoscere la posizione delle entità nella <em>teamroom</em>, quindi si potrebbe pensare all'introduzione di una mappa. Inoltre il <em>waiter</em> deve conoscere lo stato dei tavoli in modo da selezionarne uno pulito.
 
 	<li><h4><em>take</em> the order of the client and transmit it (using a wifi-device) to the <em>barman</em></h4>
 	Il committente ci ha detto che per prendere l'ordine dal cliente, il <em>waiter</em> si deve spostare fisicamente (gestione del movimento, posizione degli ostacoli e mappa di cui abbiamo parlato nel requisito precedente).
@@ -258,19 +258,18 @@ Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em
 	Abbiamo bisogno di un nuovo messaggio tra <em>barman</em>-<em>waiter</em> per comunicare al <em>waiter</em> che il drink è pronto.
 	
 	<li><h4><em>collect</em> the payment from the client when he/she has finished to consume or when the <em>maxstaytime</em> is expired</h4>
-	Il pagamento secondo il committente consiste nell'avvicinarsi al tavolo da parte del <em>waiter</em>. Affinchè il cliente indichi al <em>waiter</em> quando ha finito è necessario un nuovo messaggio.
-	Potrebbe accadere che il tempo (<em>maxstaytime</em>) a disposizione del cliente finisca. <em>maxstaytime</em> è stato spiegato dal committente nel seguente modo:
-	quando il cliente viene portato al tavolo faccio partire un cronometro. Da questo momento in poi, tutte le perdite di tempo sono di sua responsabilità. Ad esempio, se il cliente non fa mai un ordine, la colpa è sua e  non del <em>waiter</em> o del <em>barman</em>. Invece, quando fa l'ordine, il cronometro viene bloccato per poi ripartire quando il drink arriva al tavolo. 
+	Il pagamento, secondo il committente, richiede l'avvicinamento al tavolo da parte del <em>waiter</em>. Affinchè il cliente possa indicare al <em>waiter</em> quando ha finito il suo drink è necessario un nuovo messaggio.
+	La gestione del <em>maxstaytime</em> è stata spiegata dal committente nel seguente modo: quando il cliente viene portato al tavolo parte un cronometro che tiene conto solo dell'attesa che può essere attribuita al cliente. Ad esempio, se il cliente non fa mai un ordine la responsabilità di questa attesa è sua e non del <em>waiter</em> o del <em>barman</em>, quindi il cronometro resta attivo. Invece, una volta fatto l'ordine, il cronometro viene bloccato per poi ripartire quando il drink arriva al tavolo. 
 
 	<li><h4><em>convoy</em> the client to the <em>exitdoor</em></h4>
 	C'è la necessità che il <em>waiter</em> si sposti come nei requisiti precedenti per cui serve conoscere la posizione del tavolo e di <em>exitdoor</em>.
 	
 	<li><h4><em>clean</em> the tea-table just freed by the client</h4>
 	Questo task inizia solo dopo il task <em>convoy</em>. Alla fine lo stato del tavolo cambia.
-	Per pulizia si intende togliere il bicchiere, eventuali altre cose lasciate dal cliente e sanificare il tavolo.
+	Per pulizia si intende togliere il bicchiere, ed eventualmente altre cose lasciate dal cliente, e sanificare il tavolo.
 	
 	<li><h4><em>rest</em> at my <em>home</em> when there is nothing to do</h4>
-	Se il <em>waiter</em> non deve svolgere niente può andare nella posizione <em>home</em>
+	Se il <em>waiter</em> non ha altri compiti da svolgere può andare nella posizione <em>home</em>
 	
 	<li><h4>Nell'introduzione, troviamo anche un altro requisito: il <em>manager</em> vuole vedere lo stato della <em>teamroom</em></h4>
 	Dopo una discussione con il committente, per <em>current state</em> si intende:
@@ -282,7 +281,7 @@ Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em
 		<li>Numero di clienti accettati/rifiutati.</li>
 	</ol>
 	
-	<li><h4>Riassumiamo i task indicando sia il tempo qualitativo che quello quantitativo e prendiamo come caso di riferimento quello peggiore</h4></li>
+	<li><h4>Riassumiamo i task del <em>waiter</em> indicando sia il tempo qualitativo che quello quantitativo e prendiamo come caso di riferimento quello peggiore</h4></li>
 	<table>
 		<thead>
 			<tr>
@@ -301,49 +300,49 @@ Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em
 			</tr>
 			<tr>
 				<td class="tg-0lax"><em>inform</em></td>
-				<td class="tg-0lax">informa al cliente il tempo massimo di attesa <em>maxwaittime</em> nel caso non sia possibile il task <em>accept</em>  <br></td>
+				<td class="tg-0lax">informa il cliente sul tempo massimo di attesa <em>maxwaittime</em> nel caso non sia possibile eseguire il task <em>accept</em>  <br></td>
 				<td class="tg-0lax">poco</td>
 				<td class="tg-0lax">2s</td>
 			</tr>
 			<tr>
 				<td class="tg-0lax"><em>reach</em></td>
-				<td class="tg-0lax">raggiungere la porta di ingresso e accompagna il cliente (accettato) al tavolo selezionato</td>
+				<td class="tg-0lax">raggiunge la porta di ingresso e accompagna il cliente (accettato) al tavolo selezionato</td>
 				<td class="tg-0lax">alto<br></td>
 				<td class="tg-0lax">60s</td>
 			</tr>
 			<tr>
 				<td class="tg-0lax"><em>take</em></td>
-				<td class="tg-0lax">andare al tavolo del cliente, prendere l'ordine e trasmettere ordine al barista</td>
+				<td class="tg-0lax">va al tavolo del cliente, prende l'ordine e lo trasmette al barista</td>
 				<td class="tg-0lax">poco</td>
 				<td class="tg-0lax">8s</td>
 			</tr>
 			<tr>
 				<td class="tg-0lax"><em>serve</em></td>
-				<td class="tg-0lax">servire il cliente quando il barista dice che la bevanda è pronta</td>
+				<td class="tg-0lax">quando il barista dice che la bevanda è pronta va a prenderla e la porta al cliente che l'aveva richiesta</td>
 				<td class="tg-0lax">medio</td>
 				<td class="tg-0lax">30s</td>
 			</tr>
 			<tr>
 				<td class="tg-0lax"><em>collect</em></td>
-				<td class="tg-0lax">andata al tavolo del cliente per riscuotere il pagamento</td>
+				<td class="tg-0lax">va al tavolo del cliente per riscuotere il pagamento</td>
 				<td class="tg-0lax">poco</td>
 				<td class="tg-0lax">8s<br></td>
 			</tr>
 			<tr>
 				<td class="tg-0lax"><em>convoy</em></td>
-				<td class="tg-0lax">accompagnare il cliente alla porta</td>
+				<td class="tg-0lax">accompagna il cliente alla porta</td>
 				<td class="tg-0lax">alto</td>
 				<td class="tg-0lax">60s</td>
 			</tr>
 			<tr>
 				<td class="tg-0lax"><em>clean</em></td>
-				<td class="tg-0lax">pulire il tavolo</td>
+				<td class="tg-0lax">pulisce il tavolo</td>
 				<td class="tg-0lax">medio</td>
 				<td class="tg-0lax">35s</td>
 			</tr>
 			<tr>
 				<td class="tg-0lax"><em>rest</em></td>
-				<td class="tg-0lax">andare in home se non c'è niente da fare</td>
+				<td class="tg-0lax">va in home se non c'è niente da fare</td>
 				<td class="tg-0lax">medio/alto<br></td>
 				<td class="tg-0lax">variabile</td>
 			</tr>
@@ -397,18 +396,18 @@ Il <em>waiter</em> deve essere:
 </ul>
 I task <em>clean</em> e <em>rest</em> costituiscono la componente proattiva dell'agente. 
 Durante l'esecuzione dei task il <em>waiter</em> deve essere in ascolto di nuovi messaggi.
-Facendo zooming nell'acrhitettura del <em>waiter</em> possiamo definire due parti:
+Facendo zooming nell'architettura del <em>waiter</em> possiamo definire due parti:
 <ul>
 	<li>una che gestisca l'esecuzione dei task;</li>
 	<li>una che stia in ascolto dei messaggi e li gestisca tramite un coda.</li>
 </ul>
-Pensiamo alla parte che esegue i task come un "engine" e alla parte che sta in ascolto e gestisce la coda dei messaggi come "mind".
-Sarà quindi il "mind" a gestire lo scheduling dei task.
+Pensiamo alla parte che esegue i task come un "engine" e alla parte che sta in ascolto e gestisce la coda dei messaggi come un "mind".
+Al "mind" è anche affidato lo scheduling dei task.
 </br>
 </br>
-Durante l'analisi dei requisiti è emersa la necessità di conoscere la posizione delle entità nella <em>tearoom</em> e un sistema di navigazione 
+Durante l'analisi dei requisiti è emersa la necessità di conoscere la posizione delle entità nella <em>tearoom</em> e di avere un sistema di navigazione 
 che permetta il movimento da un punto A a un punto B. Questo comporta l'introduzione di una mappa che dovrà essere gestita da un componente.
-Questo componente può anche essere lo stesso a mantenere e a restiruire a eventuali richiedenti lo stato della <em>tearoom</em>.
+Questo componente può anche essere lo stesso a mantenere lo stato della <em>tearoom</em> e a restituirlo a eventuali richiedenti.
 Uno di questi richiedenti sarà il <em>manager</em> che tramite una web-server (come da requisiti) vorrà vedere lo stato globale.
 Approfondiremo la sua trattazione nei prossimi sprint.
 </br>
@@ -446,7 +445,7 @@ Serve quindi, come prima cosa, vedere quali task sono interrompibili:
     <td class="tg-0lax"><em>reach</em></td>
     <td class="tg-0lax">no</td>
     <td class="tg-0lax">-<br></td>
-    <td class="tg-0lax"></td>
+    <td class="tg-0lax">-</td>
   </tr>
   <tr>
     <td class="tg-0lax"><em>take</em></td>
@@ -478,10 +477,10 @@ Serve quindi, come prima cosa, vedere quali task sono interrompibili:
     <td class="tg-0lax">si</td>
     <td class="tg-0lax">
 	<ul>
-		<li>cliente vuole entrare e c'è il tavolo;</li>
-		<li>cliente vuole pagare;</li>
-		<li>cliente vuole ordinare;</li>
-		<li>ordine da portare al cliente.</li>
+		<li>cliente vuole entrare e c'è il tavolo (<em>accept</em>);</li>
+		<li>cliente vuole pagare(<em>collect</em>);</li>
+		<li>cliente vuole ordinare(<em>take</em>);</li>
+		<li>drink da portare al cliente(<em>serve</em>).</li>
 	</ul>
   </tr>
   <tr>
@@ -505,8 +504,8 @@ Distinguiamo tre punti di sincronizzazione del task <em>clean</em>:
 	<li>tablecleared;</li>
 	<li>tablesanitized.</li>
 </ul>
-Scegliamo di modellare il tavolo come un oggetto che possiete un attributo "stato" che memorizza, 
-il punto di sinconizzazione corrente o si trova in uno di questi due stati:
+Scegliamo di modellare il tavolo come un oggetto che possiede un attributo "stato" che memorizza 
+il punto di sincronizzazione corrente oppure si trova in uno di questi due stati:
 <ul>
 	<li>tableclean (tavolo pulito);</li>
 	<li>tableoccupied.</li>
