@@ -507,14 +507,22 @@ Distinguiamo tre punti di sincronizzazione del task <em>clean</em>:
 Scegliamo di modellare il tavolo come un oggetto che possiede un attributo "stato" che memorizza 
 il punto di sincronizzazione corrente oppure si trova in uno di questi due stati:
 <ul>
-	<li>tableclean (tavolo pulito);</li>
+	<li>tableclean;</li>
 	<li>tableoccupied.</li>
 </ul>
 
-<h2>Test plans</h2> 
-<div class="remark">
-<ks>GOAL</ks>: give a formal description (for example, by using <ks>JUnit</ks>) of the <k>functional TestPlans</k>, with reference to the <k>logical architecture</k> of the system .
-</div>
+<h2>Test plans</h2>
+Alcuni test significativi secondo le problematiche individuate sono i seguenti:
+- All'introduzione della mappa verificare il corretto spostamento
+- Esecuzione dei task tramite cambiamento di stato della tearoom e altre entità
+- Riprendere attività se il task dovesse essere interrotto.
+
+<h2>Workplan</h2>
+abbiamo deciso che alcuni concetti da approfondire nei prossimi sprint:
+- Assunzione 1 cliente (virtual robot)
+- Robot fisico
+- Interruzione task + casi limite (suono e non ci vado) + clienti
+- webserver (che mostra il current state) entità che tiene lo stato generale di ogni cosa (interrogata) 
 
 <div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
 By studentName email: student@studio.unibo.it  
