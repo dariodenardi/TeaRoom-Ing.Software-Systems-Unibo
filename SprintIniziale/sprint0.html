@@ -383,7 +383,7 @@ Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em
 	</table>
 	
 	</br>
-	Non abbiamo usato gli eventi perchè potrebbero avere più di un destinatario, ma non è questo il caso.
+	Non abbiamo usato gli <b>eventi</b> perchè potrebbero avere più di un destinatario, ma non è questo il caso.
 </ol>
 
 <h2>Problem analysis</h2>
@@ -401,7 +401,7 @@ Facendo zooming nell'architettura del <em>waiter</em> possiamo definire due part
 	<li>una che gestisca l'esecuzione dei task;</li>
 	<li>una che stia in ascolto dei messaggi e li gestisca tramite un coda.</li>
 </ul>
-Pensiamo alla parte che esegue i task come un "engine" e alla parte che sta in ascolto e gestisce la coda dei messaggi come un "mind".
+Pensiamo alla parte che esegue i task come un "<b>engine</b>" e alla parte che sta in ascolto e gestisce la coda dei messaggi come un "<b>mind</b>".
 Al "mind" è anche affidato lo scheduling dei task.
 </br>
 </br>
@@ -493,8 +493,8 @@ Serve quindi, come prima cosa, vedere quali task sono interrompibili:
 </table>
 
 </br>
-Nella tabella sono segnati come interrompibili i task che potrebbe avere senso interrompere e i task 
-segnati come opportuni sono i task interrompibili concordati con il committente: <em>clean</em> e <em>rest</em>. 
+Nella tabella sono segnati come <b>interrompibili</b> i task che potrebbe avere senso interrompere e i task 
+segnati come <b>opportuni</b> sono i task interrompibili concordati con il committente: <em>clean</em> e <em>rest</em>. 
 
 Nel caso del task <em>clean</em> l'agente deve essere in grado di memorizzare lo stato corrente 
 del tavolo e riprendere, dal punto di interruzione, l'esecuzione una volta terminati i task più prioritari.
@@ -512,18 +512,23 @@ il punto di sincronizzazione corrente oppure si trova in uno di questi due stati
 </ul>
 
 <h2>Test plans</h2>
-Alcuni test significativi secondo le problematiche individuate sono i seguenti:
-- All'introduzione della mappa verificare il corretto spostamento
-- Esecuzione dei task tramite cambiamento di stato della tearoom e altre entità
-- Riprendere attività se il task dovesse essere interrotto.
+Alcuni test significativi secondo le problematiche individuate nelle sezioni precedenti sono i seguenti:
+<ul>
+	<li>Verificare tramite l'uso della mappa il corretto spostamento del <em>waiter</em>;</li>
+	<li>Eseguire i singoli task in modo da cambiare lo stato delle entità della <em>tearoom</em>;</li>
+	<li>Riprendere il task che il <em>waiter</em> stava eseguendo prima di essere interrotto.</li>
+</ul>
 
 <h2>Workplan</h2>
-abbiamo deciso che alcuni concetti da approfondire nei prossimi sprint:
-- Assunzione 1 cliente (virtual robot)
-- Robot fisico
-- Interruzione task + casi limite (suono e non ci vado) + clienti
-- webserver (che mostra il current state) entità che tiene lo stato generale di ogni cosa (interrogata) 
+Abbiamo deciso che alcuni casi da approfondire nei prossimi sprint sono:
+<ul>
+	<li>Assumere solo un cliente nella <em>teamroom</em> usando il virtual robot;</li>
+	<li>Usare il robot fisico;</li>
+	<li>Interrompere i task quando ci sono molti clienti e individuare i casi limite che potrebbero verificarsi (es. cliente suona campanello ma va via);</li>
+	<li>webserver che mostra il <em>current state</em> e qual'è lo stato di ogni altra entità.</li>
+</ul>
 
+</br>
 <div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
 By studentName email: student@studio.unibo.it  
 <img src="./img/emiglio.png" alt="mbot" width="15%" height="15%">
