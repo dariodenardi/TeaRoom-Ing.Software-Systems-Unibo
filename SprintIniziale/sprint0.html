@@ -350,40 +350,55 @@ Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em
 	</table>
 
 <li><h4>Riassumiamo i messaggi che sono emersi dall'analisi dei requisiti</h4></li>
+	
+	La richiesta di entrata viene mandata dallo smartbell al waiter solo 
+	se la temperatura del cliente rispetta le norme COVID. Idealmente nel contesto pensiamo
+	che lo stesso smartbell che riceve la risposta dal waiter metta in output la risposta 
+	per il cliente in quanto in un contesto reale 
+	l'unico contatto che il cliente ha è con il smartbell. Per motivi di semplificazione, dovendo noi modellare il waiter, facciamo partire da lui
+	il messaggio in quanto il waiter e lo smartbell fanno parte di agenti esterni.
+	
 	<table>
 		<thead>
 			<tr>
 				<th class="tg-0lax">nome messaggio</th>
-				<th class="tg-0lax">tipo messaggio</th>
+				<th class="tg-0lax">descrizione</th>
 				<th class="tg-0lax">mittente-destinatario</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td class="tg-0lax"><em>smartbell</em></td>
-				<td class="tg-0lax">request-reply</td>
+				<td class="tg-0lax"><em>clientEntryRequest</em></td>
+				<td class="tg-0lax">richiesta da parte del cliente per entrare</td>
 				<td class="tg-0lax"><em>client</em>-<em>waiter</em></td>
 			</tr>
 			<tr>
-				<td class="tg-0lax"><em>orderClient</em></td>
-				<td class="tg-0lax">dispatch</td>
+				<td class="tg-0lax"><em>waiterEntryReply</em></td>
+				<td class="tg-0lax">risposta all'intento di entrata di un cliente</td>
+				<td class="tg-0lax"><em>waiter</em>-<em>client</em></td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>clientOrderReady</em></td>
+				<td class="tg-0lax">richiesta di ordine del cliente</td>
 				<td class="tg-0lax"><em>client</em>-<em>waiter</em></td>
 			</tr>
 			<tr>
-				<td class="tg-0lax"><em>orderReady</em></td>
-				<td class="tg-0lax">request-reply</td>
+				<td class="tg-0lax"><em>waiterOrderForward</em></td>
+				<td class="tg-0lax">invio ordine a barman</td>
 				<td class="tg-0lax"><em>waiter</em>-<em>barman</em></td>
 			</tr>
 			<tr>
-				<td class="tg-0lax"><em>payment</em></td>
-				<td class="tg-0lax">dispatch</td>
+				<td class="tg-0lax"><em>barmanOrderReady</em></td>
+				<td class="tg-0lax">ordine pronto</td>
+				<td class="tg-0lax"><em>barman</em>-<em>waiter</em></td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>clientPaymentReady</em></td>
+				<td class="tg-0lax">cliente desidera pagare</td>
 				<td class="tg-0lax"><em>client</em>-<em>waiter</em></td>
 			</tr>
 		</tbody>
 	</table>
-	
-	</br>
-	Non abbiamo usato gli <b>eventi</b> perchè potrebbero avere più di un destinatario, ma non è questo il caso.
 </ol>
 
 <h2>Problem analysis</h2>
@@ -515,17 +530,17 @@ il punto di sincronizzazione corrente oppure si trova in uno di questi due stati
 Alcuni test significativi secondo le problematiche individuate nelle sezioni precedenti sono i seguenti:
 <ul>
 	<li>Verificare tramite l'uso della mappa il corretto spostamento del <em>waiter</em>;</li>
-	<li>Eseguire i singoli task in modo da cambiare lo stato delle entità della <em>tearoom</em>;</li>
-	<li>Riprendere il task che il <em>waiter</em> stava eseguendo prima di essere interrotto.</li>
+	<li>Verificare che i singoli task vengano eseguiti controllando lo stato delle entità della <em>tearoom</em>;</li>
+	<li>Verificare la corretta interruzione e ripresa di esecuzione dal punto di sincronizzazione.</li>
 </ul>
 
 <h2>Workplan</h2>
 Abbiamo deciso che alcuni casi da approfondire nei prossimi sprint sono:
 <ul>
-	<li>Assumere solo un cliente nella <em>teamroom</em> usando il virtual robot;</li>
-	<li>Usare il robot fisico;</li>
-	<li>Interrompere i task quando ci sono molti clienti e individuare i casi limite che potrebbero verificarsi (es. cliente suona campanello ma va via);</li>
-	<li>webserver che mostra il <em>current state</em> e qual'è lo stato di ogni altra entità.</li>
+	<li>Assumere solo un cliente nella <em>teamroom</em>. Mostrare il corretto funzionamento tramite un modello virtuale;</li>
+	<li>Mostrare il corretto funzionamento tramite un modello fisico;</li>
+	<li>L'interrompibilità dei task quando ci più clienti. Individuare i casi limite che potrebbero verificarsi;</li>
+	<li>webserver che mostra il <em>current state</em>, definito nell'analisi dei requisiti.</li>
 </ul>
 
 </br>

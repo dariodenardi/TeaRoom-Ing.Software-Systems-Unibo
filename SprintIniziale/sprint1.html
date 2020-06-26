@@ -195,7 +195,7 @@ partiamo quindi considerando un caso semplificato facendo delle assunzioni:
 
 <ul>
 <li>E' presente un solo cliente che richiede l'accesso alla <em>teamroom</em>, ordina, consuma, chiede di pagare e di uscire;</li>
-<li>Il <em>waiter</em> non viene interrotto: accetta alla richiesta, accompagna il cliente, prende l'ordine, porta il drink, riscuote il pagamento, lo accompagna alla porta
+<li>Il <em>waiter</em> non viene interrotto: accetta la richiesta, accompagna il cliente, prende l'ordine, porta il drink, riscuote il pagamento, lo accompagna alla porta
 e pulisce il tavolo;</li>
 <li>Non scatta <em>maxtasytime</em>.</li>
 </ul>
@@ -205,19 +205,68 @@ e risponderà, dopo un tempo (random) di preparazione, con un messaggio per indi
 che il drink è pronto.
 Allo stesso modo il cliente verrà simulato come entità esterna al fine di testare
 e garantire il corretto funzionamento.
-
 </br>
-controllare task
-vedere se tutti i task sono da considerare (svolti)
+</br>
+Gli attori sono entità autonome che interagiscono tramite scambi di messaggi. Per velocizzare
+il processo di modellazione adottiamo il metamodello dei <a>QAK</a> perchè se usassimo un qualsiasi altro linguaggio di modellazione sarebbero più difficili da rappresentare.
+Il tavolo verrà modellato come un oggetto.
+
+Essendo stato introdotto e scelto il modello QAK non parleremo più di messaggi ma di Dispatch, Request-Reply e Event.
+Ridefiniamo i messaggi individuati nello sprint iniziale traducendoli nella <b>semantica</b> del modello QAK:
+
+<table>
+		<thead>
+			<tr>
+				<th class="tg-0lax">nome messaggio</th>
+				<th class="tg-0lax">QAK</th>
+				<th class="tg-0lax">motivazione/scelta</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="tg-0lax"><em>clientEntryRequest</em></td>
+				<td class="tg-0lax">Request</td>
+				<td class="tg-0lax">Sarebbe giusto notificare il desiderio di un cliente di entrare a tutti i waiter tramite Event. Questo porterebbe problemi di interazione/organizzazione tra i vari waiter e avendo noi un solo waiter è più semplice pensare a una tipologia di messaggio point-to-point di tipo request-reply o DIspatch. Dovendo però il cliente ricevere una risposta, scegliamo di adottare una Request-Reply.</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>waiterEntryReply</em></td>
+				<td class="tg-0lax">Reply</td>
+				<td class="tg-0lax">Aspettandosi il cliente una risposta questo fortifica la scelta appena fatta.</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>clientOrderReady</em></td>
+				<td class="tg-0lax">Dispatch</td>
+				<td class="tg-0lax">No Event per motivo clientEntryRequest. Non si prevede una risposta quindi adottiamo un Dispatch. </td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>waiterOrderForward</em></td>
+				<td class="tg-0lax">Dispatch</td>
+				<td class="tg-0lax">Per gli stessi motivi di clientOrderReady (c'è un solo barman)</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>barmanOrderReady</em></td>
+				<td class="tg-0lax">Dispatch</td>
+				<td class="tg-0lax">Per gli stessi motivi di clientOrderReady</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>clientPaymentReady</em></td>
+				<td class="tg-0lax">Dispatch</td>
+				<td class="tg-0lax">Per gli stessi motivi di clientOrderReady</td>
+			</tr>
+		</tbody>
+	</table>
+
+
+Analizziamo se tutti i task sono da considerare:
+
+
+<h2>Problem analysis</h2>
+E' opportuno modellare lo stato del tavolo all'interno dell'entità che tiene lo stato della teamroom
+
 il waiter engine e waiter maind
 dato il movimento, dividere waiter engine: waiter movimento e altro?
 come la mappa è fatta (planner)
 entità stato totale mappa che memorizza e ritorna
-
-<h2>Problem analysis</h2>
-<div class="remark">
-
-</div>
 
 <h2>Test plans</h2> 
 <div class="remark">
