@@ -191,7 +191,7 @@ including some significant <bc>TestPlan</bc>.</li>
 <h2>Requirement analysis</h2>
 Tenendo a mente le considerazioni fatte nello <a href="./sprint0.html">sprint iniziale</a> 
 cerchiamo di arrivare all'obiettivo lavorando in maniera incrementale.
-partiamo quindi considerando un caso semplificato facendo delle assunzioni:
+Partiamo quindi considerando un caso semplificato facendo delle assunzioni:
 
 <ul>
 <li>E' presente un solo cliente che richiede l'accesso alla <em>teamroom</em>, ordina, consuma, chiede di pagare e di uscire;</li>
@@ -207,57 +207,62 @@ Allo stesso modo il cliente verrà simulato come entità esterna al fine di test
 e garantire il corretto funzionamento.
 </br>
 </br>
-Gli attori sono entità autonome che interagiscono tramite scambi di messaggi. Per velocizzare
-il processo di modellazione adottiamo il metamodello dei <a>QAK</a> perchè se usassimo un qualsiasi altro linguaggio di modellazione sarebbero più difficili da rappresentare.
-Il tavolo verrà modellato come un oggetto.
-
-Essendo stato introdotto e scelto il modello QAK non parleremo più di messaggi ma di Dispatch, Request-Reply e Event.
+Gli <b>attori</b> sono entità autonome che interagiscono tramite scambi di messaggi. Per velocizzare
+il processo di modellazione adottiamo il metamodello dei <a href="https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakPrologUsage2020.html">QAK</a> perchè se usassimo un qualsiasi altro linguaggio di modellazione sarebbero più difficili da rappresentare.
+Invece, il <b>tavolo</b> verrà modellato come un oggetto.
+</br>
+</br>
+Essendo stato introdotto e scelto il modello QAK non parleremo più di messaggi ma di <b>Dispatch</b>, <b>Request</b>-<b>Reply</b> e <b>Event</b>.
 Ridefiniamo i messaggi individuati nello sprint iniziale traducendoli nella <b>semantica</b> del modello QAK:
-
+</br>
+</br>
 <table>
-		<thead>
-			<tr>
-				<th class="tg-0lax">nome messaggio</th>
-				<th class="tg-0lax">QAK</th>
-				<th class="tg-0lax">motivazione/scelta</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td class="tg-0lax"><em>clientEntryRequest</em></td>
-				<td class="tg-0lax">Request</td>
-				<td class="tg-0lax">Sarebbe giusto notificare il desiderio di un cliente di entrare a tutti i waiter tramite Event. Questo porterebbe problemi di interazione/organizzazione tra i vari waiter e avendo noi un solo waiter è più semplice pensare a una tipologia di messaggio point-to-point di tipo request-reply o DIspatch. Dovendo però il cliente ricevere una risposta, scegliamo di adottare una Request-Reply.</td>
-			</tr>
-			<tr>
-				<td class="tg-0lax"><em>waiterEntryReply</em></td>
-				<td class="tg-0lax">Reply</td>
-				<td class="tg-0lax">Aspettandosi il cliente una risposta questo fortifica la scelta appena fatta.</td>
-			</tr>
-			<tr>
-				<td class="tg-0lax"><em>clientOrderReady</em></td>
-				<td class="tg-0lax">Dispatch</td>
-				<td class="tg-0lax">No Event per motivo clientEntryRequest. Non si prevede una risposta quindi adottiamo un Dispatch. </td>
-			</tr>
-			<tr>
-				<td class="tg-0lax"><em>waiterOrderForward</em></td>
-				<td class="tg-0lax">Dispatch</td>
-				<td class="tg-0lax">Per gli stessi motivi di clientOrderReady (c'è un solo barman)</td>
-			</tr>
-			<tr>
-				<td class="tg-0lax"><em>barmanOrderReady</em></td>
-				<td class="tg-0lax">Dispatch</td>
-				<td class="tg-0lax">Per gli stessi motivi di clientOrderReady</td>
-			</tr>
-			<tr>
-				<td class="tg-0lax"><em>clientPaymentReady</em></td>
-				<td class="tg-0lax">Dispatch</td>
-				<td class="tg-0lax">Per gli stessi motivi di clientOrderReady</td>
-			</tr>
-		</tbody>
-	</table>
-
-
+	<thead>
+		<tr>
+			<th class="tg-0lax">nome messaggio</th>
+			<th class="tg-0lax">QAK</th>
+			<th class="tg-0lax">motivazione/scelta</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="tg-0lax"><em>clientEntryRequest</em></td>
+			<td class="tg-0lax">Request</td>
+			<td class="tg-0lax">Sarebbe giusto notificare il desiderio di un cliente di entrare a tutti i <em>waiter</em> tramite Event. Questo porterebbe problemi di interazione/organizzazione tra i vari <em>waiter</em> e avendone noi uno solo è più semplice pensare a una tipologia di messaggio point-to-point di tipo Request-Reply o Dispatch. Dovendo però il cliente ricevere una risposta, scegliamo di adottare una Request-Reply.</td>
+		</tr>
+		<tr>
+			<td class="tg-0lax"><em>waiterEntryReply</em></td>
+			<td class="tg-0lax">Reply</td>
+			<td class="tg-0lax">Aspettandosi il cliente una risposta questo fortifica la scelta appena fatta.</td>
+		</tr>
+		<tr>
+			<td class="tg-0lax"><em>clientOrderReady</em></td>
+			<td class="tg-0lax">Dispatch</td>
+			<td class="tg-0lax">No Event per motivo <em>clientEntryRequest</em>. Non si prevede una risposta quindi adottiamo un Dispatch. </td>
+		</tr>
+		<tr>
+			<td class="tg-0lax"><em>waiterOrderForward</em></td>
+			<td class="tg-0lax">Dispatch</td>
+			<td class="tg-0lax">Per gli stessi motivi di <em>clientOrderReady</em> (c'è un solo <em>barman</em>)</td>
+		</tr>
+		<tr>
+			<td class="tg-0lax"><em>barmanOrderReady</em></td>
+			<td class="tg-0lax">Dispatch</td>
+			<td class="tg-0lax">Per gli stessi motivi di <em>clientOrderReady</em></td>
+		</tr>
+		<tr>
+			<td class="tg-0lax"><em>clientPaymentReady</em></td>
+			<td class="tg-0lax">Dispatch</td>
+			<td class="tg-0lax">Per gli stessi motivi di <em>clientOrderReady</em></td>
+		</tr>
+	</tbody>
+</table>
+</br>
 Analizziamo se tutti i task sono da considerare:
+
+<pre>
+test
+</pre>
 
 
 <h2>Problem analysis</h2>
@@ -268,21 +273,13 @@ dato il movimento, dividere waiter engine: waiter movimento e altro?
 come la mappa è fatta (planner)
 entità stato totale mappa che memorizza e ritorna
 
+<pre>
+test
+</pre>
+
 <h2>Test plans</h2> 
 <div class="remark">
 <ks>GOAL</ks>: give a formal description (for example, by using <ks>JUnit</ks>) of the <k>functional TestPlans</k>, with reference to the <k>logical architecture</k> of the system .
-</div>
-
-
-<table style="width:100%" border="1">
-<tr>
-<td style="width:50%">
-</td>
-<td></td>
-</tr>
-</table>
-	      	
-<br/><br/> 	
 </div>  
 
 <div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
