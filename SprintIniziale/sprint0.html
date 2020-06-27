@@ -146,7 +146,7 @@ table, th, td {
     
 <head>
    
-<title>Sprint Iniziale</title></head>
+<title>Sprint Zero</title></head>
     
 <body>
 <div id="top">
@@ -237,7 +237,8 @@ Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em
 	In questo requisito ci accorgiamo che le parole fondamentali sono: <b>cliente</b> e <b>tavolo</b>.
 	<ul>
 		<li>Il <b>cliente</b> per entrare deve fare una richiesta e quindi inviare un messaggio che il <em>waiter</em> dovrà gestire.
-			E' opportuno pensare al cliente come un'entità esterna che interagisce con il <em>waiter</em> tramite una coppia di messaggi: richiesta di un cliente per entrare e risposta positiva/negativa da parte del <em>waiter</em>.</li>
+			E' opportuno pensare al cliente come un'entità esterna che interagisce con il <em>waiter</em> tramite una coppia di messaggi: richiesta di un cliente per entrare e risposta positiva/negativa da parte del <em>waiter</em>.
+			Ogni cliente ha un identificativo unico nell'arco della giornata dato dallo <em>smartbell</em>.</li>
 		<li>Il <b>tavolo</b> può trovarsi nello stato pulito o sporco. All'inizio lo modelliamo come un oggetto perchè in questo modo non imponiamo vincoli progettuali troppo stringenti.</li>
 	</ul>
 
@@ -331,8 +332,8 @@ Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em
 			<tr>
 				<td class="tg-0lax"><em>convoy</em></td>
 				<td class="tg-0lax">accompagna il cliente alla porta</td>
-				<td class="tg-0lax">alto</td>
-				<td class="tg-0lax">60s</td>
+				<td class="tg-0lax">medio</td>
+				<td class="tg-0lax">40s</td>
 			</tr>
 			<tr>
 				<td class="tg-0lax"><em>clean</em></td>
@@ -413,11 +414,10 @@ I task <em>clean</em> e <em>rest</em> costituiscono la componente proattiva dell
 Durante l'esecuzione dei task il <em>waiter</em> deve essere in ascolto di nuovi messaggi.
 Facendo <b>zooming</b> nell'architettura del <em>waiter</em> possiamo definire due parti:
 <ul>
-	<li>una che gestisca l'esecuzione dei task;</li>
-	<li>una che stia in ascolto dei messaggi e li gestisca tramite un coda.</li>
+	<li>una che gestisca il movimento del robot e la pulizia dei tavoli;</li>
+	<li>una che interagisca con gli agenti esterni e comandi la prima parte.</li>
 </ul>
-Pensiamo alla parte che esegue i task come un "<b>engine</b>" e alla parte che sta in ascolto e gestisce la coda dei messaggi come un "<b>mind</b>".
-Al "mind" è anche affidato lo scheduling dei task.
+Pensiamo alla prima parte come un "<b>engine</b>" e alla seconda come un "<b>mind</b>".
 </br>
 </br>
 Durante l'analisi dei requisiti è emersa la necessità di conoscere la posizione delle entità nella <em>tearoom</em> e di avere un sistema di navigazione 

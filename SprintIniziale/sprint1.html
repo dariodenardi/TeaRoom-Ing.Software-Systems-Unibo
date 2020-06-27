@@ -190,14 +190,14 @@ including some significant <bc>TestPlan</bc>.</li>
 
 <h2>Requirement analysis</h2>
 Tenendo a mente le considerazioni fatte nello <a href="./sprint0.html">sprint iniziale</a> 
-cerchiamo di arrivare all'obiettivo lavorando in maniera incrementale.
+cerchiamo di arrivare all'obiettivo lavorando in maniera <b>incrementale</b>.
 Partiamo quindi considerando un caso semplificato facendo delle assunzioni:
 
 <ul>
 <li>E' presente un solo cliente che richiede l'accesso alla <em>teamroom</em>, ordina, consuma, chiede di pagare e di uscire;</li>
 <li>Il <em>waiter</em> non viene interrotto: accetta la richiesta, accompagna il cliente, prende l'ordine, porta il drink, riscuote il pagamento, lo accompagna alla porta
 e pulisce il tavolo;</li>
-<li>Non scatta <em>maxtasytime</em>.</li>
+<li>Non scatta <em>maxstaytime</em>.</li>
 </ul>
 Date queste assunzioni, consideriamo il <em>barman</em> come attore esterno che riceverà 
 un messaggio (ordine del cliente)
@@ -258,11 +258,11 @@ Ridefiniamo i messaggi individuati nello sprint iniziale traducendoli nella <b>s
 	</tbody>
 </table>
 </br>
-Analizziamo se tutti i task sono da considerare:
-
-<pre>
-test
-</pre>
+Dalle assunzioni fatte notiamo che il task <em>inform</em> non è da modellare, in quanto essendoci 
+solo un cliente e entrambi i tavoli puliti non potrà mai verificarsi.
+</br>
+</br>
+<img src="./img/sprint1.png" alt="fsm" width="70%" height="70%">
 
 
 <h2>Problem analysis</h2>
