@@ -262,16 +262,36 @@ Dalle assunzioni fatte notiamo che il task <em>inform</em> non è da modellare, 
 solo un cliente e entrambi i tavoli puliti non potrà mai verificarsi.
 </br>
 </br>
-<img src="./img/sprint1.png" alt="fsm" width="70%" height="70%">
+<img src="./img/mind.png" alt="fsm" width="80%" height="80%">
+</br>
+</br>
+<img src="./img/engine.png" alt="fsm" width="80%" height="80%">
 
 
 <h2>Problem analysis</h2>
 E' opportuno modellare lo stato del tavolo all'interno dell'entità che tiene lo stato della teamroom
 
+entità esterna che tiene lo stato, teniamo lo stato all'interno del waiter per semplicità e avranno uno stringa come parametro
+
+Mappa 
+basicrbot, planner
+
+per mostrare il funzionamento robotvirtuale
+
 il waiter engine e waiter maind
 dato il movimento, dividere waiter engine: waiter movimento e altro?
 come la mappa è fatta (planner)
 entità stato totale mappa che memorizza e ritorna
+
+initial
+started
+waitplanMove
+execMove
+excecStep
+stepDOne
+stepFail
+execMove
+endSuccess
 
 <pre>
 test
@@ -280,7 +300,11 @@ test
 <h2>Test plans</h2> 
 <div class="remark">
 <ks>GOAL</ks>: give a formal description (for example, by using <ks>JUnit</ks>) of the <k>functional TestPlans</k>, with reference to the <k>logical architecture</k> of the system .
-</div>  
+</div>
+
+<h2>Workplan</h2> 
+ 
+
 
 <div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
 By studentName email: student@studio.unibo.it  
