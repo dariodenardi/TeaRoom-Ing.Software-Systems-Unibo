@@ -269,29 +269,27 @@ solo un cliente e entrambi i tavoli puliti non potrà mai verificarsi.
 
 
 <h2>Problem analysis</h2>
-E' opportuno modellare lo stato del tavolo all'interno dell'entità che tiene lo stato della teamroom
+Dall'analisi emersa dallo <a href="">sprint precedente</a> , si nota che la maggior parte dei task per funzionare hanno bisogno del movimento. Per questo motivo viene introdotta un'entità esterna detta <em>planner</em>.
+Il suo compito è quello di far raggiungere al waiter la posizione desiderata nella teamroom. Per far ciò è necessario che il planner conosca la mappa della stanza a priori.
+La mappa <b>non</b> presenta ostacoli mobili ma solo fissi per cui non serve che sia riconfigurata ogni volta nel planner.
+Il planner vede la tearoom come un insieme di celle ognuna delle quali è caratterizzata da un punto bidimensionale XY e chiamiamo con il termine <b>step</b> l'unità di misura del 
+movimento cioè lo spostamento del waiter da una cella ad un'altra.
 
-entità esterna che tiene lo stato, teniamo lo stato all'interno del waiter per semplicità e avranno uno stringa come parametro
+Dunque, per collegare <b>engine</b> e <b>mind</b> vengono introdotti nuovi messaggi:
 
-Mappa 
-basicrbot, planner
+- move(X,Y): il mind lo manda all'engine per spostarsi alla cella X,Y. E' modellato con una Request in modo tale che il mind in seguito riceva la risposta da parte dell'engine;
+- done(X,Y): è modellato come Reply e viene mandato dall'engine al mind come risposta per indicare se ha raggiunto la cella;
+- start: il mind lo manda all'engine per sapere se è pronto per ricevere i messaggi. E' modellato come Request;
+- ready: l'engine lo manda al mind per dire che è pronto a ricevere i messaggi. E' modellato come Reply 
 
-per mostrare il funzionamento robotvirtuale
+I veri spostamenti vengono effettuati dal <a href="">basicrobot</a> che oltre ad essere un attuatore è anche un sensore per rileveare eventuali ostacoli.
 
-il waiter engine e waiter maind
-dato il movimento, dividere waiter engine: waiter movimento e altro?
-come la mappa è fatta (planner)
+Sempre facendo riferimento alle <a href="">assunzioni</a> già fatte, è opportuno modellare lo stato del tavolo all'interno dell'entità che tiene tutti gli stati della teamroom.
+Per ora lo teniamo all'interno del waiter mind.
+
+Siamo già in grado di mostrare un primo prototipo al committente grazie all'ausilio di un <a href="">robot virtuale<a>.
+
 entità stato totale mappa che memorizza e ritorna
-
-initial
-started
-waitplanMove
-execMove
-excecStep
-stepDOne
-stepFail
-execMove
-endSuccess
 
 <pre>
 test
