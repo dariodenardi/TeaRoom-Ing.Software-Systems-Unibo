@@ -262,34 +262,56 @@ Dalle assunzioni fatte notiamo che il task <em>inform</em> non è da modellare, 
 solo un cliente e entrambi i tavoli puliti non potrà mai verificarsi.
 </br>
 </br>
+<em>Mind:</em>
+</br>
+</br>
 <img src="./img/newMind.png" alt="fsm" width="130%" height="130%">
+</br>
+</br>
+<em>Engine:</em>
 </br>
 </br>
 <img src="./img/newEngine.png" alt="fsm" width="80%" height="80%">
 
 
 <h2>Problem analysis</h2>
-Dall'analisi emersa dallo <a href="">sprint precedente</a> , si nota che la maggior parte dei task per funzionare hanno bisogno del movimento. Per questo motivo viene introdotta un'entità esterna detta <em>planner</em>.
-Il suo compito è quello di far raggiungere al waiter la posizione desiderata nella teamroom. Per far ciò è necessario che il planner conosca la mappa della stanza a priori.
-La mappa <b>non</b> presenta ostacoli mobili ma solo fissi per cui non serve che sia riconfigurata ogni volta nel planner.
-Il planner vede la tearoom come un insieme di celle ognuna delle quali è caratterizzata da un punto bidimensionale XY e chiamiamo con il termine <b>step</b> l'unità di misura del 
-movimento cioè lo spostamento del waiter da una cella ad un'altra.
+Dall'analisi emersa dallo <a href="./sprint0.html">sprint precedente</a>, si nota che la maggior parte dei task per funzionare hanno bisogno del movimento.
+Per questo motivo viene introdotta un'entità esterna detta <em>planner</em>.
+Il suo compito è quello di far raggiungere al <em>waiter</em> la posizione desiderata nella <em>teamroom</em>. Per far ciò è necessario che il <em>planner</em> 
+conosca la mappa della stanza a priori.
+</br>
+La mappa viene creata dal <em>planner</em> utilizzando <em>boundarywalker</em> e <em>mappingwalker</em> che esplorano l'ambiente creano un file JSON/XML. Essa deve essere interpretata nel seguente modo:
 
+<ul>
+<li><b>r:</b> cella occupata dal robot;</li>
+<li><b>1:</b> cella esplorata dal robot;</li>
+<li><b>0:</b> cella non ancora esplorata;</li>
+<li><b>X:</b> cella che contiene un ostacolo.</li>
+</ul>
+
+Inoltre, la mappa <b>non</b> presenta ostacoli mobili ma solo fissi per cui non serve che sia riconfigurata ogni volta nel <em>planner</em>.
+Il <em>planner</em> vede la <em>tearoom</em> come un insieme di celle della dimensione del robot ognuna delle quali è caratterizzata da un punto bidimensionale XY.
+<br/>
+Chiamiamo con il termine <b>step</b> l'unità dello spostamento del <em>waiter</em> da una cella ad un'altra adiacente, corrispondente alla lunghezza del robot.
+
+Le posizioni che devono essere raggiunte dal <em>waiter</em> sono inserite in un <b>file</b> di configurazione <b>JSON</b>.
+<br/>
+Tuttavia, i veri spostamenti vengono effettuati dal <a href="https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.robotboundary/userDocs/Qak20Robotboundary.html">basicrobot</a>: il <b>mind</b> chiede uno spostamento all'<b>engine</b> che a sua volta inoltra la richiesta al basicbot.
+</br>
+</br>
+Sempre facendo riferimento alle <a href="./sprint0.html">assunzioni</a> già fatte, è opportuno modellare lo stato del tavolo all'interno dell'entità che tiene tutti gli stati della <em>teamroom</em>.
+Per una prima e veloce modellazione tralasciamo questa entità e inseriamo gli stati dei tavoli all'interno del <b>mind</b>.
+</br>
+</br>
+Siamo già in grado di mostrare un primo <b>prototipo</b> al committente grazie all'ausilio di un <a href="https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.virtualRobot2020/userDocs/LabVirtualRobot.html">robot virtuale</a>.
+</br>
+</br>
 Dunque, per collegare <b>engine</b> e <b>mind</b> vengono introdotti nuovi messaggi:
 
-- move(X,Y): il mind lo manda all'engine per spostarsi alla cella X,Y. E' modellato con una Request in modo tale che il mind in seguito riceva la risposta da parte dell'engine;
+- moveTo(X,Y): il mind lo manda all'engine per spostarsi alla cella X,Y. E' modellato con una Request in modo tale che il mind in seguito riceva la risposta da parte dell'engine;
 - done(X,Y): è modellato come Reply e viene mandato dall'engine al mind come risposta per indicare se ha raggiunto la cella;
 - start: il mind lo manda all'engine per sapere se è pronto per ricevere i messaggi. E' modellato come Request;
 - ready: l'engine lo manda al mind per dire che è pronto a ricevere i messaggi. E' modellato come Reply 
-
-I veri spostamenti vengono effettuati dal <a href="">basicrobot</a> che oltre ad essere un attuatore è anche un sensore per rileveare eventuali ostacoli.
-
-Sempre facendo riferimento alle <a href="">assunzioni</a> già fatte, è opportuno modellare lo stato del tavolo all'interno dell'entità che tiene tutti gli stati della teamroom.
-Per ora lo teniamo all'interno del waiter mind.
-
-Siamo già in grado di mostrare un primo prototipo al committente grazie all'ausilio di un <a href="">robot virtuale<a>.
-
-entità stato totale mappa che memorizza e ritorna
 
 <pre>
 test
