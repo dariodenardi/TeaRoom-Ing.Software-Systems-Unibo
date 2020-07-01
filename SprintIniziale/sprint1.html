@@ -143,8 +143,6 @@ table, th, td {
     
   -->
 </style>
-    
-<head>
    
 <title>Sprint Uno</title></head>
     
@@ -152,7 +150,6 @@ table, th, td {
 <div id="top">
 <h1>LABORATORIO DI SISTEMI SOFTWARE <font size="5"></font> </h1>
 </div>  
-
 <div class="body"> 
 <h2>Requirements</h2>
 
@@ -188,16 +185,27 @@ including some significant <bc>TestPlan</bc>.</li>
 </ol>	
  
 
-<h2>Requirement analysis</h2>
+<h2 id="ass">Requirement analysis</h2>
 Tenendo a mente le considerazioni fatte nello <a href="./sprint0.html">sprint iniziale</a> 
 cerchiamo di arrivare all'obiettivo lavorando in maniera <b>incrementale</b>.
 Partiamo quindi considerando un caso semplificato facendo delle assunzioni:
 
 <ul>
-<li>E' presente un solo cliente che richiede l'accesso alla <em>teamroom</em>, ordina, consuma, chiede di pagare e di uscire;</li>
-<li>Il <em>waiter</em> non viene interrotto: accetta la richiesta, accompagna il cliente, prende l'ordine, porta il drink, riscuote il pagamento, lo accompagna alla porta
-e pulisce il tavolo;</li>
-<li>Non scatta <em>maxstaytime</em>.</li>
+	<li>
+		E' presente un solo cliente che richiede l'accesso alla <em>tearoom</em>, ordina, consuma, chiede di pagare e di uscire in questo ordine;
+	</li>
+	<li>
+		Il <em>waiter</em> non viene interrotto: accetta la richiesta, accompagna il cliente, prende l'ordine, porta il drink, riscuote il pagamento, lo accompagna alla porta e pulisce il tavolo;
+	</li>
+	<li>
+		La <em>tearoom</em> contiene due tavoli, entrambi puliti all'inizio della simulazione. <em>waiter</em> usa sempre lo stesso tavolo;
+	</li>
+	<li>
+		All'inizio della simulazione <em>waiter</em> si trova in <em>home</em>
+	</li>
+	<li>
+		Non scatta <em>maxstaytime</em>.
+	</li>
 </ul>
 Date queste assunzioni, consideriamo il <em>barman</em> come attore esterno che riceverà 
 un messaggio (ordine del cliente)
@@ -258,20 +266,54 @@ Ridefiniamo i messaggi individuati nello sprint iniziale traducendoli nella <b>s
 	</tbody>
 </table>
 </br>
-Dalle assunzioni fatte notiamo che il task <em>inform</em> non è da modellare, in quanto essendoci 
-solo un cliente e entrambi i tavoli puliti non potrà mai verificarsi.
+Dalle assunzioni fatte notiamo che il task <em>inform</em> non è da modellare, in quanto essendoci solo un cliente ed entrambi i tavoli sono puliti si avrà sempre un posto disponibile.</br>
+Proseguiamo quindi con la modellazione dei due agenti che compongono il waiter tramite grafi degli stati.
 </br>
-</br>
-<em>Mind:</em>
-</br>
-</br>
-<img src="./img/newMind.png" alt="fsm" width="130%" height="130%">
-</br>
+<!--Grafo ENGINE-->
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;_blank&quot;,&quot;xml&quot;:&quot;&lt;mxfile host=\&quot;app.diagrams.net\&quot; modified=\&quot;2020-07-01T14:21:33.755Z\&quot; agent=\&quot;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\&quot; etag=\&quot;DWnHhTsUBkdLeFMWrY2c\&quot; version=\&quot;13.3.5\&quot;&gt;&lt;diagram id=\&quot;2zA2yLJ3x4JN4bZLVGS_\&quot; name=\&quot;Page-1\&quot;&gt;7Vtbc5s4FP41ntl9cAZxs/NY23E67XqbWWe2zdOOYgRmKxAF+dZfXwGyuQhj7BijnU0eEnSQhHT0ne8cHSk9bextH0MYLGfEQrinKta2p016qnqvq+x3LNilAjBQuMQJXYvLMsHc/Ym4UOHSlWuhqFCREoKpGxSFC+L7aEELMhiGZFOsZhNc/GoAHSQI5guIRelX16LLVDpUB5n8I3Kd5f7LwLxP33hwX5nPJFpCi2xyIu2hp41DQmj65G3HCMfK2+slbTc98vYwsBD5tEkD+2s0c7y/LHP7N3wBn5/61vdhnw92DfGKT7inmpj1N4oC6MejpjuuCvPHKh7qaEEwCXvaB/YydF5/GzBNsA+P2e8hyB7N3+NnbZTo3Kd9G3ou3qXNWF/QC5KXmqazvzB0IRakh84i6Ef9CIWuXewzStAS9wj0YHt4R9GW9iF2HT99iZFNs+GzJyf5O37ojYz9bJna0gmnL/seX7PD7FVkMVzwIgnpkjjEh/ghk45CsvItFGs7HkhW5w9C2LQmgAn/RZTuOMjhihImWlIP87do69JvueeXuKs7g5cmW95zUtjtCz4Nd9/yhVyruJg1S0pZO+tDbB7xbALkp5KpizF/L6KLAy4iq3CBaiC1t1IYOojW1OM8EOs19wGO3UdEPMTGG4MMYUjdddEeITdr51AvQz574OA/wxCAYAiRImAgW+F4iTZLl6J5ABNtbBj9FVfTZsocp7bC2mpj9jOd1ml2jUIG3Vpd8LcDPjROqiYvbjKCAnvWWebIaV/v6sobCMpbYBRbkyw2pF5mRGp3VqQ2tCJTLitSBCR4ZI2eSZdQUO4GRg4N4CIoyI8EoyESOIcodzowueE2Bgfv7Ym4bBZZFWLbERtbGT2HjzYC1PfF9Mvr4vP9i/XpZTp5Xv7Ef/6zn3wOT0yt3YIpjyWlIZYy+BwQWIOles9RWuCrgapS/52yibj4G+jSsScCQBbHrA6788yP9uTJmgZPkT6bOZ/mP76MvKgPRB1GFAUW8VGnVlTwzoOG3hn0CpQ8OMXJl5uHJppHtXqv7X2TpsyRwF2uQhDTbVTBvxx1ulpEnTY08sA5Wd8ARglo6QguZfJqVWmVSLShi5FEjF4fHVwVUdURlFwBnbhoaIsWc7Zw0nKwAUrWoHe9Paog4Z4xoiErGJMuoQ8uomF5Nkl6Q6PSpLIpoFfBwYY46hoPRbd8Cg71q3rMa7fntCvQUOmJrp54OuJl9SIPqfclfkkHylu9aetUp44cykIELampWysFJqrROXWLecH3BHmv6wT5OSHbsU24coKH2vNaRkOvpUuxuTDMkk1qSsmq3rZZqFNRzuoCDP2n+EhNVu4ylKKeQOfcNTxKXZa7rmSuhsRwQwLkPRb57zCeM+nvLIaTepbHliT+ROVgy/oAVfqISf2gi7SrYvdHVPQaVlRMMLaXyhLStpVpOuUsMHxFeAQX351kYjkKspOfOgpqPU69vy8Sl2IUu0gdmhCnCh1ppzpqOeA1Bb5LTiGf4SsWk52yuo3Oz3KB6HvfI97uI942dub53E2Tc6nLQ17QNP15o725VtqbA63Z3vzc4Ll8UcMoXdGqrw6G9dU1UFu/ndC8Io/P4CV1aF5OK5jqDUm2MgVVce1OwoTwZcHSyXzwG2jEbEgjTbfOHCB9NmqNt2l3Nz0wilDcu/+jjFCqzyjkuIm3dDGj+jhPvOkjSxL7suTQ4Kzs0A0wDDo7tahccPGO3397vdXrr3fdFYHrLXfGWYqpGpeQ1i15oiIJJaGna3w/tI2I+U2wOdPTKXe6OjRlB4146LIKLEjRDMp7dgVKQaY+6DrIVAUtxnc3ZmQtbzakrMSb3t2oVGLFWf17Ev09if4/S6JLcN76lhT6SW+rit72hvc9xTNXpZRJBxem5PVTHbWckgdiTh6xRQ4/Qt/CKJTWD5XvEN7UmR+/iF/Ous0pC4raVKKgsQq9HlVi+TJ8v8UTcVbM/pM2RW/2/8jawy8=&lt;/diagram&gt;&lt;/mxfile&gt;&quot;}"></div>
+<script type="text/javascript" src="https://app.diagrams.net/js/viewer.min.js"></script>
 </br>
 <em>Engine:</em>
+Componente che pulisce il tavolo e gestisce il movimento del <em>waiter</em>. L'idea è che <em>Engine</em> ottenga una successione di step da eseguire al fine di attuare il movimento richiesto e che si interfacci con BasicRobot per l'esecuzione di ogni step. BasicRobot non gestisce i casi in cui lo step fallisce, quindi questa responsabilità ricade su <em>Engine</em>. 
+<em>Engine</em> viene attivato da <em>Mind</em> e come ultima istruzione del suo stato iniziale &lt;init&gt; invia a <em>Mind</em> un messaggio <u>engineReady</u>, poi si porta nello stato &lt;waitCmd&gt;, nel quale attende uno tra tre messaggi possibili, tutti provenienti da Mind. Uno di questi messaggi è <u>end</u>, che provoca la transizione verso lo stato &lt;terminate&gt; nel quale <em>Engine</em> termina la sua esecuzione. I restanti due messaggi provocano due sequenze di transizioni distinte che alla fine riportano allo stato &lt;waitCmd&gt;. Le due sequenze rappresentano la suddivisione in passi elementari dei due compiti di <em>Engine</em>. I due messaggi sono:
+<ul>
+	<li>
+		<u>moveTo</u>: contiene un parametro che esprime la posizione (x,y) che si vuole raggiungere nella <em>tearoom</em>. Provoca la transizione verso &lt;planPath&gt; in cui si ottiene una successione ordinata di step da eseguire, la quale dovrà essere mantenuta in uno scope visibile anche dai prossimi stati della sequenza. Successivamente si transita nello stato &lt;readStep&gt; dove si controlla che tipo di step va fatto: BasicRobot permette di compiere un passo in avanti o indietro e di ruotare su se stessi verso destra o verso sinistra. Le rotazioni non ritornano mai errore mentre i passi possono farlo, quindi usiamo due stati per differenziare la gestione dei due casi. Inoltre non ha senso che la successione ordinata di step comprenda dei passi all'indietro, quindi l'unico caso che può ritornare un errore è il passo in avanti. Per questo motivo nello stato &lt;readStep&gt; basta controllare se devo fare un passo in avanti. 
+		In caso negativo si transita nello stato &lt;execMove&gt;, dove si comunica a BasicRobot di compiere lo step e si transita in &lt;updateMap&gt;, dove si aggiorna la mappa indicando il nuovo stato del <em>waiter</em>.
+		In caso positivo si transita nello stato &lt;execStep&gt;, dove si comunica a BasicRobot di compiere il passo in avanti e si attende una risposta. Se lo step ha successo si transita in &lt;updateMap&gt;, altrimenti in &lt;errorHandler&gt;, dove si effettua una piccola correzione per compensare lo step fallito.
+		Le transizioni di uscita da &lt;updateMap&gt; e &lt;errorHandler&gt; sono identiche: si controlla se sono rimasti step da compiere nella successione ordinata.
+		In caso negativo si transita nello stato &lt;endPath&gt;, nel quale si manda a <em>Mind</em> un messaggio di conferma <u>done</u> e poi si ritorna a &lt;waitCmd&gt;. In caso positivo <em>Engine</em> si riporta nello stato &lt;readStep&gt;.
+	</li>
+	<li>
+		<u>clean</u>: contiene un parametro che specifica quale tipo di pulizia effettuare (clear, sanitize o clean). Qualunque sia il valore del parametro, <em>Engine</em> transita nello stato &lt;cleanTable&gt; per effettuare la pulizia richiesta. A lavoro ultimato ritorna a &lt;waitCmd&gt;. Per rendere un tavolo di nuovo usufruibile da un cliente, <em>Engine</em> dovrà ricevere 3 messaggi <u>clean</u>, ogni volta con parametro diverso, seguendo l'ordine descritto.
+	</li>
+</ul> 
+
 </br>
 </br>
-<img src="./img/newEngine.png" alt="fsm" width="80%" height="80%">
+<!--Grafo MIND-->
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;_blank&quot;,&quot;xml&quot;:&quot;&lt;mxfile host=\&quot;app.diagrams.net\&quot; modified=\&quot;2020-07-01T13:48:17.380Z\&quot; agent=\&quot;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\&quot; etag=\&quot;LrUQCHodJarrZo370RNr\&quot; version=\&quot;13.3.5\&quot;&gt;&lt;diagram id=\&quot;cU18ib_VpRdZYBQb-qZ6\&quot; name=\&quot;Page-1\&quot;&gt;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&lt;/diagram&gt;&lt;/mxfile&gt;&quot;}"></div>
+<script type="text/javascript" src="https://app.diagrams.net/js/viewer.min.js"></script>
+</br>
+<em>Mind:</em>
+Componente di <em>waiter</em> che mantiene il controllo sul task in esecuzione. Nello sviluppo del grafo degli stati si è mantenuto l'approccio per sequenze di transizioni per cui ogni sequenza rappresenta un compito dell'agente. Nel caso di <em>Mind</em> una sequenza rappresenta un task (o gruppi di task). Al momento dell'avvio del <em>waiter</em> si avvia <em>Mind</em> che parte dallo stato &lt;init&gt;, nel quale si avvia <em>Engine</em> e, in accordo con le <a href="#ass">assunzioni</a>, si passa direttamente allo stato &lt;rest&gt; non appena <em>Engine</em> invia un <u>engineReady</u>. Lo stato &lt;rest&gt; è molto simile al &lt;waitCmd&gt; di Engine, in quanto è punto di partenza delle sequenze di transizioni. Le sequenze terminano nello stato &lt;reachHome&gt;, che provoca lo spostamento del <em>waiter</em> verso <em>home</em> e poi la transizione verso &lt;rest&gt;. Tutti gli stati di <em>Mind</em> che hanno nome con prefisso "reach" o "convoy" implicano uno spostamento del <em>waiter</em> e quindi l'invio a <em>Engine</em> di un messaggio <u>moveTo</u>. Per questo motivo la transizione di uscita da questi stati è innescata da un messaggio <u>done</u> proveniente da <em>Engine</em>, che indica il completamento dello spostamento.</br>
+Oltre al messaggio <u>end</u>, che provoca la transizione in &lt;terminate&gt;, e quindi il forward di <u>end</u> verso <em>Engine</em> e lo spegnimento di <em>Mind</em>, ci sono 4 messaggi che provocano altrettante sequenze distinte di transizioni:
+<ul>
+	<li>
+		<u>clientEntryRequest</u> : inviato dal cliente, indica che il cliente vuole entrare nella <em>tearoom</em> e provoca la transizione verso &lt;accept&gt;. Stando alle <a href="#ass">assunzioni</a> il controllo sulla condizione dei tavoli che <em>Mind</em> esegue in questo stato ritorna sempre che c'è un tavolo libero, quindi si ha una transizione automatica da &lt;accept&gt; a &lt;reachDoor&gt;, in cui <em>waiter</em> raggiunge la porta di ingresso della <em>tearoom</em>. Una volta giunti a destinazione <em>Mind</em> transita nello stato &lt;convoyTable&gt; in cui accompagna il cliente ad un tavolo libero.
+	</li>
+	<li>
+		<u>clientOrderReady</u>: inviato dal cliente, indica che il cliente è pronto per ordinare e provoca la transizione verso &lt;reachTableOrder&gt; in cui <em>waiter</em> raggiunge il tavolo del cliente. Il messaggio 
+	</li>
+	<li>
+
+	</li>
+	<li>
+	</li>
+</ul> 
+
+</br>
+</br>
 
 
 <h2>Problem analysis</h2>

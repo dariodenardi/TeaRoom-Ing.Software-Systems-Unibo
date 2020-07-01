@@ -230,7 +230,7 @@ including some significant <bc>TestPlan</bc>.</li>
 
 <h2>Requirement analysis</h2>
 
-Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em>. Per portare a termine questo incarico è necessario che svolga diversi task. Analizziamo tutti i requisiti posti dal committente:
+Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>tearoom</em>. Per portare a termine questo incarico è necessario che svolga diversi task. Analizziamo tutti i requisiti posti dal committente:
 
 <ol>
 	<li><h4><em>accept</em> the request of a client to enter in the tearoom if there is at least one teatable in the state <em>tableclean</em>, i.e. the table is free and has been properly cleaned</h4>
@@ -244,10 +244,10 @@ Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em
 
 	<li><h4><em>inform</em> the client about the maximum waiting time if there is no <em>tableclean</em></h4></li>
 	In assenza di tavoli puliti il task <em>accept</em> non può essere eseguito; il <em>waiter</em> non accoglie il cliente ma lo informerà riguardo a quanto tempo deve aspettare.
-	<em>maxwaittime</em> dipende dalla situazione attuale della <em>teamroom</em> e consiste nel tempo dopo il quale si prevede che ci sarà un tavolo pulito.
+	<em>maxwaittime</em> dipende dalla situazione attuale della <em>tearoom</em> e consiste nel tempo dopo il quale si prevede che ci sarà un tavolo pulito.
 	
 	<li><h4><em>reach</em> the <em>entrance door</em> and <em>convoy</em> the accepted client to the selected teatable</h4>
-	La prima cosa che si deduce leggendo questo requisito è la necessità di gestire il movimento del <em>waiter</em> e di conoscere la posizione delle entità nella <em>teamroom</em>, quindi si potrebbe pensare all'introduzione di una mappa. Inoltre il <em>waiter</em> deve conoscere lo stato dei tavoli in modo da selezionarne uno pulito.
+	La prima cosa che si deduce leggendo questo requisito è la necessità di gestire il movimento del <em>waiter</em> e di conoscere la posizione delle entità nella <em>tearoom</em>, quindi si potrebbe pensare all'introduzione di una mappa. Inoltre il <em>waiter</em> deve conoscere lo stato dei tavoli in modo da selezionarne uno pulito.
 
 	<li><h4><em>take</em> the order of the client and transmit it (using a wifi-device) to the <em>barman</em></h4>
 	Il committente ci ha detto che per prendere l'ordine dal cliente, il <em>waiter</em> si deve spostare fisicamente (gestione del movimento, posizione degli ostacoli e mappa di cui abbiamo parlato nel requisito precedente).
@@ -272,7 +272,7 @@ Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>teamroom</em
 	<li><h4><em>rest</em> at my <em>home</em> when there is nothing to do</h4>
 	Se il <em>waiter</em> non ha altri compiti da svolgere può andare nella posizione <em>home</em>
 	
-	<li><h4>Nell'introduzione, troviamo anche un altro requisito: il <em>manager</em> vuole vedere lo stato della <em>teamroom</em></h4>
+	<li><h4>Nell'introduzione, troviamo anche un altro requisito: il <em>manager</em> vuole vedere lo stato della <em>tearoom</em></h4>
 	Dopo una discussione con il committente, per <em>current state</em> si intende:
 	<ol>
 		<li>Stato pulizia tavoli; </li>
@@ -421,10 +421,9 @@ Pensiamo alla prima parte come un "<b>engine</b>" e alla seconda come un "<b>min
 </br>
 </br>
 Durante l'analisi dei requisiti è emersa la necessità di conoscere la posizione delle entità nella <em>tearoom</em> e di avere un sistema di navigazione 
-che permetta il movimento da un punto A a un punto B. Questo comporta l'introduzione di una <b>mappa</b> che dovrà essere gestita da un componente.
+che permetta il movimento da un punto A a un punto B. Questo comporta l'introduzione di una mappa che dovrà essere gestita da un componente.
 Questo componente può anche essere lo stesso a mantenere lo stato della <em>tearoom</em> e a restituirlo a eventuali richiedenti.
 Uno di questi richiedenti sarà il <em>manager</em> che tramite una web-server (come da requisiti) vorrà vedere lo stato globale.
-<br/>
 Approfondiremo la sua trattazione nei prossimi sprint.
 </br>
 </br>
@@ -538,7 +537,7 @@ Alcuni test significativi secondo le problematiche individuate nelle sezioni pre
 <h2>Workplan</h2>
 Abbiamo deciso che alcuni casi da approfondire nei prossimi sprint sono:
 <ul>
-	<li>Assumere solo un cliente nella <em>teamroom</em>. Mostrare il corretto funzionamento tramite un modello virtuale;</li>
+	<li>Assumere solo un cliente nella <em>tearoom</em>. Mostrare il corretto funzionamento tramite un modello virtuale;</li>
 	<li>Mostrare il corretto funzionamento tramite un modello fisico;</li>
 	<li>L'interrompibilità dei task quando ci più clienti. Individuare i casi limite che potrebbero verificarsi;</li>
 	<li>webserver che mostra il <em>current state</em>, definito nell'analisi dei requisiti.</li>
