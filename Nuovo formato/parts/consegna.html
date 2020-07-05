@@ -1,0 +1,84 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../style/style.css">
+</head>
+<body>
+<div class=body>
+<h2>Introduction</h2>
+
+The <em>manager</em> of a <em>tearoom</em> intends to regulate the access to the service by means of a ddr robot (<em>waiter</em>).
+<br/><br/>
+The <em>tearoom</em> is a rectangular room that includes:
+
+<ul>
+<li>an <em>entrancedoor</em> to enter in the room and an <em>exitdoor</em> to exit form it;</li>
+<li>a number <tt>N (N=2)</tt> of <em>teatable</em>;</li>
+<li>a <em>serviceare</em> including a <em>servicedesk</em> at which works a <em>barman</em>;</li>
+<li>a <em>hall</em> equipped with a <em>presencedetector</em>, i.e. a device (e.g. a sonar) that can detect the presence of 
+a person (or some other entity) in it.</li>
+</ul>
+
+The <em>waiter</em> can freely move along the borders of the tearoom, since there are no obstacles there. 
+
+<center><img src="../img/tearoom20.png" alt="tearoom20.png" width="75%" height="70%"/></center>
+
+
+<h3>User stories</h3>
+As a <em>client</em>,:
+<ul>
+<li>I intend to <em>notify</em> my interest in <em>entering</em> in a <em>safe tearoom</em>, <em>sitting</em> at a free teatable,  <em>ordering</em> 
+some tea,  <em>consuming</em> it  (within a limited amount of time <em>maxstaytime</em>)  <em>paying</em> the service
+with my credit card and finally <em>leaving</em> the room.</li>
+<li>For <em>safe tearoom</em>, I intend a tearoom with clean tea-tables posed at a proper distance; the room is populated by human clients 
+whose body temperature is less than <tt>37.5</tt> degrees. </li>
+<li>I can submit my notification of interest by hitting the <em>smartbell</em> located near the  <em>entrancedoor</em> 
+that will automatically measure my body temperature and send a request message to the <em>waiter</em>, by giving to me an unique <em>clientidentifier</em>.
+</li>
+<li>I my body temperature is ok, but my request cannot be immediately satisfied (since the room is full), I will be <em>informed</em> by the <em>waiter</em> 
+aabout the maximum waiting time.</li>
+</ul>
+
+As a <em>manager</em>:
+<ul>
+<li>I intend to be able to see the <em>current state</em> of the <em>tearoom</em> by using  a browser connected to a web-server 
+associated to the application.
+</li>
+</ul>
+
+<h2>Requirements</h2>
+
+The <em>waiter</em> should perform the following tasks:
+<ul>
+ 
+<li><em>accept</em> the request of a client to enter in the tearoom if there is at least one teatable in the state <em>tableclean</em>, i.e.
+the table is free and has been properly cleaned; </li>
+<li><em>inform</em> the client about the maximum waiting time if there is no <em>tableclean</em>;</li> 
+<li><em>reach</em> the <em>entrance door</em> and <em>convoy</em> the accepted client to the selected teatable;</li>
+<li><em>take</em> the order of the client and transmit it (using a wifi-device) to the <em>barman</em>; </li>
+<li><em>serve</em>  the client when the <em>barman</em> says that the requested drink is ready;</li>
+<li><em>collect</em> the payment from the client when he/she has finished to consume or when the <em>maxstaytime</em> is expired;</li>
+<li><em>convoy</em> the client to the <em>exitdoor</em>;</li>
+<li><em>clean</em> the tea-table just freed  by the client;</li>
+<li><em>rest</em> at my <em>home</em> when there is nothing to do.</li>
+</ul>
+
+Since the room could contain <tt>N</tt> clients at the time, the <em>waiter</em> should reduce as much as possible the waiting time
+of the requests coming from each client.
+   
+<h3>Optional: one client in the hall</h3>
+The <em>waiter</em> must open the <em>exitdoor</em> only when the hall is free, i.e. it must
+not open that door if the hall is already engaged by a client waiting to enter at the <em>entrancedoor</em>.   
+
+<h2>Non functional requirements</h2>  
+<ol>
+<li>The ideal work team is composed of 3 persons. Teams of 1 or 2 persons (<bc>NOT</bc> 4 or more) are also allowed. </li>
+<li>The team must present a workplan as the result of the requirement/problem analysis,
+including some significant <bc>TestPlan</bc>.</li>
+<li>The team must present the sequence of SPRINT performed, with appropriate motivations.</li>
+<li>The team must present (in synthetic, schematic way) the specific activity of each team-component.</li>
+</ol>
+</div>
+</body>
+</html>
+
+

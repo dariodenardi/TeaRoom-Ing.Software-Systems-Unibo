@@ -1,0 +1,150 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../style/style.css">
+</head>
+<body>
+	<div class=body>
+		Tenendo a mente le considerazioni fatte nello <a href="./sprint0.html">sprint iniziale</a> 
+		cerchiamo di arrivare all'obiettivo lavorando in maniera <b>incrementale</b>.
+		Partiamo quindi considerando un caso semplificato facendo delle assunzioni:
+
+		<ul>
+			<li>
+				E' presente un solo cliente che richiede l'accesso alla <em>tearoom</em>, ordina, consuma, chiede di pagare e di uscire in questo ordine;
+			</li>
+			<li>
+				Il <em>waiter</em> non viene interrotto: accetta la richiesta, accompagna il cliente, prende l'ordine, porta il drink, riscuote il pagamento, lo accompagna alla porta e pulisce il tavolo;
+			</li>
+			<li>
+				La <em>tearoom</em> contiene due tavoli, entrambi puliti all'inizio della simulazione. <em>waiter</em> usa sempre lo stesso tavolo;
+			</li>
+			<li>
+				All'inizio della simulazione <em>waiter</em> si trova in <em>home</em>
+			</li>
+			<li>
+				<em>maxstaytime</em> e la <em>hall</em> non vengono considerati.
+			</li>
+		</ul>
+		Riprendiamo la tabella dei task dello sprint iniziale e cerchiamo eventuali task che possiamo ignorare date le assunzioni:
+		<table>
+				<thead>
+					<tr>
+						<th class="tg-0lax">nome task</th>
+						<th class="tg-0lax">cosa fa</th>
+						<th class="tg-0lax">tempo qualitativo</th>
+						<th class="tg-0lax">tempo quantitativo</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="tg-0lax"><em>accept</em></td>
+						<td class="tg-0lax">conferma la richiesta del cliente se è presente un tavolo nello stato <em>tableclean</em></td>
+						<td class="tg-0lax">poco</td>
+						<td class="tg-0lax">2s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>inform</em></td>
+						<td class="tg-0lax">informa il cliente sul tempo massimo di attesa <em>maxwaittime</em> nel caso non sia possibile eseguire il task <em>accept</em>  <br></td>
+						<td class="tg-0lax">poco</td>
+						<td class="tg-0lax">2s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>reach</em></td>
+						<td class="tg-0lax">raggiunge la porta di ingresso e accompagna il cliente (accettato) al tavolo selezionato</td>
+						<td class="tg-0lax">alto<br></td>
+						<td class="tg-0lax">60s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>take</em></td>
+						<td class="tg-0lax">va al tavolo del cliente, prende l'ordine e lo trasmette al barista</td>
+						<td class="tg-0lax">poco</td>
+						<td class="tg-0lax">8s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>serve</em></td>
+						<td class="tg-0lax">quando il barista dice che la bevanda è pronta va a prenderla e la porta al cliente che l'aveva richiesta</td>
+						<td class="tg-0lax">medio</td>
+						<td class="tg-0lax">30s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>collect</em></td>
+						<td class="tg-0lax">va al tavolo del cliente per riscuotere il pagamento</td>
+						<td class="tg-0lax">poco</td>
+						<td class="tg-0lax">8s<br></td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>convoy</em></td>
+						<td class="tg-0lax">accompagna il cliente alla porta</td>
+						<td class="tg-0lax">medio</td>
+						<td class="tg-0lax">40s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>clean</em></td>
+						<td class="tg-0lax">pulisce il tavolo</td>
+						<td class="tg-0lax">medio</td>
+						<td class="tg-0lax">35s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>rest</em></td>
+						<td class="tg-0lax">va in home se non c'è niente da fare</td>
+						<td class="tg-0lax">medio/alto<br></td>
+						<td class="tg-0lax">variabile</td>
+					</tr>
+				</tbody>
+			</table>
+		</br>
+		Dalle assunzioni fatte notiamo che il task <em>inform</em> non è da modellare, in quanto essendoci solo un cliente ed entrambi i tavoli sono puliti si avrà sempre un posto disponibile.
+		</br>
+		</br>
+		Per velocizzare il processo di modellazione adottiamo il metamodello dei <a href="https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakPrologUsage2020.html">QAK</a> perchè se usassimo un qualsiasi altro linguaggio di modellazione sarebbero più difficili da rappresentare.
+		Invece, il <b>tavolo</b> verrà modellato come un oggetto.
+		</br>
+		</br>
+		Essendo stato introdotto e scelto il modello QAK non parleremo più di messaggi ma di <b>Dispatch</b>, <b>Request</b>-<b>Reply</b> e <b>Event</b>.
+		Ridefiniamo i messaggi individuati nello sprint iniziale traducendoli nella <b>semantica</b> del modello QAK:
+		</br>
+		</br>
+		<table>
+			<thead>
+				<tr>
+					<th class="tg-0lax">nome messaggio</th>
+					<th class="tg-0lax">QAK</th>
+					<th class="tg-0lax">motivazione/scelta</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="tg-0lax"><em>clientEntryRequest</em></td>
+					<td class="tg-0lax">Request</td>
+					<td class="tg-0lax">Sarebbe giusto notificare il desiderio di un cliente di entrare a tutti i <em>waiter</em> tramite Event. Questo porterebbe problemi di interazione/organizzazione tra i vari <em>waiter</em> e avendone noi uno solo è più semplice pensare a una tipologia di messaggio point-to-point di tipo Request-Reply o Dispatch. Dovendo però il cliente ricevere una risposta, scegliamo di adottare una Request-Reply.</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>waiterEntryReply</em></td>
+					<td class="tg-0lax">Reply</td>
+					<td class="tg-0lax">Aspettandosi il cliente una risposta questo fortifica la scelta appena fatta.</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>clientOrderReady</em></td>
+					<td class="tg-0lax">Dispatch</td>
+					<td class="tg-0lax">No Event per motivo <em>clientEntryRequest</em>. Non si prevede una risposta quindi adottiamo un Dispatch. </td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>waiterOrderForward</em></td>
+					<td class="tg-0lax">Dispatch</td>
+					<td class="tg-0lax">Per gli stessi motivi di <em>clientOrderReady</em> (c'è un solo <em>barman</em>)</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>barmanOrderReady</em></td>
+					<td class="tg-0lax">Dispatch</td>
+					<td class="tg-0lax">Per gli stessi motivi di <em>clientOrderReady</em></td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>clientPaymentReady</em></td>
+					<td class="tg-0lax">Dispatch</td>
+					<td class="tg-0lax">Per gli stessi motivi di <em>clientOrderReady</em></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../style/style.css">
+	</head>
+	<body>
+		<div class="body">
+			Analizzando i requisiti emerge che il componente fondamentale, il <em>waiter</em>, interagisce tramite messaggi con altre entità. 
+			Dovendo avere un comportamento autonomo è quindi opportuno modellarlo come attore. 
+			Il <em>waiter</em> deve essere:
+			<ul>
+				<li><b>proattivo:</b> capace di intraprendere task di propria iniziativa;</li>
+				<li><b>reattivo:</b> reagire agli stimoli esterni.</li>
+			</ul>
+			I task <em>clean</em> e <em>rest</em> costituiscono la componente proattiva dell'agente. 
+			Durante l'esecuzione dei task il <em>waiter</em> deve essere in ascolto di nuovi messaggi.
+			Facendo <b>zooming</b> nell'architettura del <em>waiter</em> possiamo definire due parti:
+			<ul>
+				<li>una che gestisca il movimento del robot e la pulizia dei tavoli;</li>
+				<li>una che interagisca con gli agenti esterni e comandi la prima parte.</li>
+			</ul>
+			Pensiamo alla prima parte come un "<b>engine</b>" e alla seconda come un "<b>mind</b>".
+			</br>
+			</br>
+			Durante l'analisi dei requisiti è emersa la necessità di conoscere la posizione delle entità nella <em>tearoom</em> e di avere un sistema di navigazione 
+			che permetta il movimento da un punto A a un punto B. Questo comporta l'introduzione di una mappa che dovrà essere gestita da un componente.
+			Questo componente può anche essere lo stesso a mantenere lo stato della <em>tearoom</em> e a restituirlo a eventuali richiedenti.
+			Uno di questi richiedenti sarà il <em>manager</em> che tramite una web-server (come da requisiti) vorrà vedere lo stato globale.
+			Approfondiremo la sua trattazione nei prossimi sprint.
+			</br>
+			</br>
+			Dato che il committente ha chiesto di ridurre al minimo il tempo di attesa dei clienti, si intuisce che alcuni 
+			task sono più prioritari di altri.
+			Questo implica che durante l'esecuzione di un task non prioritario si possa scegliere di interrompere il task 
+			(e riprendelo successivamente) in favore di un altro che riduce l'attesa di un cliente.
+			Serve quindi, come prima cosa, vedere quali task sono interrompibili:
+			</br>
+			</br>
+			<table>
+			<thead>
+			  <tr>
+			    <th class="tg-0lax"></th>
+			    <th class="tg-0lax">è interrompibile?</th>
+			    <th class="tg-0lax">è opportuno?</th>
+			    <th class="tg-0lax">priorità</th>
+			  </tr>
+			</thead>
+			<tbody>
+			  <tr>
+			    <td class="tg-0lax"><em>accept</em></td>
+			    <td class="tg-0lax">no</td>
+			    <td class="tg-0lax">-</td>
+			    <td class="tg-0lax">-</td>
+			  </tr>
+			  <tr>
+			    <td class="tg-0lax"><em>inform</em></td>
+			    <td class="tg-0lax">no<br></td>
+			    <td class="tg-0lax">-</td>
+			    <td class="tg-0lax">-</td>
+			  </tr>
+			  <tr>
+			    <td class="tg-0lax"><em>reach</em></td>
+			    <td class="tg-0lax">no</td>
+			    <td class="tg-0lax">-<br></td>
+			    <td class="tg-0lax">-</td>
+			  </tr>
+			  <tr>
+			    <td class="tg-0lax"><em>take</em></td>
+			    <td class="tg-0lax">si</td>
+			    <td class="tg-0lax">no</td>
+			    <td class="tg-0lax">-</td>
+			  </tr>
+			  <tr>
+			    <td class="tg-0lax"><em>serve</em></td>
+			    <td class="tg-0lax">si</td>
+			    <td class="tg-0lax">no</td>
+			    <td class="tg-0lax">-</td>
+			  </tr>
+			  <tr>
+			    <td class="tg-0lax"><em>collect</em></td>
+			    <td class="tg-0lax">si</td>
+			    <td class="tg-0lax">no</td>
+			    <td class="tg-0lax">-<br></td>
+			  </tr>
+			  <tr>
+			    <td class="tg-0lax"><em>convoy</em></td>
+			    <td class="tg-0lax">no</td>
+			    <td class="tg-0lax">-</td>
+			    <td class="tg-0lax">-</td>
+			  </tr>
+			  <tr>
+			    <td class="tg-0lax"><em>clean</em></td>
+			    <td class="tg-0lax">si</td>
+			    <td class="tg-0lax">si</td>
+			    <td class="tg-0lax">
+				<ul>
+					<li>cliente vuole entrare e c'è il tavolo (<em>accept</em>);</li>
+					<li>cliente vuole pagare(<em>collect</em>);</li>
+					<li>cliente vuole ordinare(<em>take</em>);</li>
+					<li>drink da portare al cliente(<em>serve</em>).</li>
+				</ul>
+			  </tr>
+			  <tr>
+			    <td class="tg-0lax"><em>rest</em></td>
+			    <td class="tg-0lax">si</td>
+			    <td class="tg-0lax">si<br></td>
+			    <td class="tg-0lax">per qualsiasi motivo</td>
+			  </tr>
+			</tbody>
+			</table>
+
+			</br>
+			Nella tabella sono segnati come <b>interrompibili</b> i task che potrebbe avere senso interrompere e i task 
+			segnati come <b>opportuni</b> sono i task interrompibili concordati con il committente: <em>clean</em> e <em>rest</em>. 
+
+			Nel caso del task <em>clean</em> l'agente deve essere in grado di memorizzare lo stato corrente 
+			del tavolo e riprendere, dal punto di interruzione, l'esecuzione una volta terminati i task più prioritari.
+			Distinguiamo tre punti di sincronizzazione del task <em>clean</em>:
+			<ul>
+				<li>tabledirty;</li>
+				<li>tablecleared;</li>
+				<li>tablesanitized.</li>
+			</ul>
+			Scegliamo di modellare il tavolo come un oggetto che possiede un attributo "stato" che memorizza 
+			il punto di sincronizzazione corrente oppure si trova in uno di questi due stati:
+			<ul>
+				<li>tableclean;</li>
+				<li>tableoccupied.</li>
+			</ul>
+
+		</div>
+	</body>
+</html>
