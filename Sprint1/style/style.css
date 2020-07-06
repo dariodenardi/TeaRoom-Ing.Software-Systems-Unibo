@@ -145,7 +145,12 @@ table, th, td {
   border-collapse: collapse;
   padding: 2px;
   text-align: left;
-}      
+  font-size: inherit;
+}
+
+.noBorder {
+    border:none !important;
+}     
 
 div.button
 {

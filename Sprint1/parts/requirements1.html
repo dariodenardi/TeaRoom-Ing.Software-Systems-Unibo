@@ -4,9 +4,7 @@
 </head>
 <body>
 	<div class=body>
-		Tenendo a mente le considerazioni fatte nello <a href="./sprint0.html">sprint iniziale</a> 
-		cerchiamo di arrivare all'obiettivo lavorando in maniera <b>incrementale</b>.
-		Partiamo quindi considerando un caso semplificato facendo delle assunzioni:
+		Partiamo considerando un caso semplificato facendo delle assunzioni:
 
 		<ul>
 			<li>
@@ -26,6 +24,8 @@
 			</li>
 		</ul>
 		Riprendiamo la tabella dei task dello sprint iniziale e cerchiamo eventuali task che possiamo ignorare date le assunzioni:
+		<br/>
+		<br/>
 		<table>
 				<thead>
 					<tr>
@@ -76,13 +76,13 @@
 						<td class="tg-0lax"><em>convoy</em></td>
 						<td class="tg-0lax">accompagna il cliente alla porta</td>
 						<td class="tg-0lax">medio</td>
-						<td class="tg-0lax">40s</td>
+						<td class="tg-0lax">30s</td>
 					</tr>
 					<tr>
 						<td class="tg-0lax"><em>clean</em></td>
 						<td class="tg-0lax">pulisce il tavolo</td>
 						<td class="tg-0lax">medio</td>
-						<td class="tg-0lax">35s</td>
+						<td class="tg-0lax">45s</td>
 					</tr>
 					<tr>
 						<td class="tg-0lax"><em>rest</em></td>
@@ -97,7 +97,6 @@
 		</br>
 		</br>
 		Per velocizzare il processo di modellazione adottiamo il metamodello dei <a href="https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakPrologUsage2020.html">QAK</a> perchè se usassimo un qualsiasi altro linguaggio di modellazione sarebbero più difficili da rappresentare.
-		Invece, il <b>tavolo</b> verrà modellato come un oggetto.
 		</br>
 		</br>
 		Essendo stato introdotto e scelto il modello QAK non parleremo più di messaggi ma di <b>Dispatch</b>, <b>Request</b>-<b>Reply</b> e <b>Event</b>.
@@ -116,7 +115,7 @@
 				<tr>
 					<td class="tg-0lax"><em>clientEntryRequest</em></td>
 					<td class="tg-0lax">Request</td>
-					<td class="tg-0lax">Sarebbe giusto notificare il desiderio di un cliente di entrare a tutti i <em>waiter</em> tramite Event. Questo porterebbe problemi di interazione/organizzazione tra i vari <em>waiter</em> e avendone noi uno solo è più semplice pensare a una tipologia di messaggio point-to-point di tipo Request-Reply o Dispatch. Dovendo però il cliente ricevere una risposta, scegliamo di adottare una Request-Reply.</td>
+					<td class="tg-0lax">Non usiamo l'Event perchè non vogliamo che altri waiter possano ascoltare il messaggio. Inoltre, dovendo però il cliente ricevere una risposta, scegliamo di adottare una Request-Reply.</td>
 				</tr>
 				<tr>
 					<td class="tg-0lax"><em>waiterEntryReply</em></td>
@@ -145,6 +144,52 @@
 				</tr>
 			</tbody>
 		</table>
+		<br/>
+		Invece, le entità sono le seguenti:
+		<br/>
+		<br/>
+		<table>
+			<thead>
+				<tr>
+					<th class="tg-0lax">entità</th>
+					<th class="tg-0lax">QAK</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="tg-0lax"><em>client</em></td>
+					<td class="tg-0lax">attore</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>tavolo</em></td>
+					<td class="tg-0lax">attore</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>waiter</em></td>
+					<td class="tg-0lax">attore</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>waiterOrderForward</em></td>
+					<td class="tg-0lax">attore</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>barman</em></td>
+					<td class="tg-0lax">attore</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>smartbell</em></td>
+					<td class="tg-0lax">attore</td>
+				</tr>
+			</tbody>
+		</table>
+		</br>
+		Il modello è il seguente:
+		</br>
+		</br>
+		<a href="">waiter.qak</a>
+		<br/>
+		<br/>
+		
 	</div>
 </body>
 </html>

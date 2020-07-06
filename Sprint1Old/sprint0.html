@@ -1,0 +1,552 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <!--
+<link rel="stylesheet" type="text/css" href="../css/issStyle1.css">
+<script type="text/javascript" src="../css/issStyle.js"></script>
+-->
+<style type="text/css">
+<!--
+body
+{
+    margin-left:  30px;
+    margin-right: 30px;
+};
+
+P
+{
+    font-family: Tahoma;
+    font-size: 10pt;
+};
+
+a, a:visited, a:active, a:link, a:hover {
+    text-decoration: underline;
+    color: #545454;
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #cccccc;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #242424;
+    background-color: transparent;
+}
+
+h1, h2, h3 {
+    color: #242424;
+    clear: left;
+    font: 100% Tahoma, Helvetica, Arial, sans-serif;
+    margin: 10;
+    margin-right: 15px;
+    margin-bottom: 0.5em;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    font-size: 150%;
+    background-color: #b2c0ff;
+}
+
+h2 {
+    background-color: #d9fbff;
+    font-size: 110%;
+}
+
+h3 {
+	background-color: #e6ccff;
+    font-size: 90%;
+}
+h4 {
+	background-color: #ffffcc;
+    font-size: 100%;
+}
+#i {
+    color: #ff1010;
+}
+tt{
+	font-family: "Arial";
+	font-weight: bold;
+    font-size: 90%;
+	color: #006600;
+}
+em{
+	font-family: "Arial";
+    font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #ccffff;
+    color: #0033cc;
+}
+bc{
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+    color: #990000;
+	background-color: #fcf8c7;
+}
+k{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #990000;
+	 
+}
+ks{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #0000CD	;
+	 
+}
+kc{
+	font-family: "Arial";
+	font-weight: bold;
+    color: #008000	;
+	 
+}
+pre{
+	font-family: "Helvetica";
+	font-size: 90%;
+	background-color: #fcf8c7;
+	border: 1px solid blue;
+}
+m{
+	font-family: "Helvetica";
+	line-height: 100%;
+ 	font-size: 75%;
+}
+div.body{
+	width: 800px;
+    font-size: 18px;
+}    
+div.req{
+	background-color: #d9ffb3;
+    font-size: 18px;
+	width: 700px;
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}       
+div.remark{
+	background-color: #FFFC33;     
+    border: 3px solid green;
+    padding: 15px;
+    margin: 10px;
+}  
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}         
+    
+  -->
+</style>
+    
+<head>
+   
+<title>Sprint Zero</title></head>
+    
+<body>
+<div id="top">
+<h1>LABORATORIO DI SISTEMI SOFTWARE <font size="5"></font> </h1>
+</div>  
+
+<div class="body"> 
+<h2>Introduction</h2>
+
+The <em>manager</em> of a <em>tearoom</em> intends to regulate the access to the service by means of a ddr robot (<em>waiter</em>).
+<br/><br/>
+The <em>tearoom</em> is a rectangular room that includes:
+
+<ul>
+<li>an <em>entrancedoor</em> to enter in the room and an <em>exitdoor</em> to exit form it;</li>
+<li>a number <tt>N (N=2)</tt> of <em>teatable</em>;</li>
+<li>a <em>serviceare</em> including a <em>servicedesk</em> at which works a <em>barman</em>;</li>
+<li>a <em>hall</em> equipped with a <em>presencedetector</em>, i.e. a device (e.g. a sonar) that can detect the presence of 
+a person (or some other entity) in it.</li>
+</ul>
+
+The <em>waiter</em> can freely move along the borders of the tearoom, since there are no obstacles there. 
+
+<center><img src="img/tearoom20.png" alt="tearoom20.png" width="75%" height="32%"/></center>
+
+
+<h3>User stories</h3>
+As a <em>client</em>,:
+<ul>
+<li>I intend to <em>notify</em> my interest in <em>entering</em> in a <em>safe tearoom</em>, <em>sitting</em> at a free teatable,  <em>ordering</em> 
+some tea,  <em>consuming</em> it  (within a limited amount of time <em>maxstaytime</em>)  <em>paying</em> the service
+with my credit card and finally <em>leaving</em> the room.</li>
+<li>For <em>safe tearoom</em>, I intend a tearoom with clean tea-tables posed at a proper distance; the room is populated by human clients 
+whose body temperature is less than <tt>37.5</tt> degrees. </li>
+<li>I can submit my notification of interest by hitting the <em>smartbell</em> located near the  <em>entrancedoor</em> 
+that will automatically measure my body temperature and send a request message to the <em>waiter</em>, by giving to me an unique <em>clientidentifier</em>.
+</li>
+<li>I my body temperature is ok, but my request cannot be immediately satisfied (since the room is full), I will be <em>informed</em> by the <em>waiter</em> 
+aabout the maximum waiting time.</li>
+</ul>
+
+As a <em>manager</em>:
+<ul>
+<li>I intend to be able to see the <em>current state</em> of the <em>tearoom</em> by using  a browser connected to a web-server 
+associated to the application.
+</li>
+</ul>
+
+<h2>Requirements</h2>
+
+The <em>waiter</em> should perform the following tasks:
+<ul>
+ 
+<li><em>accept</em> the request of a client to enter in the tearoom if there is at least one teatable in the state <em>tableclean</em>, i.e.
+the table is free and has been properly cleaned; </li>
+<li><em>inform</em> the client about the maximum waiting time if there is no <em>tableclean</em>;</li> 
+<li><em>reach</em> the <em>entrance door</em> and <em>convoy</em> the accepted client to the selected teatable;</li>
+<li><em>take</em> the order of the client and transmit it (using a wifi-device) to the <em>barman</em>; </li>
+<li><em>serve</em>  the client when the <em>barman</em> says that the requested drink is ready;</li>
+<li><em>collect</em> the payment from the client when he/she has finished to consume or when the <em>maxstaytime</em> is expired;</li>
+<li><em>convoy</em> the client to the <em>exitdoor</em>;</li>
+<li><em>clean</em> the tea-table just freed  by the client;</li>
+<li><em>rest</em> at my <em>home</em> when there is nothing to do.</li>
+</ul>
+
+Since the room could contain <tt>N</tt> clients at the time, the <em>waiter</em> should reduce as much as possible the waiting time
+of the requests coming from each client.
+   
+<h3>Optional: one client in the hall</h3>
+The <em>waiter</em> must open the <em>exitdoor</em> only when the hall is free, i.e. it must
+not open that door if the hall is already engaged by a client waiting to enter at the <em>entrancedoor</em>.   
+
+<h2>Non functional requirements</h2>  
+<ol>
+<li>The ideal work team is composed of 3 persons. Teams of 1 or 2 persons (<bc>NOT</bc> 4 or more) are also allowed. </li>
+<li>The team must present a workplan as the result of the requirement/problem analysis,
+including some significant <bc>TestPlan</bc>.</li>
+<li>The team must present the sequence of SPRINT performed, with appropriate motivations.</li>
+<li>The team must present (in synthetic, schematic way) the specific activity of each team-component.</li>
+</ol>	
+
+<h2>Requirement analysis</h2>
+
+Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>tearoom</em>. Per portare a termine questo incarico è necessario che svolga diversi task. Analizziamo tutti i requisiti posti dal committente:
+
+<ol>
+	<li><h4><em>accept</em> the request of a client to enter in the tearoom if there is at least one teatable in the state <em>tableclean</em>, i.e. the table is free and has been properly cleaned</h4>
+	In questo requisito ci accorgiamo che le parole fondamentali sono: <b>cliente</b> e <b>tavolo</b>.
+	<ul>
+		<li>Il <b>cliente</b> per entrare deve fare una richiesta e quindi inviare un messaggio che il <em>waiter</em> dovrà gestire.
+			E' opportuno pensare al cliente come un'entità esterna che interagisce con il <em>waiter</em> tramite una coppia di messaggi: richiesta di un cliente per entrare e risposta positiva/negativa da parte del <em>waiter</em>.
+			Ogni cliente ha un identificativo unico nell'arco della giornata dato dallo <em>smartbell</em>.</li>
+		<li>Il <b>tavolo</b> può trovarsi nello stato pulito o sporco. All'inizio lo modelliamo come un oggetto perchè in questo modo non imponiamo vincoli progettuali troppo stringenti.</li>
+	</ul>
+
+	<li><h4><em>inform</em> the client about the maximum waiting time if there is no <em>tableclean</em></h4></li>
+	In assenza di tavoli puliti il task <em>accept</em> non può essere eseguito; il <em>waiter</em> non accoglie il cliente ma lo informerà riguardo a quanto tempo deve aspettare.
+	<em>maxwaittime</em> dipende dalla situazione attuale della <em>tearoom</em> e consiste nel tempo dopo il quale si prevede che ci sarà un tavolo pulito.
+	
+	<li><h4><em>reach</em> the <em>entrance door</em> and <em>convoy</em> the accepted client to the selected teatable</h4>
+	La prima cosa che si deduce leggendo questo requisito è la necessità di gestire il movimento del <em>waiter</em> e di conoscere la posizione delle entità nella <em>tearoom</em>, quindi si potrebbe pensare all'introduzione di una mappa. Inoltre il <em>waiter</em> deve conoscere lo stato dei tavoli in modo da selezionarne uno pulito.
+
+	<li><h4><em>take</em> the order of the client and transmit it (using a wifi-device) to the <em>barman</em></h4>
+	Il committente ci ha detto che per prendere l'ordine dal cliente, il <em>waiter</em> si deve spostare fisicamente (gestione del movimento, posizione degli ostacoli e mappa di cui abbiamo parlato nel requisito precedente).
+	Vediamo la necessità di introdurre un nuovo messaggio quando il cliente deve chiamare il <em>waiter</em>.
+	Sempre da questo requisito la trasmissione da <em>waiter</em> a <em>barman</em> ci indica l'introduzione di un altro messaggio.
+	
+	<li><h4><em>serve</em> the client when the <em>barman</em> says that the requested drink is ready</h4>
+	Abbiamo chiesto al committente e ci ha detto che il <em>waiter</em> deve portare il drink dal <em>barman</em> al cliente e questo implica lo spostamento del <em>waiter</em> di cui abbiamo parlato nei punti precedenti.
+	Abbiamo bisogno di un nuovo messaggio tra <em>barman</em>-<em>waiter</em> per comunicare al <em>waiter</em> che il drink è pronto.
+	
+	<li><h4><em>collect</em> the payment from the client when he/she has finished to consume or when the <em>maxstaytime</em> is expired</h4>
+	Il pagamento, secondo il committente, richiede l'avvicinamento al tavolo da parte del <em>waiter</em>. Affinchè il cliente possa indicare al <em>waiter</em> quando ha finito il suo drink è necessario un nuovo messaggio.
+	La gestione del <em>maxstaytime</em> è stata spiegata dal committente nel seguente modo: quando il cliente viene portato al tavolo parte un cronometro che tiene conto solo dell'attesa che può essere attribuita al cliente. Ad esempio, se il cliente non fa mai un ordine la responsabilità di questa attesa è sua e non del <em>waiter</em> o del <em>barman</em>, quindi il cronometro resta attivo. Invece, una volta fatto l'ordine, il cronometro viene bloccato per poi ripartire quando il drink arriva al tavolo. 
+
+	<li><h4><em>convoy</em> the client to the <em>exitdoor</em></h4>
+	C'è la necessità che il <em>waiter</em> si sposti come nei requisiti precedenti per cui serve conoscere la posizione del tavolo e di <em>exitdoor</em>.
+	
+	<li><h4><em>clean</em> the tea-table just freed by the client</h4>
+	Questo task inizia solo dopo il task <em>convoy</em>. Alla fine lo stato del tavolo cambia.
+	Per pulizia si intende togliere il bicchiere, ed eventualmente altre cose lasciate dal cliente, e sanificare il tavolo.
+	
+	<li><h4><em>rest</em> at my <em>home</em> when there is nothing to do</h4>
+	Se il <em>waiter</em> non ha altri compiti da svolgere può andare nella posizione <em>home</em>
+	
+	<li><h4>Nell'introduzione, troviamo anche un altro requisito: il <em>manager</em> vuole vedere lo stato della <em>tearoom</em></h4>
+	Dopo una discussione con il committente, per <em>current state</em> si intende:
+	<ol>
+		<li>Stato pulizia tavoli; </li>
+		<li><em>barman</em> occupato o no;</li>
+		<li>Tavoli occupati;</li>
+		<li>Il task che il <em>waiter</em> sta eseguendo;</li>
+		<li>Numero di clienti accettati/rifiutati.</li>
+	</ol>
+	
+	<li><h4>Riassumiamo i task del <em>waiter</em> indicando sia il tempo qualitativo che quello quantitativo e prendiamo come caso di riferimento quello peggiore</h4></li>
+	<table>
+		<thead>
+			<tr>
+				<th class="tg-0lax">nome task</th>
+				<th class="tg-0lax">cosa fa</th>
+				<th class="tg-0lax">tempo qualitativo</th>
+				<th class="tg-0lax">tempo quantitativo</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="tg-0lax"><em>accept</em></td>
+				<td class="tg-0lax">conferma la richiesta del cliente se è presente un tavolo nello stato <em>tableclean</em></td>
+				<td class="tg-0lax">poco</td>
+				<td class="tg-0lax">2s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>inform</em></td>
+				<td class="tg-0lax">informa il cliente sul tempo massimo di attesa <em>maxwaittime</em> nel caso non sia possibile eseguire il task <em>accept</em>  <br></td>
+				<td class="tg-0lax">poco</td>
+				<td class="tg-0lax">2s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>reach</em></td>
+				<td class="tg-0lax">raggiunge la porta di ingresso e accompagna il cliente (accettato) al tavolo selezionato</td>
+				<td class="tg-0lax">alto<br></td>
+				<td class="tg-0lax">60s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>take</em></td>
+				<td class="tg-0lax">va al tavolo del cliente, prende l'ordine e lo trasmette al barista</td>
+				<td class="tg-0lax">poco</td>
+				<td class="tg-0lax">8s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>serve</em></td>
+				<td class="tg-0lax">quando il barista dice che la bevanda è pronta va a prenderla e la porta al cliente che l'aveva richiesta</td>
+				<td class="tg-0lax">medio</td>
+				<td class="tg-0lax">30s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>collect</em></td>
+				<td class="tg-0lax">va al tavolo del cliente per riscuotere il pagamento</td>
+				<td class="tg-0lax">poco</td>
+				<td class="tg-0lax">8s<br></td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>convoy</em></td>
+				<td class="tg-0lax">accompagna il cliente alla porta</td>
+				<td class="tg-0lax">medio</td>
+				<td class="tg-0lax">40s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>clean</em></td>
+				<td class="tg-0lax">pulisce il tavolo</td>
+				<td class="tg-0lax">medio</td>
+				<td class="tg-0lax">35s</td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>rest</em></td>
+				<td class="tg-0lax">va in home se non c'è niente da fare</td>
+				<td class="tg-0lax">medio/alto<br></td>
+				<td class="tg-0lax">variabile</td>
+			</tr>
+		</tbody>
+	</table>
+
+<li><h4>Riassumiamo i messaggi che sono emersi dall'analisi dei requisiti</h4></li>
+	
+	La richiesta di entrata viene mandata dallo smartbell al waiter solo 
+	se la temperatura del cliente rispetta le norme COVID. Idealmente nel contesto pensiamo
+	che lo stesso smartbell che riceve la risposta dal waiter metta in output la risposta 
+	per il cliente in quanto in un contesto reale 
+	l'unico contatto che il cliente ha è con il smartbell. Per motivi di semplificazione, dovendo noi modellare il waiter, facciamo partire da lui
+	il messaggio in quanto il waiter e lo smartbell fanno parte di agenti esterni.
+	
+	<table>
+		<thead>
+			<tr>
+				<th class="tg-0lax">nome messaggio</th>
+				<th class="tg-0lax">descrizione</th>
+				<th class="tg-0lax">mittente-destinatario</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="tg-0lax"><em>clientEntryRequest</em></td>
+				<td class="tg-0lax">richiesta da parte del cliente per entrare</td>
+				<td class="tg-0lax"><em>client</em>-<em>waiter</em></td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>waiterEntryReply</em></td>
+				<td class="tg-0lax">risposta all'intento di entrata di un cliente</td>
+				<td class="tg-0lax"><em>waiter</em>-<em>client</em></td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>clientOrderReady</em></td>
+				<td class="tg-0lax">richiesta di ordine del cliente</td>
+				<td class="tg-0lax"><em>client</em>-<em>waiter</em></td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>waiterOrderForward</em></td>
+				<td class="tg-0lax">invio ordine a barman</td>
+				<td class="tg-0lax"><em>waiter</em>-<em>barman</em></td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>barmanOrderReady</em></td>
+				<td class="tg-0lax">ordine pronto</td>
+				<td class="tg-0lax"><em>barman</em>-<em>waiter</em></td>
+			</tr>
+			<tr>
+				<td class="tg-0lax"><em>clientPaymentReady</em></td>
+				<td class="tg-0lax">cliente desidera pagare</td>
+				<td class="tg-0lax"><em>client</em>-<em>waiter</em></td>
+			</tr>
+		</tbody>
+	</table>
+</ol>
+
+<h2>Problem analysis</h2>
+Analizzando i requisiti emerge che il componente fondamentale, il <em>waiter</em>, interagisce tramite messaggi con altre entità. 
+Dovendo avere un comportamento autonomo è quindi opportuno modellarlo come attore. 
+Il <em>waiter</em> deve essere:
+<ul>
+	<li><b>proattivo:</b> capace di intraprendere task di propria iniziativa;</li>
+	<li><b>reattivo:</b> reagire agli stimoli esterni.</li>
+</ul>
+I task <em>clean</em> e <em>rest</em> costituiscono la componente proattiva dell'agente. 
+Durante l'esecuzione dei task il <em>waiter</em> deve essere in ascolto di nuovi messaggi.
+Facendo <b>zooming</b> nell'architettura del <em>waiter</em> possiamo definire due parti:
+<ul>
+	<li>una che gestisca il movimento del robot e la pulizia dei tavoli;</li>
+	<li>una che interagisca con gli agenti esterni e comandi la prima parte.</li>
+</ul>
+Pensiamo alla prima parte come un "<b>engine</b>" e alla seconda come un "<b>mind</b>".
+</br>
+</br>
+Durante l'analisi dei requisiti è emersa la necessità di conoscere la posizione delle entità nella <em>tearoom</em> e di avere un sistema di navigazione 
+che permetta il movimento da un punto A a un punto B. Questo comporta l'introduzione di una mappa che dovrà essere gestita da un componente.
+Questo componente può anche essere lo stesso a mantenere lo stato della <em>tearoom</em> e a restituirlo a eventuali richiedenti.
+Uno di questi richiedenti sarà il <em>manager</em> che tramite una web-server (come da requisiti) vorrà vedere lo stato globale.
+Approfondiremo la sua trattazione nei prossimi sprint.
+</br>
+</br>
+Dato che il committente ha chiesto di ridurre al minimo il tempo di attesa dei clienti, si intuisce che alcuni 
+task sono più prioritari di altri.
+Questo implica che durante l'esecuzione di un task non prioritario si possa scegliere di interrompere il task 
+(e riprendelo successivamente) in favore di un altro che riduce l'attesa di un cliente.
+Serve quindi, come prima cosa, vedere quali task sono interrompibili:
+</br>
+</br>
+<table>
+<thead>
+  <tr>
+    <th class="tg-0lax"></th>
+    <th class="tg-0lax">è interrompibile?</th>
+    <th class="tg-0lax">è opportuno?</th>
+    <th class="tg-0lax">priorità</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax"><em>accept</em></td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-</td>
+    <td class="tg-0lax">-</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><em>inform</em></td>
+    <td class="tg-0lax">no<br></td>
+    <td class="tg-0lax">-</td>
+    <td class="tg-0lax">-</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><em>reach</em></td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-<br></td>
+    <td class="tg-0lax">-</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><em>take</em></td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><em>serve</em></td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><em>collect</em></td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-<br></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><em>convoy</em></td>
+    <td class="tg-0lax">no</td>
+    <td class="tg-0lax">-</td>
+    <td class="tg-0lax">-</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><em>clean</em></td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">
+	<ul>
+		<li>cliente vuole entrare e c'è il tavolo (<em>accept</em>);</li>
+		<li>cliente vuole pagare(<em>collect</em>);</li>
+		<li>cliente vuole ordinare(<em>take</em>);</li>
+		<li>drink da portare al cliente(<em>serve</em>).</li>
+	</ul>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><em>rest</em></td>
+    <td class="tg-0lax">si</td>
+    <td class="tg-0lax">si<br></td>
+    <td class="tg-0lax">per qualsiasi motivo</td>
+  </tr>
+</tbody>
+</table>
+
+</br>
+Nella tabella sono segnati come <b>interrompibili</b> i task che potrebbe avere senso interrompere e i task 
+segnati come <b>opportuni</b> sono i task interrompibili concordati con il committente: <em>clean</em> e <em>rest</em>. 
+
+Nel caso del task <em>clean</em> l'agente deve essere in grado di memorizzare lo stato corrente 
+del tavolo e riprendere, dal punto di interruzione, l'esecuzione una volta terminati i task più prioritari.
+Distinguiamo tre punti di sincronizzazione del task <em>clean</em>:
+<ul>
+	<li>tabledirty;</li>
+	<li>tablecleared;</li>
+	<li>tablesanitized.</li>
+</ul>
+Scegliamo di modellare il tavolo come un oggetto che possiede un attributo "stato" che memorizza 
+il punto di sincronizzazione corrente oppure si trova in uno di questi due stati:
+<ul>
+	<li>tableclean;</li>
+	<li>tableoccupied.</li>
+</ul>
+
+<h2>Test plans</h2>
+Alcuni test significativi secondo le problematiche individuate nelle sezioni precedenti sono i seguenti:
+<ul>
+	<li>Verificare tramite l'uso della mappa il corretto spostamento del <em>waiter</em>;</li>
+	<li>Verificare che i singoli task vengano eseguiti controllando lo stato delle entità della <em>tearoom</em>;</li>
+	<li>Verificare la corretta interruzione e ripresa di esecuzione dal punto di sincronizzazione.</li>
+</ul>
+
+<h2>Workplan</h2>
+Abbiamo deciso che alcuni casi da approfondire nei prossimi sprint sono:
+<ul>
+	<li>Assumere solo un cliente nella <em>tearoom</em>. Mostrare il corretto funzionamento tramite un modello virtuale;</li>
+	<li>Mostrare il corretto funzionamento tramite un modello fisico;</li>
+	<li>L'interrompibilità dei task quando ci più clienti. Individuare i casi limite che potrebbero verificarsi;</li>
+	<li>webserver che mostra il <em>current state</em>, definito nell'analisi dei requisiti.</li>
+</ul>
+
+</br>
+<div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
+By studentName email: student@studio.unibo.it  
+<img src="./img/emiglio.png" alt="mbot" width="15%" height="15%">
+</div> 
+</body>
+</html>

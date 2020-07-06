@@ -4,6 +4,7 @@
 </head>
 <body>
 	<div class=body>
+	
 		Lo scopo finale del <em>waiter</em> sarà quello di gestire una <em>tearoom</em>. Per portare a termine questo incarico è necessario che svolga diversi task. Analizziamo tutti i requisiti posti dal committente:
 
 		<ol>
@@ -11,9 +12,9 @@
 			In questo requisito ci accorgiamo che le parole fondamentali sono: <b>cliente</b> e <b>tavolo</b>.
 			<ul>
 				<li>Il <b>cliente</b> per entrare deve fare una richiesta e quindi inviare un messaggio che il <em>waiter</em> dovrà gestire.
-					E' opportuno pensare al cliente come un'entità esterna che interagisce con il <em>waiter</em> tramite una coppia di messaggi: richiesta di un cliente per entrare e risposta positiva/negativa da parte del <em>waiter</em>.
+					Il cliente interagisce con il <em>waiter</em> tramite una coppia di messaggi: richiesta di un cliente per entrare e risposta positiva/negativa da parte del <em>waiter</em>.
 					Ogni cliente ha un identificativo unico nell'arco della giornata dato dallo <em>smartbell</em>.</li>
-				<li>Il <b>tavolo</b> può trovarsi nello stato pulito o sporco. All'inizio lo modelliamo come un oggetto perchè in questo modo non imponiamo vincoli progettuali troppo stringenti.</li>
+				<li>Il <b>tavolo</b> può trovarsi nello stato pulito o sporco.</li>
 			</ul>
 
 			<li><h4><em>inform</em> the client about the maximum waiting time if there is no <em>tableclean</em></h4></li>
@@ -107,13 +108,13 @@
 						<td class="tg-0lax"><em>convoy</em></td>
 						<td class="tg-0lax">accompagna il cliente alla porta</td>
 						<td class="tg-0lax">medio</td>
-						<td class="tg-0lax">40s</td>
+						<td class="tg-0lax">30s</td>
 					</tr>
 					<tr>
 						<td class="tg-0lax"><em>clean</em></td>
 						<td class="tg-0lax">pulisce il tavolo</td>
 						<td class="tg-0lax">medio</td>
-						<td class="tg-0lax">35s</td>
+						<td class="tg-0lax">45s</td>
 					</tr>
 					<tr>
 						<td class="tg-0lax"><em>rest</em></td>
@@ -124,14 +125,11 @@
 				</tbody>
 			</table>
 
-		<li><h4>Riassumiamo i messaggi che sono emersi dall'analisi dei requisiti</h4></li>
-			
-			La richiesta di entrata viene mandata dallo smartbell al waiter solo 
-			se la temperatura del cliente rispetta le norme COVID. Idealmente nel contesto pensiamo
-			che lo stesso smartbell che riceve la risposta dal waiter metta in output la risposta 
-			per il cliente in quanto in un contesto reale 
-			l'unico contatto che il cliente ha è con il smartbell. Per motivi di semplificazione, dovendo noi modellare il waiter, facciamo partire da lui
-			il messaggio in quanto il waiter e lo smartbell fanno parte di agenti esterni.
+			<li><h4>Riassumiamo i messaggi che sono emersi dall'analisi dei requisiti</h4></li>				
+			La richiesta di entrata viene mandata dallo <em>smartbell</em> al <em>waiter</em> solo 
+			se la temperatura del cliente rispetta le norme COVID.
+			<br/>
+			<br/>
 			
 			<table>
 				<thead>
@@ -174,7 +172,41 @@
 					</tr>
 				</tbody>
 			</table>
-		</ol>
+	
+			<li><h4>Riassumiamo le entità che sono emerse dai requisiti</h4></li>
+			<table>
+				<thead>
+					<tr>
+						<th class="tg-0pky">entità</th>
+						<th class="tg-0pky">scopo</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="tg-0pky"><em>client</em></td>
+						<td class="tg-0pky">entra, ordina, consuma un drink ed esce dalla <em>tearoom</em></td>
+					</tr>
+					<tr>
+						<td class="tg-0pky"><em>tavolo</em></td>
+						<td class="tg-0pky">luogo in cui il cliente si siede e gli viene portato il drink</td>
+					</tr>
+					<tr>
+						<td class="tg-0pky"><em>waiter</em></td>
+						<td class="tg-0pky">accoglie il cliente, prende l'ordine e lo comunica al <em>barman</em>, serve il cliente e lo riaccompagna alla porta. Pulisce il tavolo</td>
+					</tr>
+					<tr>
+						<td class="tg-0pky"><em>barman</em></td>
+						<td class="tg-0pky">prepara il drink e avvisa il <em>waiter</em> quando è pronto</td>
+					</tr>
+					<tr>
+						<td class="tg-0pky"><em>smartbell</em></td>
+						<td class="tg-0pky">segnala la presenza di un cliente che vuole entrare</td>
+					</tr>
+				</tbody>
+			</table>
+		<br/>
+		<br/>
+		
 	</div>
 </body>
 </html>
