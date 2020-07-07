@@ -279,10 +279,11 @@ QActor waiter context ctxtearoom{
 
 QActor smartbell context ctxtearoom{
 	[# 
-		val Temp_max = 42
+		val Temp_max = 37.5
 		var ID_client = 1
 		var N_client_rejected = 0
-	#] 
+		var ClientTemp : Double = 0.0
+	#]
 
 	State s0 initial{
 		println("smartbell || START")
@@ -297,9 +298,9 @@ QActor smartbell context ctxtearoom{
 	Transition t0 	whenRequest clientRingEntryRequest -> checkTempClient
 					whenMsg end -> endState
 	State checkTempClient{ 
-		[#  var ClientTemp = (Math.random()*6+35)#] //random temperature
+		[# ClientTemp = kotlin.math.round(  (Math.random()*6+35)*10 )/10 #] //random temperature
 		println("smartbell || checkTempClient")
-		updateResource [# "checkTempClient" #]	
+		updateResource [# "checkTempClient" #]
 		if [# ClientTemp < Temp_max #]
 		{
 			println("smartbell || clienteAccettatoDaSmartBell || temperatura = $ClientTemp || id_client = $ID_client")

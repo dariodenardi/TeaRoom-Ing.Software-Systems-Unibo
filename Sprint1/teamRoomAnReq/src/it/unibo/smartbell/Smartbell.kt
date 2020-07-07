@@ -17,9 +17,10 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		 
-				val Temp_max = 42
+				val Temp_max = 37.5
 				var ID_client = 1
 				var N_client_rejected = 0
+				var ClientTemp : Double = 0.0
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -40,7 +41,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("checkTempClient") { //this:State
 					action { //it:State
-						  var ClientTemp = (Math.random()*6+35) 
+						 ClientTemp = kotlin.math.round(  (Math.random()*6+35)*10 )/10  
 						println("smartbell || checkTempClient")
 						updateResourceRep( "checkTempClient"  
 						)
