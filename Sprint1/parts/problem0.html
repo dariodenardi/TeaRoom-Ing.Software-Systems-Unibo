@@ -4,30 +4,6 @@
 	</head>
 	<body>
 		<div class="body">
-		
-		Analizzando i requisiti emerge che il componente fondamentale, il <em>waiter</em>, interagisce tramite messaggi con altre entità. 
-		Dovendo avere un comportamento autonomo è quindi opportuno modellarlo come <b>attore</b>. 
-		<br/>
-		Il <em>waiter</em> deve essere:
-		<ul>
-			<li><b>proattivo:</b> capace di intraprendere task di propria iniziativa;</li>
-			<li><b>reattivo:</b> reagire agli stimoli esterni.</li>
-		</ul>
-		Dunque, suddividiamo il <em>waiter</em> in due parti:
-			<ul>
-				<li>una che gestisca il movimento del robot e la pulizia dei tavoli;</li>
-				<li>una che interagisca con le altre entità e comandi la prima parte.</li>
-			</ul>
-			Pensiamo alla prima parte come un "<b>engine</b>" e alla seconda come un "<b>mind</b>".
-			In questo modo il <em>waiter</em> è in grado di muoversi e di ascoltare nuovi messaggi contemporaneamente.
-			
-			Durante l'esecuzione dei task il <em>waiter</em> deve essere in ascolto di nuovi messaggi.			
-			</br>
-			</br>
-			Emerge anche la necessità di conoscere la posizione delle entità nella <em>tearoom</em> e di avere un sistema di navigazione 
-			che permetta il movimento da un punto A a un punto B. Questo comporta l'introduzione di una <b>mappa</b> che dovrà essere gestita da un componente.
-			</br>
-			</br>
 			Dato che il committente ha chiesto di ridurre al minimo il tempo di attesa dei clienti, si intuisce che alcuni 
 			task sono più prioritari di altri.
 			Questo implica che durante l'esecuzione di un task non prioritario si possa scegliere di interrompere il task 
