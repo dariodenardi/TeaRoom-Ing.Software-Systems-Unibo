@@ -77,6 +77,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("waiter 	|| reachDoor")
 						updateResourceRep( "reachDoor"  
 						)
+						 readLine()  
 					}
 					 transition( edgeName="goto",targetState="convoyTable", cond=doswitch() )
 				}	 
@@ -107,6 +108,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("waiter 	|| waitOrderClient")
 						updateResourceRep( "waitOrderClient"  
 						)
+						 readLine()  
 					}
 					 transition(edgeName="t65",targetState="trasmit",cond=whenDispatch("clientOrder"))
 				}	 
@@ -137,6 +139,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("serveTable") { //this:State
 					action { //it:State
+						 readLine()  
 						println("waiter 	|| serveTable")
 						updateResourceRep( "serveTable" 
 						)
@@ -158,6 +161,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("collect") { //this:State
 					action { //it:State
+						 readLine()  
 						println("waiter 	|| collect")
 						updateResourceRep( "collect" 
 						)

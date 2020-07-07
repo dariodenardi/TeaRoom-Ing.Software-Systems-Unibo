@@ -69,7 +69,6 @@ QActor waiter context ctxtearoom{
 					whenMsg clientPaymentReady -> reachTableCollect
 					
 	State reachHome{
-		//[# readLine() #]
 		println("waiter		|| reachHome")
 		updateResource [# "reachHome" #]
 		
@@ -79,11 +78,6 @@ QActor waiter context ctxtearoom{
 	State accept{
 		println("waiter		|| accept")
 		updateResource [# "accept" #]
-		
-//		//TEST
-//		println("waitermind 	|| wait Enter - doing accept || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-//		[# readLine() #]
-//		//TEST
 		
 		onMsg(smartbellEntryRequest : smartbellEntryRequest(ID)){
 			println("waiter 	|| Ricevuta richiesta da ID: ${ payloadArg(0) }")
@@ -98,25 +92,16 @@ QActor waiter context ctxtearoom{
 		updateResource [# "reachDoor" #]
 		
 //		//TEST
-//		println("waitermind 	|| wait Enter - doing reachDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-//		[# readLine() #]
-//		//TEST
+		[# readLine() #]
+//		TEST
 		
 	}//end reachDoor
 	Goto convoyTable
 	
 	State convoyTable{
-		//TEST
-		//[# readLine() #]
-		//TEST
-		
 		println("waiter 	|| convoyTable")
 		updateResource [# "convoyTable"#]
 		delayVar DelayTakeClient	
-//		//TEST
-//		println("waitermind 	|| wait Enter - doing convoyTable || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-//		[# readLine() #]
-//		//TEST
 		
 		//STATO TAVOLO TO CHANGE
 		[# table1.state="tableoccupied" #]
@@ -126,7 +111,6 @@ QActor waiter context ctxtearoom{
 	
 	
 	State reachTableOrder{ 
-		//[# readLine() #]
 		println("waiter 	|| reachTableOrder")
 		updateResource [# "reachTableOrder"#]
 		//check table ordering
@@ -139,18 +123,17 @@ QActor waiter context ctxtearoom{
 
 	State waitOrderClient{ 
 		
-		//TEST
-		//[# readLine() #]
-		//TEST
-		
 		println("waiter 	|| waitOrderClient")
 		updateResource [# "waitOrderClient" #]
+		
+		//TEST
+		[# readLine() #]
+		//TEST
 		
 	}
 	Transition t6	whenMsg clientOrder -> trasmit
 	
 	State trasmit {
-		//[# readLine() #]
 		println("waiter 	|| trasmit")
 		updateResource [# "trasmit"#]	
 		onMsg(clientOrder : clientOrder(ID, ORDER)){
@@ -161,7 +144,6 @@ QActor waiter context ctxtearoom{
 	Goto reachHome
 	
 	State reachBar{
-		//[# readLine() #]
 		println("waiter 	|| reachBar")
 		updateResource [# "reachBar"#]	
 		onMsg(barmanOrderReady : barmanOrderReady(ID)){
@@ -172,7 +154,7 @@ QActor waiter context ctxtearoom{
 	
 	State serveTable{
 		//TEST
-		//[# readLine() #]
+		[# readLine() #]
 		//TEST
 		println("waiter 	|| serveTable")
 		updateResource [# "serveTable"#]	
@@ -182,7 +164,6 @@ QActor waiter context ctxtearoom{
 	Goto reachHome
 	
 	State reachTableCollect{
-		//[# readLine() #]
 		println("waiter 	|| reachTableCollect")
 		updateResource [# "reachTableCollect"#]
 		onMsg(clientPaymentReady : clientPaymentReady(ID)){
@@ -193,7 +174,7 @@ QActor waiter context ctxtearoom{
 	
 	State collect{
 		//TEST
-		//[# readLine() #]
+		[# readLine() #]
 		//TEST
 		
 		println("waiter 	|| collect")
@@ -204,7 +185,6 @@ QActor waiter context ctxtearoom{
 	Goto convoyExit
 	 
 	State convoyExit{
-		//[# readLine() #]
 		println("waiter		|| convoyExit")
 		updateResource [# "convoyExit"#]
 		
@@ -214,22 +194,14 @@ QActor waiter context ctxtearoom{
 	}//end convoyExit
 	Goto reachTableClean
 	
-	State reachTableClean{
-		//TEST
-		//[# readLine() #]
-		//TEST
-		
+	State reachTableClean{		
 		println("waiter		|| reachTableClean")
 		updateResource [# "reachTableClean"#]
 		delay 1000
 	}//end reachTableClear
 	Goto tableClearing
 
-	State tableClearing{
-		//TEST
-		//[# readLine() #]
-		//TEST
-		
+	State tableClearing{		
 		println("waiter		|| tableClearing")
 		updateResource [# "tableClearing"#]
 		
@@ -240,7 +212,6 @@ QActor waiter context ctxtearoom{
 	
 	
 	State tableSanitizing{
-		//[# readLine() #]
 		println("waiter		|| tableSanitizing")
 		updateResource [# "tableSanitizing"#]
 		
@@ -249,7 +220,6 @@ QActor waiter context ctxtearoom{
 	Goto tableCleaning
 	
 	State tableCleaning{
-		//[# readLine() #] 
 		println("waiter		|| tableCleaning")
 		updateResource [# "tableCleaning"#]
 		
@@ -258,7 +228,6 @@ QActor waiter context ctxtearoom{
 	Goto updateTableCleaned
 	
 	State updateTableCleaned{
-		//[# readLine() #]
 		println("waiter		|| updateTableCleaned")
 		updateResource [# "updateTableCleaned" #]
 		
@@ -352,8 +321,7 @@ QActor barman context ctxtearoom{
 	
 	State waitOrder{
 		println("barman 	|| waitOrder")
-		updateResource [# "waitOrder" #]
-		
+		updateResource [# "waitOrder" #]		
 	}
 	Transition t0 	whenMsg waiterOrderForward -> prepareOrder
 					whenMsg end -> endState
