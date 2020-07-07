@@ -46,12 +46,12 @@ class TestWaiterPosition {
 	fun testRobotboundary(){
 	 	runBlocking{
  			while( waitermind == null ){
-				println("testWaiterPosition waits for waiterengine ... ")
+				println("waits for waiterengine ... ")
 				delay(initDelayTime)  //time for robot to start
 				waitermind = it.unibo.kactor.sysUtil.getActor("waitermind")
  			}
 			while(waiterengine == null){
-				println("testWaiterPosition waits for waiterengine...")
+				println("waits for waiterengine...")
 				delay(initDelayTime)
 				waiterengine = it.unibo.kactor.sysUtil.getActor("waiterengine")
 			}

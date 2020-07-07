@@ -32,7 +32,7 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("waiterengine || START")
+						println("waiterengine 		|| START")
 						updateResourceRep( "startState"  
 						)
 						itunibo.planner.plannerUtil.initAI(  )
@@ -44,7 +44,7 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				}	 
 				state("waitCmd") { //this:State
 					action { //it:State
-						println("waiterengine || waitCmd")
+						println("waiterengine 		|| waitCmd")
 						updateResourceRep( "waitCmd"  
 						)
 					}
@@ -53,7 +53,7 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				}	 
 				state("planPath") { //this:State
 					action { //it:State
-						println("waiterengine || planPath")
+						println("waiterengine 		|| planPath")
 						updateResourceRep( "planPath"  
 						)
 						if( checkMsgContent( Term.createTerm("moveTo(X,Y)"), Term.createTerm("moveTo(X,Y)"), 
@@ -84,7 +84,7 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				}	 
 				state("endPath") { //this:State
 					action { //it:State
-						println("waiterengine || endPath")
+						println("waiterengine 		|| endPath")
 						updateResourceRep( "endPath"  
 						)
 						println("done moveTo($XPoint,$YPoint)")
@@ -113,7 +113,7 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				}	 
 				state("errorHandler") { //this:State
 					action { //it:State
-						println("waiterengine | errorHandler")
+						println("waiterengine 		|| errorHandler")
 						if( checkMsgContent( Term.createTerm("stepfail(DURATION,CAUSE)"), Term.createTerm("stepfail(DURATION,CAUSE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 val D = payloadArg(0).toLong()  ; val Dt = Math.abs(StepTime-D); val BackT = D/2  
@@ -140,15 +140,15 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						if( checkMsgContent( Term.createTerm("clean(R)"), Term.createTerm("clean(R)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								if(  payloadArg(0) == "1"  
-								 ){println("waiterengine 	|| clearing")
+								 ){println("waiterengine 		|| clearing")
 								delay(TableClearTime)
 								}
 								if(  payloadArg(0) == "2"  
-								 ){println("waiterengine 	|| sanitizing")
+								 ){println("waiterengine 		|| sanitizing")
 								delay(TableSanitizeTime)
 								}
 								if(  payloadArg(0) == "3"  
-								 ){println("waiterengine 	|| cleaning")
+								 ){println("waiterengine 		|| cleaning")
 								delay(TableCleanTime)
 								}
 						}

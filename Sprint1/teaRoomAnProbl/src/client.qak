@@ -30,7 +30,7 @@ QActor client context ctxclient {
 	State ringBell{ 
 		println("client || Ring the bell")
 		updateResource [# "Ring" #]
-		
+		 
 		//TEST
 		println("client 	|| wait Enter - to Ring the Bell)" )
 		[# readLine() #]
