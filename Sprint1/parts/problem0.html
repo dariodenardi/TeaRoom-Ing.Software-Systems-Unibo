@@ -96,14 +96,14 @@
 			Analizzando la problematica di come si pulisce il tavolo, il committente ci dice che il <em>waiter</em> lavora in più fasi.
 			Distinguiamo tre punti di sincronizzazione del task <em>clean</em> in modo tale che il <em>waiter</em> riprenda la pulizia da dove l'ha lasciata:
 			<ul>
-				<li>tabledirty;</li>
-				<li>tablecleared;</li>
-				<li>tablesanitized.</li>
+				<li>tableDirty;</li>
+				<li>tableCleared;</li>
+				<li>tableSanitized.</li>
 			</ul>
 			Il tavolo ha uno "stato" che memorizza il punto di sincronizzazione corrente o questi altri due stati:
 			<ul>
-				<li>tableclean;</li>
-				<li>tableoccupied.</li>
+				<li>tableClean;</li>
+				<li>tableOccupied.</li>
 			</ul>
 			Ad una prima analisi si potrebbe pensare di modellare il tavolo come un oggetto al cui interno c'è il suo stato. Questo implica che ogni volta che il <em>waiter</em> voglia sapere lo stato
 			lo debba richiedere al tavolo.
