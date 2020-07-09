@@ -4,12 +4,12 @@
 	</head>
 	<body>
 		<div class="body">
-			Dato che il committente ha chiesto di ridurre al minimo il tempo di attesa dei clienti, si intuisce che alcuni 
+			Dato che il committente ha chiesto di ridurre al minimo il tempo di attesa dei <em>client</em>, si intuisce che alcuni 
 			task sono più prioritari di altri.
 			Questo implica che durante l'esecuzione di un task non prioritario si possa scegliere di interrompere il task 
-			(e riprendelo successivamente) in favore di un altro che riduce l'attesa di un cliente.
+			(e riprendelo successivamente) in favore di un altro che riduce l'attesa di un <em>client</em>.
 			
-			Inoltre, il <em>waiter</em> può decidere all'arrivo di un messaggio di interrompere il proprio task corrente in favore di un altro che riduca il tempo di attesa dei clienti come chiesto
+			Inoltre, il <em>waiter</em> può decidere all'arrivo di un messaggio di interrompere il proprio task corrente in favore di un altro che riduca il tempo di attesa dei <em>client</em> come chiesto
 			dal committente.
 			Serve quindi vedere quali task sono interrompibili:
 			</br>
@@ -72,10 +72,10 @@
 			    <td class="tg-0lax">si</td>
 			    <td class="tg-0lax">
 				<ul>
-					<li>cliente vuole entrare e c'è il tavolo (<em>accept</em>);</li>
-					<li>cliente vuole pagare(<em>collect</em>);</li>
-					<li>cliente vuole ordinare(<em>take</em>);</li>
-					<li>drink da portare al cliente(<em>serve</em>).</li>
+					<li><em>client</em> vuole entrare e c'è il <em>table</em> (<em>accept</em>);</li>
+					<li><em>client</em> vuole pagare (<em>collect</em>);</li>
+					<li><em>client</em> vuole ordinare (<em>take</em>);</li>
+					<li>drink da portare al <em>client</em> (<em>serve</em>).</li>
 				</ul>
 			  </tr>
 			  <tr>
@@ -93,20 +93,20 @@
 			
 			<br/>
 			<br/>
-			Analizzando la problematica di come si pulisce il tavolo, il committente ci dice che il <em>waiter</em> lavora in più fasi.
+			Analizzando la problematica di come si pulisce il <em>table</em>, il committente ci dice che il <em>waiter</em> lavora in più fasi.
 			Distinguiamo tre punti di sincronizzazione del task <em>clean</em> in modo tale che il <em>waiter</em> riprenda la pulizia da dove l'ha lasciata:
 			<ul>
 				<li>tableDirty;</li>
 				<li>tableCleared;</li>
 				<li>tableSanitized.</li>
 			</ul>
-			Il tavolo ha uno "stato" che memorizza il punto di sincronizzazione corrente o questi altri due stati:
+			Il <em>table</em> ha uno "stato" che memorizza il punto di sincronizzazione corrente o questi altri due stati:
 			<ul>
 				<li>tableClean;</li>
 				<li>tableOccupied.</li>
 			</ul>
-			Ad una prima analisi si potrebbe pensare di modellare il tavolo come un oggetto al cui interno c'è il suo stato. Questo implica che ogni volta che il <em>waiter</em> voglia sapere lo stato
-			lo debba richiedere al tavolo.
+			Ad una prima analisi si potrebbe pensare di modellare il <em>table</em> come un oggetto al cui interno c'è il suo stato. Questo implica che ogni volta che il <em>waiter</em> voglia sapere lo stato
+			lo debba richiedere al <em>table</em>.
 			Nasce un'altra problematica cioè quella di come si gestiscono le risorse:
 			<ul>
 				<li><b>distribuito:</b> ogni entità conosce solo il proprio stato. E' difficile da realizzare perchè nascono problemi di sincronizzazione tra le varie entità.</li>
@@ -115,6 +115,7 @@
 				Se si, ci sarebbe un enorme traffico creando eventuali colli di bottiglia perchè alla fine è il <em>waiter</em> che esegue tutte le operazioni.
 				Per evitare ciò mettiamo nella stessa entità stati e <em>waiter</em>.</li>
 			</ul>
+			Questo discorso lo si può generalizzare non solo al <em>table</em> ma anche per tutte le altre entità.
 			<br/>
 		</div>
 	</body>

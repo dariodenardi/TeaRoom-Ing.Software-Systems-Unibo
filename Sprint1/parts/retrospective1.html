@@ -4,7 +4,20 @@
 </head>
 <body>
 	<div class=body>
-		in corso.
+		Le considerazioni appena fatte possono indurre una completa riorganizzazione dell'architettura logica cioè non concepirla più come un'<b>architettura a livelli</b>
+		ma tramite l'uso dell'<b>architettura esagonale</b>.
+		
+		<!--
+			approccio 1: il waiter cambia il modello. quando il waiter fa un'azione dice al modello di tener traccia di quello che ha fatto.
+			Es. va alla porta a prendere il cliente -> il tavolo diventa occupato.
+			in questo caso si possono verificare errori di software. es. il tavolo 1 diventa occupato ma il waiter va al tavolo 2
+			approccio 2 (Architettura esagonale): il tavolo 1 passa dallo stato clean a busy. il modello dice al waiter cosa fare.
+			il waiter va al tavolo, controlla la posizione del tavolo e poi diventa occupato.
+			Come nella realtà: se voglio aprire una porta mi immagino di aprirla (cambio del modello) e poi ci vado (engine). Se non ci riesco si gestisce con un'eccezione.
+
+			MVC  è più vicino all'architettura esagonale: la view (che rappresenta il dominio) provoca una modifica nel controller
+		-->
+		
 	</div>
 </body>
 </html>
