@@ -26,8 +26,14 @@
 				All'inizio della simulazione <em>waiter</em> si trova in <em>home</em>
 			</li>
 		</ul>
-		Dato che ci sono due <em>client</em> si possono verificare casi limite:
+		Dato che ci sono due <em>client</em> è possibile che ci siano richieste quando il <em>waiter</em> stia eseguendo un task:
 		si veda l'analisi del problema delle <a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/resources/parts/problem0.html');">considerazioni iniziali</a> quando si parla di interompibilità dei task.
+		</br>
+		</br>
+		Il punto importante dell'interompibilità è che il <em>waiter</em> riesca a riprendere quello che stava facendo prima di essere interrotto. Dunque, il <em>waiter</em> si deve "ricordare" quello che stava facendo.
+		</br>
+		</br>
+		Per fortuna, in <b>QAK</b> è possibile usare whenTime che consente di interrompere i task.
 		</br>
 		</br>
 		Dunque, il nuovo <b>modello</b> da mostrare al committente è il seguente:
