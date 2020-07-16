@@ -11,7 +11,18 @@
 	</head>
 	<body>
 		<div class="body">
+			La prima conseguenza che porta la gestione di più di un cliente è quella di dover assegnare un tavolo ad esso. Questo può essere fatto in modo semplice, poichè abbiamo accesso allo stato degli oggetti tavolo; basta infatti assegnare il primo tavolo con lo stato "cleaned" nel sistema.
+	
+	
 			
+			Dall'analisi dei requisiti emerge la necessità di introdurre un timer in modo da tenere sotto controllo il tempo trascorso e rimanente dei task interrompibili
+			
+			L'ultimo stato del clean ,"sanitized", viene modellato in modo che duri 15 secondi, così da renderlo non interrompibile e semplificarne la gestione. Per effettuare questa gestione, è opportuno modellare un'entità "timer", la quale fa da supporto al waitercleaner. Inoltre l'introduzione di questa entità risolverà il problema di rimanere bloccati in uno stato, nel caso di ripetute interruzioni.
+
+			Questo timer riceve un Dispatch starttimer : starttimer(T) con l'indicazione del tempo del timer da innescare, in modo tale da simulare anche il tempo passato di ciascuno stato del clean. Quindi, ogni volta che interrompiamo il clean, viene memorizzato il tempo trascorso, cosicchè quando il task verrà ripristinato, si ripartirà innescando il timer solo con il tempo rimanente e non solo da un particolare stato, altrimenti si dovrebbe ripartire dal solito stato che precedentemente avrebbe potuto essere quasi ultimato.
+
+			Di seguito è riportato il modello. waiterengine non è stato riportato, in quanto invariato.
+
 		</div>
 	</body>
 </html>
