@@ -1,0 +1,770 @@
+System tearoom 
+
+//Messages **********************************************************************
+//DIVISI PER CHI INVIA 
+
+//**********CLIENT 
+
+Request clientRingEntryRequest : clientEntryRequest(PAYLOAD)
+Reply clientRingEntryReply : clientEntryReply(ID) //invia smartbell in realtà
+
+Dispatch clientOrderReady : clientOrderReady(ID)
+Dispatch clientOrder : clientOrder (ID, ORDER)
+Dispatch clientPaymentReady : clientPaymentReady(ID)
+
+//**********SMARTBELL
+Request smartbellEntryRequest : smartbellEntryRequest(ID)
+Reply smartbellEntryReply : smartbellEntryReply(ID)
+Dispatch smartbellClientRejected : smartbellClientRejected(TEMP) //verso se stesso
+
+
+//**********BARMAN
+Dispatch barmanOrderReady : barmanOrderReady(ID) //= a tavolo o cliente id (per distinguere in futuro)
+
+
+//**********WAITER
+Dispatch waiterOrderForward : waiterOrderForward(ID, ORDER) //Order contenente ID cl. o tavolo (in futuro per distringuere)
+
+//**********WAITER interni
+Dispatch clean : clean(R, TIMER)
+Dispatch doneCleanRun : doneCleanRun(P)
+Dispatch engineReady : engineReady(P) 
+Request moveTo : moveTo(X,Y)
+Reply done : done(X,Y)
+Dispatch end : end(V)
+Request step : step( TIME )	
+Reply   stepdone   : stepdone(V)  
+Dispatch cmd : cmd(MOVE) 
+Reply   stepfail   : stepfail(DURATION, CAUSE) 
+
+//***************************Messaggi 2' SPRINT
+Dispatch startTimerCleaning : startTimerCleaning(Timer) //da engine a timercleaning
+
+Request stopTimerCleaningReq : stopTimerCleaningReq(P) //da engine a timercleaning
+Reply stopTimerCleaningReply : stopTimerCleaningReply(TIMERDONE)//da timercleaning a engine
+
+Dispatch timerFinishedCorrectly : timerFinishedCorrectly(P) //da timercleaning a engine
+
+Dispatch stopCleaningEngine : stopCleaningEngine (P) //da Mind a engine
+//Reply  stopCleaningReply : stopCleaningReply(TIMERDONE) //da engine a Mind
+
+Dispatch goToClearing : goToClearing(P)
+Dispatch goToSanitizing : goToSanitizing (P)
+Dispatch goToCleaning : goToCleaning(P)
+//end messages ******************************************************************* 
+//context and QActors 
+/*USE JSON FILE TO READ HOST AND PORT */
+Context ctxtearoom ip [host="127.0.0.1" port=8040] 
+Context ctxbasicrobot ip [host="localhost" port=8020] 
+ExternalQActor basicrobot context ctxbasicrobot 
+//ExternalQActor waiterengine context ctxTearoom
+//end context and Qactors 
+
+
+QActor waitermind context ctxtearoom{
+	//inizializzazione varibili
+	[#		
+		val DoClear = 1
+		val DoSanitize = 2
+		val DoClean = 3
+		
+		val ClearTime = 6000L
+		val SanitizeTime = 5000L
+		val CleanTime = 5000L
+		
+		val CollectTime = 4000L
+		val DelayTakeDrink = 2000L
+		val DelayServeDrink = 2000L
+		val DelayTakeClient = 2000L
+				 
+		val X_home = "0"
+		val Y_home = "0"
+		
+		val X_bar = "6" 
+		val Y_bar = "0"
+		
+		val X_entrance = "0"
+		val Y_entrance = "4"
+		
+		val X_exit = "6"
+		val Y_exit = "4"
+		
+		val X_table_1 = "2"
+		val Y_table_1 = "2"
+		
+		val X_table_2 = "4"
+		val Y_table_2 = "2"
+		
+		
+		
+		var CleaningON = false
+		var TableToClean = 0
+		var TableStateToClean = ""
+		
+		
+		data class Table(var state: String ="tableClean") { }
+		val table1 = Table()
+		val table2 = Table()
+		var stateTable1 = "tableClean"
+		var stateTable2 = "tableClean"
+		
+	#]
+	
+	State startState initial{
+		println("waitermind 		|| START")
+		updateResource [# "startState" #] 
+	}
+	Transition t0	whenMsg engineReady -> rest
+	
+	State checkTableToClean{
+		//interrogare tearoomstate della situazione tavoli
+		
+		
+		//**********************
+		//if 
+		
+		 
+		[# 
+			TableToClean = 2 
+			TableStateToClean = "tableSanitizing"
+			
+		#]
+		
+	}
+	Goto reachHome if [# TableToClean == 0 #] else reachTableClean
+	
+	
+	
+	State rest{
+		println("waitermind 		|| rest")
+		updateResource [# "rest"#]
+	}//end rest
+	Transition t1	whenRequest smartbellEntryRequest -> accept
+					whenMsg clientOrderReady -> reachTableOrder
+					whenMsg barmanOrderReady -> reachBar
+					whenMsg end -> endState
+					whenMsg clientPaymentReady -> reachTableCollect
+					
+	State reachHome{
+		//[# readLine() #]
+		println("waitermind 		|| reachHome")
+		updateResource [# "reachHome" #]
+		request waiterengine -m moveTo : moveTo($X_home, $Y_home)
+		
+	}//end reachHome
+	Transition t2	whenReply done -> rest
+	//MODIFICA ASSOLUTAMENTE
+	
+	State accept{ 
+		println("waitermind 		|| accept")
+		updateResource [# "accept" #]
+		
+		if [#CleaningON == true #]{
+			forward waiterengine -m stopCleaningEngine : stopCleaningEngine (P)
+			[#CleaningON = false #]
+		}
+		
+//		//TEST
+//		println("waitermind 	|| wait Enter - doing accept || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+//		[# readLine() #]
+//		//TEST
+		
+		onMsg(smartbellEntryRequest : smartbellEntryRequest(ID)){
+			println("waitermind 		|| Ricevuta richiesta da ID: ${ payloadArg(0) }")
+			replyTo smartbellEntryRequest with smartbellEntryReply : smartbellEntryReply($payloadArg(0))	
+		}
+				
+	}//end accept
+	Goto	reachDoor
+	
+	State reachDoor{
+		println("waitermind 		|| reachDoor") 
+		updateResource [# "reachDoor" #]
+		
+//		//TEST
+//		println("waitermind 	|| wait Enter - doing reachDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+//		[# readLine() #]
+//		//TEST
+		 
+		request waiterengine -m moveTo : moveTo($X_entrance, $Y_entrance)
+		
+	}//end reachDoor
+	Transition t3	whenReply done -> convoyTable
+	
+	State convoyTable{
+		//TEST
+		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		println("waitermind 		|| wait Enter - pos-> EntranceDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		[# readLine() #]
+		//TEST
+		
+		println("waitermind 		|| convoyTable")
+		updateResource [# "convoyTable"#]
+		delayVar DelayTakeClient	
+//		//TEST
+//		println("waitermind 	|| wait Enter - doing convoyTable || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+//		[# readLine() #]
+//		//TEST
+		
+		//STATO TAVOLO TO CHANGE
+		[# table1.state = "tableOccupied" #]
+		//Controllare il tavolo libero
+		request waiterengine -m moveTo : moveTo($X_table_1, $Y_table_1)
+	}//end convoyTable
+	Transition t4	whenReply done -> checkTableToClean
+	
+	
+	State reachTableOrder{ 
+		//[# readLine() #]
+		println("waitermind 		|| reachTableOrder")
+		updateResource [# "reachTableOrder"#]
+		
+		if [#CleaningON == true #]{
+			forward waiterengine -m stopCleaningEngine : stopCleaningEngine (P)
+			[#CleaningON = false #]
+		}
+		
+		
+		//check table ordering
+		onMsg(clientOrderReady : clientOrderReady(ID) ){
+			println("waitermind 		|| client pronto per ordinare ID : ${payloadArg(0)}")
+		}
+		request waiterengine -m moveTo : moveTo($X_table_1, $Y_table_1)
+		
+	}//end reachTableOrder
+	Transition t5	whenReply done -> waitOrderClient
+
+	State waitOrderClient{ 
+		
+		//TEST
+		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		[# readLine() #]
+		//TEST
+		
+		println("waitermind 		|| waitOrderClient")
+		updateResource [# "waitOrderClient" #]
+		
+	}
+	Transition t6	whenMsg clientOrder -> trasmit
+	
+	State trasmit {
+		//[# readLine() #]
+		println("waitermind 		|| trasmit")
+		updateResource [# "trasmit"#]	
+		onMsg(clientOrder : clientOrder(ID, ORDER)){
+			println("waitermind 		|| ricevuto ordine ID,ORDER: ${payloadArg(0)},${payloadArg(1)} ")
+			forward barman -m waiterOrderForward : waiterOrderForward($payloadArg(0), $payloadArg(1))
+		}
+	}// end trasmit
+	Goto checkTableToClean
+	
+	State reachBar{
+		//[# readLine() #]
+		println("waitermind 		|| reachBar")
+		updateResource [# "reachBar"#]	
+		
+		if [#CleaningON == true #]{
+			forward waiterengine -m stopCleaningEngine : stopCleaningEngine (P)
+			[#CleaningON = false #]
+		}
+		
+		onMsg(barmanOrderReady : barmanOrderReady(ID)){
+			println("waitermind 		|| order ready client ID: ${payloadArg(0)}")
+		}
+		request waiterengine -m moveTo : moveTo($X_bar, $Y_bar)
+	}//end reachBar
+	Transition t6	whenReply done -> serveTable
+	
+	State serveTable{
+		//TEST
+		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		println("waitermind 		|| wait Enter - pos-> BARMAN || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		[# readLine() #]
+		//TEST
+		println("waitermind 		|| serveTable")
+		updateResource [# "serveTable"#]	
+		delayVar DelayTakeDrink
+		request waiterengine -m moveTo : moveTo($X_table_1, $Y_table_1)
+				
+	}//end serveTable
+	Transition t7	whenReply done -> serveDrinkTable
+	
+	State serveDrinkTable{
+		//per essere realistici
+		delayVar DelayServeDrink
+	}
+	Goto checkTableToClean
+	
+	State reachTableCollect{
+		//[# readLine() #]
+		println("waitermind 		|| reachTableCollect")
+		updateResource [# "reachTableCollect"#]
+		
+		if [#CleaningON == true #]{
+			forward waiterengine -m stopCleaningEngine : stopCleaningEngine (P)
+			[#CleaningON = false #]
+		}
+		
+		onMsg(clientPaymentReady : clientPaymentReady(ID)){
+			println("waitermind 		|| client wants to pay ID : ${payloadArg(0)}")
+		}
+		//guardo il messaggio clientPaymentReady e leggo ID e capisco tavolo
+		request waiterengine -m moveTo : moveTo($X_table_1, $Y_table_1)	
+	}//end reachTableCollect
+	Transition t8	whenReply done -> collect
+		
+	
+	
+	State collect{
+		//TEST
+		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		[# readLine() #]
+		//TEST
+		
+		println("waitermind 		|| collect")
+		updateResource [# "collect"#]
+		//delay time perchè ci metto un po' a prendere il cash
+		delayVar CollectTime
+	}//end collect
+	Goto convoyExit
+	 
+	State convoyExit{ 
+		//[# readLine() #]
+		println("waitermind 	|| convoyExit")
+		updateResource [# "convoyExit"#]
+		
+		//STATO DEL TAVOLO DA CAMBIARE
+		[# table1.state = "tableDirty" #]
+		
+		request waiterengine -m moveTo : moveTo($X_exit, $Y_exit)	
+		
+	}//end convoyExit
+	Transition t9 	whenReply done -> checkTableToClean
+	
+	State reachTableClean{
+		//TEST
+		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		println("waitermind 		|| wait Enter - pos-> Exit || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		[# readLine() #]
+		//TEST
+		
+		println("waitermind 	|| reachTableClean")
+		updateResource [# "reachTableClean"#]
+		delay 1000
+		//mi muovo verso il tavolo
+		
+		//solve
+		//DISTINGUO SE TAVOLO 1 TAVOLO 2
+		//TableToClean = 0
+		if [# TableToClean == 1#]{
+			request waiterengine -m moveTo : moveTo($X_table_1, $Y_table_1)	
+		}
+		if [# TableToClean == 2#]{
+			request waiterengine -m moveTo : moveTo($X_table_2, $Y_table_2)	
+		}	
+	}//end reachTableClear
+	Transition t10 	whenReply done -> whichCleanState
+	
+	State whichCleanState{
+		if [# TableStateToClean == "tableClearing" #] {
+			forward waitermind -m goToCleaning : goToCleaning(P)
+		}
+		if [# TableStateToClean == "tableSanitizing" #] {
+			forward waitermind -m goToSanitizing : goToSanitizing(P)
+		}
+		if [# TableStateToClean == "tableCleaning" #] {
+			forward waitermind -m goToCleaning : goToCleaning(P)
+		}
+	}
+	Transition t0	whenMsg goToCleaning 	-> tableClearing
+					whenMsg goToSanitizing 	-> tableSanitizing
+					whenMsg goToCleaning 	-> tableCleaning
+	
+
+	State tableClearing{
+		//TEST
+		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		[# readLine() #]
+		//TEST
+		
+		println("waitermind 	|| tableClearing")
+		updateResource [# "tableClearing"#]
+		[# CleaningON = true #]
+		
+		[# table1.state = "tableClearing" #]
+		
+		
+		forward waiterengine -m clean : clean($DoClear, $ClearTime)
+	}//end tableClear
+	Transition t11	whenMsg doneCleanRun -> tableSanitizing
+					whenMsg clientOrderReady -> reachTableOrder
+					whenMsg clientPaymentReady -> reachTableCollect
+					whenMsg barmanOrderReady -> reachBar
+					whenRequest smartbellEntryRequest -> accept
+					
+						
+	State tableSanitizing{
+		//[# readLine() #]
+		println("waitermind 	|| tableSanitizing")
+		updateResource [# "tableSanitizing"#]
+		
+		[# CleaningON = true #]
+		
+		[# table1.state = "tableSanitizing" #]
+		
+		forward waiterengine -m clean : clean($DoSanitize, $SanitizeTime)
+	}//end tableSanitize
+	Transition t12	whenMsg doneCleanRun -> tableCleaning
+					whenMsg clientOrderReady -> reachTableOrder
+					whenMsg clientPaymentReady -> reachTableCollect
+					whenMsg barmanOrderReady -> reachBar
+					whenRequest smartbellEntryRequest -> accept
+	
+	
+	State tableCleaning{
+		//[# readLine() #] 
+		println("waitermind 	|| tableCleaning")
+		updateResource [# "tableCleaning"#]
+		
+		[# CleaningON = true #]
+		
+		[# table1.state = "tableCleaning" #]
+		
+		forward waiterengine -m clean : clean($DoClean, $CleanTime)
+	}//end tableClean
+	Transition t12	whenMsg doneCleanRun -> updateTableCleaned
+					whenMsg clientOrderReady -> reachTableOrder
+					whenMsg clientPaymentReady -> reachTableCollect
+					whenMsg barmanOrderReady -> reachBar
+					whenRequest smartbellEntryRequest -> accept
+	
+	
+	State updateTableCleaned{
+		//[# readLine() #]
+		println("waitermind 	|| updateTableCleaned")
+		updateResource [# "updateTableCleaned" #]
+		
+		[# CleaningON = false #]
+		
+		[# table1.state = "tableCleaned" #]
+	}
+	Goto	checkTableToClean
+	
+	
+	
+	State endState{
+		println("waitermind 	|| TERMINATES")
+		forward waiterengine -m end : end(V)
+		terminate 0
+	}//end endState
+	
+	
+	
+}
+  
+
+ 
+QActor smartbell context ctxtearoom{
+	[# 
+		val Temp_max = 42
+		var ID_client = 1 
+		var N_client_rejected = 0
+		var ClientTemp :Double = 0.0
+	#] 
+
+	State s0 initial{
+		println("smartbell 		|| START")
+		updateResource [# "START" #]
+	} 
+	Goto waitRing
+	 
+	State waitRing{
+		println("smartbell 		|| waitRing")
+		updateResource [# "waitRing" #]		
+	}
+	Transition t0 	whenRequest clientRingEntryRequest -> checkTempClient
+					whenMsg end -> endState
+	State checkTempClient{  
+		//[#  var ClientTemp = Math.random()*6+35#] //random temperature
+		[# ClientTemp = kotlin.math.round(  (Math.random()*6+35)*10 )/10 #] 
+		println("smartbell 		|| checkTempClient")
+		updateResource [# "checkTempClient" #]	
+		if [# ClientTemp < Temp_max #]  
+		{
+			println("smartbell 		|| clienteAccettatoDaSmartBell || temperatura = $ClientTemp || id_client = $ID_client")
+			request waitermind -m smartbellEntryRequest : smartbellEntryRequest($ID_client)  
+			[# ID_client++ #]
+		}
+		else
+		{
+			println("smartbell 		|| clienteRifiutatoDaSmartBell || temperatura = $ClientTemp")
+			forward smartbell -m smartbellClientRejected : smartbellClientRejected($ClientTemp) //per questione statistica
+			
+		}
+	}  
+	Transition t1 	whenReply 	smartbellEntryReply -> checkWaiterReply	
+					whenMsg 	smartbellClientRejected -> clientRejected
+	
+	State checkWaiterReply{
+		onMsg(smartbellEntryReply : smartbellEntryReply(ID)){
+			println("smartbell 		|| ricevuta reply ID : ${ payloadArg(0) }")
+			replyTo clientRingEntryRequest with clientRingEntryReply : clientRingEntryReply($payloadArg(0))
+		}
+	}
+	Goto waitRing
+	
+	State clientRejected{
+		[# N_client_rejected++ #]
+		onMsg(smartbellClientRejected : smartbellClientRejected(TEMP)){ //rispondo con temperatura (maggior del normale)
+			replyTo clientRingEntryRequest with clientRingEntryReply : clientRingEntryReply(payloadArg(0)) 
+		}
+	}
+	Goto waitRing
+	
+	State endState{
+		println("smartbell 		|| END")
+		terminate 0
+	}
+	
+}
+
+
+
+QActor waiterengine context ctxtearoom{ 
+		[# 
+			var StepTime = 445L
+			val BackTime     = 2 * StepTime / 3
+			
+			val mapRoom  = "teaRoomExplored"
+			var XPoint = "0"
+			var YPoint = "0"
+			
+			var CmdToPerform = ""  
+		#]
+		
+	State s0 initial{
+		println("waiterengine 		|| START")
+		updateResource [# "startState" #]
+		
+	
+		run itunibo.planner.plannerUtil.initAI() 
+		run itunibo.planner.plannerUtil.loadRoomMap(mapRoom) 		
+		run itunibo.planner.plannerUtil.showCurrentRobotState()	
+		
+		forward waitermind -m engineReady : engineReady(P)
+	}
+	Goto waitCmd
+	
+	
+	State waitCmd{
+		println("waiterengine 		|| waitCmd")
+		updateResource [# "waitCmd" #]
+	}
+	Transition t0	whenRequest moveTo -> planPath
+					whenMsg clean -> cleanTable
+	
+	
+	
+	State planPath{
+		println("waiterengine 		|| planPath")
+		updateResource [# "planPath" #]
+		onMsg(moveTo : moveTo(X,Y)){
+			[# XPoint = payloadArg(0)
+			   YPoint = payloadArg(1)			  
+			 #]
+			 }
+			println("moveTo ($XPoint,$YPoint)")
+			run itunibo.planner.plannerUtil.planForGoal("$XPoint","$YPoint")
+	}
+	Goto readStep
+	
+	State readStep{
+//		println("waiterengine || readStep")
+			[#  CmdToPerform = itunibo.planner.plannerUtil.getNextPlannedMove() #]
+	}
+	Goto execStep if  [# CmdToPerform == "w"#] else execMove
+	//funziona? se mi trovo già al punto che succede?
+	
+	State execMove{
+//		println("waiterengine || execMove")
+		forward basicrobot -m cmd : cmd($CmdToPerform)
+		delay 200
+	}
+	Goto updateMap
+	
+	
+	State endPath{
+		println("waiterengine 		|| endPath")
+		updateResource [# "endPath" #]
+		println("done moveTo($XPoint,$YPoint)")
+		run itunibo.planner.plannerUtil.showCurrentRobotState()
+		replyTo moveTo with done : done($XPoint,$YPoint)
+	}
+	Goto waitCmd
+	
+	State execStep{
+//		println("waiterengine || execStep")
+		request basicrobot -m step : step($StepTime)
+	}
+	Transition t1	whenReply stepdone -> updateMap
+					whenReply stepfail   -> errorHandler
+	
+	State updateMap{
+		updateResource [# itunibo.planner.plannerUtil.getMapOneLine() #]
+		run itunibo.planner.plannerUtil.updateMap("$CmdToPerform")	
+		
+	}
+	Goto readStep if [# CmdToPerform.length > 0 #] else endPath
+	
+	State errorHandler{
+		println("waiterengine 		|| errorHandler")
+		//torno indietro di un po'
+		
+		onMsg(stepfail : stepfail(DURATION, CAUSE) ){
+			[# val D = payloadArg(0).toLong()  ; val Dt = Math.abs(StepTime-D); val BackT = D/2 #] 
+			println("robotmapper stepFail D= $D, BackTime = ${BackTime} BackT=$BackT")
+ 			if [# D > BackTime #] {    
+				forward basicrobot -m cmd : cmd( s )
+				delayVar BackT
+				forward basicrobot -m cmd : cmd( h )
+			}	
+//	 		if [# ! itunibo.planner.plannerUtil.atHome() #]{
+	 			run itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection()
+//	 		}
+	 		run itunibo.planner.plannerUtil.showCurrentRobotState()
+			updateResource [# "stepFail" #]
+			delay 500	 
+		}	    
+	}
+	Goto readStep if [# CmdToPerform.length > 0 #] else endPath
+	
+
+	State cleanTable{
+		onMsg(clean : clean(R, TIMER)){
+			if [# payloadArg(0) == "1" #] 
+			{//sono in clear
+				println("waiterengine 		|| clearing")
+				forward timercleaning -m startTimerCleaning : startTimerCleaning($payloadArg(1))
+			}//else if
+			if [# payloadArg(0) == "2" #]
+			{
+				println("waiterengine 		|| sanitizing")
+				forward timercleaning -m startTimerCleaning : startTimerCleaning($payloadArg(1))
+			}
+			if [# payloadArg(0) == "3" #]
+			{
+				println("waiterengine 		|| cleaning")
+				forward timercleaning -m startTimerCleaning : startTimerCleaning($payloadArg(1))
+			} 
+		}	
+	}
+	Transition t0 	whenMsg timerFinishedCorrectly -> informMindAboutEndCleaning
+					whenMsg stopCleaningEngine  -> stopTimer
+					
+	
+	State informMindAboutEndCleaning{
+		onMsg (stopTimerCleaningReply : stopTimerCleaningReply(TIMERDONE)){
+			//DICO A STATE QUANTO TEMPO HO FATTO DI CLEAN
+			println("TEMPO ESEGUITO DI CLEAN ${payloadArg(0)}")
+			//replyTo stopCleaningReq with stopCleaningReply : stopCleaningReply($payloadArg(0))
+			
+		}
+		onMsg (timerFinishedCorrectly : timerFinishedCorrectly(P)){
+			forward waitermind -m doneCleanRun : doneCleanRun(P)
+		}
+		
+	}
+	Goto waitCmd
+	
+	State stopTimer{
+		request timercleaning -m stopTimerCleaningReq : stopTimerCleaningReq(P)
+	}
+	Transition t0	whenReply stopTimerCleaningReply -> informMindAboutEndCleaning
+	
+}
+
+QActor barman context ctxtearoom{
+	[#
+		val TimePrepareOrder = 2000L
+	#]
+	State s0 initial{
+		println("barman 	|| START")
+		updateResource [# "START" #] 
+	}
+	Goto waitOrder
+	
+	State waitOrder{
+		println("barman 	|| waitOrder")
+		updateResource [# "waitOrder" #]
+		
+	}
+	Transition t0 	whenMsg waiterOrderForward -> prepareOrder
+					whenMsg end -> endState
+	
+	State prepareOrder{ 
+		println("barman 	|| prepareOrder")
+		updateResource [# "prepareOrder" #]
+		delayVar TimePrepareOrder
+		onMsg(waiterOrderForward : waiterOrderForward(ID, ORDER)){
+			println("barman 	|| Order:  ${payloadArg(1)}")
+			forward waitermind -m barmanOrderReady : barmanOrderReady($payloadArg(0))
+		}		
+	}
+	Goto waitOrder
+	
+	State endState{
+		println("barman 	|| END")
+		terminate 0
+	}
+}
+
+QActor timercleaning context ctxtearoom{
+	
+	[#
+		var TimerTime      = 0L
+		var StartTime     = 0L    
+		var Duration      = 0L    
+	#]  
+	State s0 initial{
+		println("timercleaning		|| START")
+	}
+	Goto waitCmd
+	
+	State waitCmd{
+		println("timercleaning		|| waitCmd")
+	}
+	Transition t0	whenMsg startTimerCleaning -> startTimer
+	
+	State startTimer{
+		println("timercleaning		|| startTimer")
+		onMsg(startTimerCleaning : startTimerCleaning(Timer)){
+			[# TimerTime = payloadArg(0).toLong() #]
+			println("timer ${payloadArg(0)}")
+			memoCurrentTime StartTime
+		}
+	}
+	Transition t1 	whenTimeVar TimerTime -> timeFinished
+					whenRequest stopTimerCleaningReq -> stopTimer
+					
+	State timeFinished{
+		forward waiterengine -m timerFinishedCorrectly : timerFinishedCorrectly(P)	
+	}
+	Goto waitCmd
+					
+	State stopTimer{
+		setDuration Duration from StartTime 
+		replyTo stopTimerCleaningReq with stopTimerCleaningReply : stopTimerCleaningReply($Duration)
+	}
+	Goto waitCmd
+
+}
+
+
+
+
+
+
+
