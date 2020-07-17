@@ -1,0 +1,87 @@
+System client 
+
+Request clientRingEntryRequest : clientEntryRequest(PAYLOAD)
+Reply clientRingEntryReply : clientRingEntryReply(ID) //invia smartbell in realtà
+
+Dispatch clientOrderReady : clientOrderReady(ID)
+Dispatch clientOrder : clientOrder (ID, ORDER)
+Dispatch clientPaymentReady : clientPaymentReady(ID)
+
+Context ctxclient ip [host="localhost" port=8060] 
+Context ctxtearoom ip [host="127.0.0.1" port=8040]
+
+ExternalQActor waitermind context ctxtearoom 
+ExternalQActor smartbell context ctxtearoom 
+
+QActor client context ctxclient {   
+	[#
+		var ID_client = ""
+		val Order = "pesca"
+	#]
+	
+	State s0 initial{
+		discardMsg Off
+		println("client || START")
+		updateResource [# "START" #]
+	}
+	//Transition t0 	whenMsg initSimulation -> ringBell
+	Goto ringBell 
+	
+	State ringBell{ 
+		println("client || Ring the bell")
+		updateResource [# "Ring" #]
+		 
+		//TEST
+		println("client 	|| wait Enter - to Ring the Bell)" )
+		[# readLine() #]
+		//TEST
+
+		
+		request smartbell -m clientRingEntryRequest : clientRingEntryRequest(entrare)
+	}
+	Transition t1 	whenReply clientRingEntryReply -> simulate
+	
+	State simulate{		
+		
+		onMsg(clientRingEntryReply : clientRingEntryReply(ID)){
+			println("client 	|| Mio ID = ${payloadArg(0)}")
+			[#ID_client = payloadArg(0).toString()#]
+		}
+		
+		//TEST
+		println("client 	|| wait Enter - to Ask for Order)" )
+		[# readLine() #]
+		//TEST
+		println("client || Ready to order")
+		updateResource [# "OrderReady" #]
+		forward waitermind -m clientOrderReady : clientOrderReady($ID_client)
+		
+		
+		
+		//TEST
+		println("client 	|| wait Enter - to Order)" )
+		[# readLine() #]
+		//TEST
+		println("client || Sending the order")
+		updateResource [# "Ordering" #]
+		forward waitermind -m clientOrder : clientOrder($ID_client, $Order)
+		
+		
+		//TEST
+		println("client 	|| wait Enter - to Ask to pay)" )
+		[# readLine() #]
+		//TEST
+		println("client || I want to pay")
+		updateResource [# "Paying" #]
+		forward waitermind -m clientPaymentReady : clientPaymentReady($ID_client)
+		
+		//delay 20000
+	//	[# readLine() #]
+	}
+	Goto end
+	
+	State end{
+		println("client || END")
+		terminate 0
+	} 
+}
