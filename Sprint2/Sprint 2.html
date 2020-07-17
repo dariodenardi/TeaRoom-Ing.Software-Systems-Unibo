@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../resources/style/style.css">
+	<script>
+		function changeView(title,src)
+		{
+			document.getElementById('title').innerHTML="<h2>"+title+"</h2>";
+			document.getElementById('frame').src = src
+		}
+	</script>
+</head>
+<body>
+	<div id="top">
+		<h1>LABORATORIO DI SISTEMI SOFTWARE: Sprint Uno <font size="5"></font> </h1>
+	</div>  
+	<div id="title">
+		<h2>Consegna</h2>
+	</div>
+	<iframe id='frame' src="../resources/parts/consegna.html"></iframe>
+	<div style="font-size: 18px;">
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<div class="button" onclick="changeView('Consegna','../resources/parts/consegna.html')">
+							<u>Consegna</u>
+						</div>
+					</td>
+					<td>
+						<div class="button" onclick="changeView('Analisi Requisiti','../resources/parts/requirements2.html')">
+							<u>Analisi requisiti</u>
+						</div>
+					</td>
+					<td>
+						<div class="button" onclick="changeView('Analisi Problema','../resources/parts/problem2.html')">
+							<u>Analisi problema</u>
+						</div>
+					</td>
+					<td>
+						<div class="button" onclick="changeView('Test Plan','../resources/parts/test2.html')">
+							<u>Test plan</u>
+						</div>
+					</td>
+					<td>
+						<div class="button" onclick="changeView('Work Plan','../resources/parts/work2.html')">
+							<u>Work plan</u>
+						</div>
+					</td>
+					<td>
+						<div class="button" onclick="changeView('Sprint Review','../resources/parts/review2.html')">
+							<u>Sprint Review</u>
+						</div>
+					</td>
+					<td>
+						<div class="button" onclick="changeView('Sprint Retrospective','../resources/parts/retrospective2.html')">
+							<u>Sprint Retrospective</u>
+						</div>
+					</td>
+					<td>
+						<div class="button" onclick="changeView('Team','../resources/parts/team.html')">
+							<u>Team</u>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+	
+	
+<!--	<script>
+		alert(window.innerHeight);
+	</script>-->
+</html>

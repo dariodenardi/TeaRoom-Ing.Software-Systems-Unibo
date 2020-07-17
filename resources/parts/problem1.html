@@ -1,0 +1,107 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../style/style.css">
+		
+		<script>
+			function openInNewTab(url) {
+				var win = window.open(url, '_blank');
+				win.focus();
+			}
+		</script>
+	</head>
+	<body>
+		<div class="body">
+			Dall'analisi dei requisiti si evince che il <em>waiter</em> sia:
+			<ul>
+				<li><b>proattivo:</b> capace di intraprendere task di propria iniziativa;</li>
+				<li><b>reattivo:</b> reagire agli stimoli esterni.</li>
+			</ul>
+			Sempre dall'analisi emerge che il <em>waiter</em> sia sovracaricato da troppi compiti: si decide si usare l'approccio <b>divide et impera</b>.
+			Dunque, lo suddividiamo in due parti:
+			<ul>
+				<li>una che gestisca il movimento del robot e la pulizia dei <em>table</em>;</li>
+				<li>una che interagisca con le altre entità e comandi la prima parte.</li>
+			</ul>
+			Pensiamo alla prima parte come un "<b>engine</b>" e alla seconda come un "<b>mind</b>".
+			In questo modo il <em>waiter</em> è in grado di muoversi e di ascoltare nuovi messaggi contemporaneamente.
+			
+			Durante l'esecuzione dei task il <em>waiter</em> deve essere in ascolto di nuovi messaggi.			
+			</br>
+			</br>
+			Emerge anche la necessità di conoscere la posizione delle entità nella <em>tearoom</em> e di avere un sistema di navigazione 
+			che permetta il movimento da un punto A a un punto B.
+			Per fortuna una <b>software house</b> entra in nostro aiuto e ci fornisce un tool pronto all'uso: si veda <a href="" onclick="openInNewTab('https://github.com/anatali/iss2020LabBo/tree/master/it.unibo.planner20');">it.unibo.planner20</a>.
+			<br/>
+			Questo comporta l'introduzione di una <b>mappa</b> che dovrà essere gestita da un componente.
+			<br/>
+			La mappa viene divisa in celle e chiamiamo con il termine <b>step</b> l'unità dello spostamento del <em>waiter</em> da una cella ad un'altra adiacente corrispondente alla lunghezza del robot.
+			<br/>
+			I veri spostamenti vengono effettuati dal <a href="" onclick="openInNewTab('https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.robotboundary/userDocs/Qak20Robotboundary.html');">basicrobot</a>: il <b>mind</b> chiede uno spostamento all'<b>engine</b> che a sua volta inoltra la richiesta al basicrobot.
+			<br/>
+			<br/>
+			Dunque, da un punto di <b>vista logico</b> il nostro sistema è formato da più attori in contesti diversi:
+			<br/>
+			<br/>
+			<img src="../img/interazioni.png" alt="img" width="75%" height="85%">
+			<br/>
+			<br/>
+			Proseguiamo con la modellazione dei due attori che compongono il <em>waiter</em> tramite grafi degli stati.
+			<br/>
+			<br/>
+			<em>Mind:</em>
+			<!--Grafo MIND-->
+			<body><div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;_blank&quot;,&quot;xml&quot;:&quot;&lt;mxfile host=\&quot;app.diagrams.net\&quot; modified=\&quot;2020-07-02T12:12:07.769Z\&quot; agent=\&quot;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\&quot; etag=\&quot;frkQxSMeZD32jfKm3_xd\&quot; version=\&quot;13.3.5\&quot;&gt;&lt;diagram id=\&quot;cU18ib_VpRdZYBQb-qZ6\&quot; name=\&quot;Page-1\&quot;&gt;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&lt;/diagram&gt;&lt;/mxfile&gt;&quot;}"></div>
+			<script type="text/javascript" src="https://app.diagrams.net/js/viewer.min.js"></script>
+			</br>
+			Componente di <em>waiter</em> che mantiene il controllo sul task in esecuzione. Nello sviluppo del grafo degli stati si è mantenuto l'approccio per sequenze di transizioni per cui ogni sequenza rappresenta un compito dell'attore. Nel caso di <em>Mind</em> una sequenza rappresenta un task (o gruppi di task). Lo stato &lt;rest&gt; è molto simile al &lt;waitCmd&gt; di <em>Engine</em>, in quanto è punto di partenza delle sequenze di transizioni. Le transizioni terminano in &lt;reachHome&gt;</br>
+			Tutti gli stati di <em>Mind</em> che hanno nome con prefisso "reach", "convoy" o "serve" implicano uno spostamento del <em>waiter</em> e quindi l'invio a <em>Engine</em> di una request <u>moveTo</u>. Per questo motivo la transizione di uscita da questi stati è innescata da una reply <u>done</u> proveniente da <em>Engine</em>, che indica il completamento dello spostamento.</br>
+			Gli stati "reach" rappresentano un movimento in cui il <em>waiter</em> è da solo. Negli stati "convoy" il <em>waiter</em> accompagna il <em>client</em> a destinazione, mentre nello stato "serve" il <em>waiter</em> porta con sé un drink. Si noti anche che ogni stato di movimento specifica il motivo per cui ci si deve spostare verso la destinazione: ad esempio &lt;reachTableCollect&gt;, &lt;reachTableClean&gt;, &lt;convoyTable&gt;, &lt;reachTableOrder&gt; e &lt;serveTable&gt; rappresentano tutti movimenti verso il <em>table</em> ma il compito del <em>waiter</em> cambia da stato a stato. </br>
+			Ci sono 3 dispatch e 1 request che provocano altrettante sequenze distinte di transizioni:
+			<ul>
+				<li>
+					<u>clientEntryRequest</u> : request inviata dal <em>client</em>, indica che il <em>client</em> vuole entrare nella <em>tearoom</em>.
+					Stando alle <a href="#ass">assunzioni</a> il controllo sulla condizione dei <em>table</em> ritorna sempre che c'è un <em>table</em> libero, quindi clientEntryRequest provoca la transizione allo stato &lt;accept&gt;.
+					La sequenza di transizioni termina quando il <em>client</em> è stato portato al <em>table</em>.
+				</li>
+				<li>
+					<u>clientOrderReady</u>: dispatch inviata dal <em>client</em>, indica che il <em>client</em> è pronto per ordinare. La sequenza di transizioni termina con la trasmissione dell'ordine a <em>barman</em>. Dato che <em>waiter</em> usa sempre lo stesso <em>table</em>, secondo le <a href="#ass">assunzioni</a> di questo sprint la dispatch non contiene parametri. In futuro potrebbe essere opportuno inserire l'id del <em>client</em> o il numero di <em>table</em>.
+				</li>
+				<li>
+					<u>barmanOrderReady</u>: dispatch inviata da <em>barman</em>, indica che il drink è pronto. Come per il caso precedente non contiene parametri ma in futuro potrà essere opportuno aggiungerne. La sequenza di transizioni termina quando il <em>waiter</em> ha portato il drink al <em>table</em>. 
+				</li>
+				<li>
+					<u>clientPaymentReady</u>: dispatch inviata da <em>client</em>, indica che il <em>client</em> vuole pagare e uscire. Subito dopo averlo accompagnato alla porta di uscita <em>waiter</em> comincia a pulire il <em>table</em> usato. La sequenza di transizioni termina quando il <em>table</em> è di nuovo pulito.
+				</li>
+			</ul>
+			<em>Engine:</em>
+			<!--Grafo ENGINE-->
+			<body><div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;_blank&quot;,&quot;xml&quot;:&quot;&lt;mxfile host=\&quot;app.diagrams.net\&quot; modified=\&quot;2020-07-06T14:02:16.056Z\&quot; agent=\&quot;5.0 (Windows)\&quot; etag=\&quot;HLmzfSP2TTga1oHlG3H4\&quot; version=\&quot;13.3.9\&quot; type=\&quot;device\&quot;&gt;&lt;diagram id=\&quot;2zA2yLJ3x4JN4bZLVGS_\&quot; name=\&quot;Page-1\&quot;&gt;3Vtbc5s4FP41ntl9cAZxdR5rJ06nXW8z68y2edpRjMBsBaIg3/rrV4AwF2GMHdtomxejoyMhjr5z0TnKQJv426cIhssZsREeqIq9HWgPA1UFQFHZT0LZcYo1UjKKG3k2pxWEufcTcWLOtvJsFFcYKSGYemGVuCBBgBa0QoNRRDZVNofg6ltD6CKBMF9ALFK/ejZdZtSRahX0j8hzl/mbgXmf9fgwZ+ZfEi+hTTYlkvY40CYRITR78rcThBPp5XLJxk0P9O4XFqGAdhngfI1nrv+XbW7/hq/g8/PQ/j4a8sWuIV7xDx6oJmbzjeMQBolcMYwzEZo/ViTtoMUze3LT38njYGwM/XwwW0U2nndnAqC7XKrIZkLmTRLRJXFJAPFjQR1HZBXYKFm6wloFzx+EhIwIGPFfROmOIwauKGGkJfUx70Vbj34rPb8mU90ZvPWw5TOnjV3eCGi0+1ZulEYlzWJY2irG2R8SrCVfE6Igo0w9jHm/uFV892KyihaoZX9yyMPIRbSFj6tZItfSCzgQnhDxEVsvY4gQhtRbV8ENuY64e74CRuyBI+kEVAEBVbEiYKDY4WSLNkuPonkIU2lsmDGp7qbDhDkhmETpWG3C/qbTNsmuUUTRtlUWvNfiS+MWyuTNTaHtIFfhZUnTc76LC88ShLfAKNElWXRIPU+J1P60SO2oRaZcWqQISPDJGr2QPqGg3FlGCQ3gLCjIjwSjIxK4DVHudGByxe0MDj7bM/HYVxQsxHFitrY6evYv7QSo74vpl7fF5/tX+9Pr9OFl+RP/+U/+8SU8MbH2C6YylpSOWCrgs0dgC5YOeY6bYqxxO4BU1kYExwZ6dOKLAJHFcauj/jz3k/PwbE/D51ifzdxP8x9fxn48BKIMY4pCmwSoVy2reG+ro/cGg4rJtvqz2ZqoT83iv7Q+pUPZR8FdiSFMzHXcYL85KnW1ikptZJSBdZTfAEYNiNkKzvUEzaLSGpHqQA8jiTzCsejihohrjtDkChjFTUVbtJizjZXWhhugpi1638evBiM+MMY0Yg3joU/VAGeZcXkOYXpHpdKk0imgN8HBgTjuGw9Vt34MDu27esjrH0PLRdHQ6Kkuntg64IX1qh1S72v2JVsoH/Wuo1mbOEooixC0pTbdWi1wUY3eTbeYd/zVstmnxUfNJ2bliFJfzwUYHV2ALkUkb5g1gGtKDaLvi8zbRFSCcIhh8JwUk2Q1BIZSlRPo3RCMfn07IMWZHsM3hMdw8d1NP6yELyf9a8PX1T36/X0VlYpRnSKzVoJHFybSjk105dDAFMCc1oNe4BsW00qy2oTeq2pANKw1m1BIMbcDi0w2HxIwum+/WdYgWTJ7vzICxaP5e/KcSE1xSECHDvQ9vMuGsbmgH6admqazXxh5EAvU/WQxDOJhjCLPqc4Zp/YgmRHo4XbfxzaDDiH23CDrxMg5aMYOGLHEuslixi50himfcrtUCM6PZ0DXRNGNTjFa7RQDtG6nmFMjo3rJ3KjdPGlnB6N2dg208l8n7mrIiDJ4SR131Q9gpnpDI9t4WG+4TSRh6uy8YKnHzFmeZr7YuYkDaMi+SuNjrnuUsowqVPPw4KDFqPEzE3PYBFyphN5cOBHvZMiSDjwvM2BJkhrojHHQW364ERDiba3/Nx7U2+OhrZh7OTgUNk8xVeMco3dLO9OQwZDQk3a+CXhiRN4/rE70pMqdro5M2UElpsdXoQ0pmkF5qwygFuTqVt9BripIMamyz8ha3mxMXYg3rbI3CrGhqsrzE7a3bkzGdMx13DCnw2espnT26zkxo3NS0kbqrzy0JckrGhdblwdokkclC59NVZ3+gIjeogbGFGMSJPElKOa9J4V/1Nuqore94c09saCn1DL54MySgH5soiuXBIBYE0Bsk6OPMLAxiqT1Q/XbXjd15m13sKtZvzllQZG0Qqxfex5esdzKmsU/KGboLf7PU3v8Dw==&lt;/diagram&gt;&lt;/mxfile&gt;&quot;}"></div>
+			<script type="text/javascript" src="https://app.diagrams.net/js/viewer.min.js"></script>
+			</br>
+			Componente che pulisce il <em>table</em> e gestisce il movimento del <em>waiter</em>. L'idea è che <em>Engine</em> ottenga da <em>planner</em> una successione di step da eseguire al fine di attuare il movimento richiesto e che si interfacci con basicrobot per l'esecuzione di ogni step. 
+			<em>Engine</em> viene attivato da <em>Mind</em> e come ultima istruzione del suo stato iniziale &lt;s0&gt; invia a <em>Mind</em> una dispatch <u>engineReady</u>.
+			A partire dallo stato &lt;waitCmd&gt; si possono seguire tre sequenze di transizioni, innescate da 3 messaggi diversi:
+			<ul>
+				<li>
+					<u>end</u>, provoca la terminazione di <em>Engine</em> 
+				</li>
+				<li>
+					<u>clean</u>, contiene un parametro che specifica il tipo di pulizia da eseguire. Per rendere un <em>table</em> di nuovo usufruibile da un <em>client</em>, <em>Engine</em> dovrà ricevere 3 messaggi <u>clean</u>, ogni volta con parametro diverso, in questo ordine: clear, sanitize e clean.
+				</li>
+				<li>
+					<u>moveTo</u>: contiene un parametro che esprime la posizione (x,y) che si vuole raggiungere nella <em>tearoom</em>. In &lt;planPath&gt; si ottiene la lista di step da eseguire da <em>planner</em> e poi vengono eseguiti uno ad uno. Nello stato &lt;readStep&gt; si controlla se lo step può ritornare errore e si transita di conseguenza in uno stato che esegue lo step (&lt;execStep&gt; o &lt;execMove&gt;). Poi si passa in uno stato dove si aggiorna lo stato della <em>tearoom</em> indicando la nuova posizione del <em>waiter</em> e si controlla se sono rimasti step da fare. Se sì <em>Engine</em> torna a &lt;readStep&gt; altrimenti passa a &lt;endPath&gt;
+				</li>
+			</ul>
+			
+			Siamo già in grado di mostrare un primo <b>modello</b> al committente grazie all'ausilio di un <a href="" onClick="openInNewTab('https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.virtualRobot2020/userDocs/LabVirtualRobot.html');">robot virtuale</a>.
+			<br/>
+			<br/>
+			<a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnProbl/src/tearoom.qak');">tearoom.qak</a>
+			<br/>
+			<br/>
+			<a href="" onClick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnProbl/src/client.qak');">client.qak</a>
+			<br/>
+			<br/>
+		</div>
+	</body>
+</html>
