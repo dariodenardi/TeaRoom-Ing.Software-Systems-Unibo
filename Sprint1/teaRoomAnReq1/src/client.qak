@@ -21,14 +21,14 @@ QActor client context ctxclient {
 	
 	State s0 initial{
 		discardMsg Off
-		println("client || START")
+		println("client 	|| START")
 		updateResource [# "START" #]
 	}
 	//Transition t0 	whenMsg initSimulation -> ringBell
 	Goto ringBell 
 	
 	State ringBell{ 
-		println("client || Ring the bell")
+		println("client 	|| Ring the bell")
 		updateResource [# "Ring" #]
 		
 		//TEST
@@ -45,33 +45,33 @@ QActor client context ctxclient {
 		
 		onMsg(clientRingEntryReply : clientRingEntryReply(ID)){
 			println("client 	|| Mio ID = ${payloadArg(0)}")
-			[#ID_client = payloadArg(0).toString()#]
+			[# ID_client = payloadArg(0).toString() #]
 		}
 		
 		//TEST
 		println("client 	|| wait Enter - to Ask for Order)" )
 		[# readLine() #]
 		//TEST
-		println("client || Ready to order")
+		
+		println("client 	|| Ready to order")
 		updateResource [# "OrderReady" #]
 		forward waiter -m clientOrderReady : clientOrderReady($ID_client)
-		
-		
 		
 		//TEST
 		println("client 	|| wait Enter - to Order)" )
 		[# readLine() #]
 		//TEST
-		println("client || Sending the order")
+		
+		println("client 	|| Sending the order")
 		updateResource [# "Ordering" #]
 		forward waiter -m clientOrder : clientOrder($ID_client, $Order)
-		
 		
 		//TEST
 		println("client 	|| wait Enter - to Ask to pay)" )
 		[# readLine() #]
 		//TEST
-		println("client || I want to pay")
+		
+		println("client 	|| I want to pay")
 		updateResource [# "Paying" #]
 		forward waiter -m clientPaymentReady : clientPaymentReady($ID_client)
 		

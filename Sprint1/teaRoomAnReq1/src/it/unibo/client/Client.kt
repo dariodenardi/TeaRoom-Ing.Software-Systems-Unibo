@@ -23,7 +23,7 @@ class Client ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("s0") { //this:State
 					action { //it:State
 						discardMessages = false
-						println("client || START")
+						println("client 	|| START")
 						updateResourceRep( "START"  
 						)
 					}
@@ -31,7 +31,7 @@ class Client ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("ringBell") { //this:State
 					action { //it:State
-						println("client || Ring the bell")
+						println("client 	|| Ring the bell")
 						updateResourceRep( "Ring"  
 						)
 						println("client 	|| wait Enter - to Ring the Bell)")
@@ -45,23 +45,23 @@ class Client ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						if( checkMsgContent( Term.createTerm("clientRingEntryReply(ID)"), Term.createTerm("clientRingEntryReply(ID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								println("client 	|| Mio ID = ${payloadArg(0)}")
-								ID_client = payloadArg(0).toString() 
+								 ID_client = payloadArg(0).toString()  
 						}
 						println("client 	|| wait Enter - to Ask for Order)")
 						 readLine()  
-						println("client || Ready to order")
+						println("client 	|| Ready to order")
 						updateResourceRep( "OrderReady"  
 						)
 						forward("clientOrderReady", "clientOrderReady($ID_client)" ,"waiter" ) 
 						println("client 	|| wait Enter - to Order)")
 						 readLine()  
-						println("client || Sending the order")
+						println("client 	|| Sending the order")
 						updateResourceRep( "Ordering"  
 						)
 						forward("clientOrder", "clientOrder($ID_client,$Order)" ,"waiter" ) 
 						println("client 	|| wait Enter - to Ask to pay)")
 						 readLine()  
-						println("client || I want to pay")
+						println("client 	|| I want to pay")
 						updateResourceRep( "Paying"  
 						)
 						forward("clientPaymentReady", "clientPaymentReady($ID_client)" ,"waiter" ) 

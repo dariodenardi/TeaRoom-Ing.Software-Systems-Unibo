@@ -24,7 +24,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("smartbell || START")
+						println("smartbell		|| START")
 						updateResourceRep( "START"  
 						)
 					}
@@ -32,7 +32,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("waitRing") { //this:State
 					action { //it:State
-						println("smartbell || waitRing")
+						println("smartbell		|| waitRing")
 						updateResourceRep( "waitRing"  
 						)
 					}
@@ -42,16 +42,16 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				state("checkTempClient") { //this:State
 					action { //it:State
 						 ClientTemp = kotlin.math.round(  (Math.random()*6+35)*10 )/10  
-						println("smartbell || checkTempClient")
+						println("smartbell		|| checkTempClient")
 						updateResourceRep( "checkTempClient"  
 						)
 						if(  ClientTemp < Temp_max  
-						 ){println("smartbell || clienteAccettatoDaSmartBell || temperatura = $ClientTemp || id_client = $ID_client")
+						 ){println("smartbell		|| clienteAccettatoDaSmartBell || temperatura = $ClientTemp || id_client = $ID_client")
 						request("smartbellEntryRequest", "smartbellEntryRequest($ID_client)" ,"waiter" )  
 						 ID_client++  
 						}
 						else
-						 {println("smartbell || clienteRifiutatoDaSmartBell || temperatura = $ClientTemp")
+						 {println("smartbell		|| clienteRifiutatoDaSmartBell || temperatura = $ClientTemp")
 						 forward("smartbellClientRejected", "smartbellClientRejected($ClientTemp)" ,"smartbell" ) 
 						 }
 					}
