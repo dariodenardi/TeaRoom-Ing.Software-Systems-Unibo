@@ -14,27 +14,76 @@
 		Per lo sprint 2 faremo le seguenti assunzioni:
 		<ul>
 			<li>
-				Sono presenti due <em>client</em> che richiede l'accesso alla <em>tearoom</em>;
+				Sono presenti più <em>client</em> che richiedono l'accesso alla <em>tearoom</em>;
 			</li>
 			<li>
 				Il <em>waiter</em> può essere interrotto;
 			</li>
 			<li>
-				La <em>tearoom</em> contiene due <em>table</em>, entrambi puliti all'inizio della simulazione;
-			</li>
-			<li>
 				All'inizio della simulazione <em>waiter</em> si trova in <em>home</em>
 			</li>
 		</ul>
-		Dato che ci sono due <em>client</em> è possibile che ci siano richieste quando il <em>waiter</em> stia eseguendo un task:
+		Dato che ci sono più <em>client</em> è possibile che ci siano richieste quando il <em>waiter</em> stia ancora eseguendo un task:
 		si veda l'analisi del problema delle <a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/resources/parts/problem0.html');">considerazioni iniziali</a> quando si parla di interompibilità dei task.
 		</br>
 		</br>
 		Il punto importante dell'interompibilità è che il <em>waiter</em> riesca a riprendere quello che stava facendo prima di essere interrotto. Dunque, il <em>waiter</em> si deve "ricordare" quello che stava facendo.
 		</br>
 		</br>
-		Per fortuna, in <b>QAK</b> è possibile usare whenTime che consente di interrompere i task.
+		Dunque, sono stati introdotti nuovi messaggi:
 		</br>
+		</br>
+		<table>
+			<thead>
+				<tr>
+					<th class="tg-0lax">nome messaggio</th>
+					<th class="tg-0lax">QAK</th>
+					<th class="tg-0lax">motivazione/scelta</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="tg-0lax"><em>startTimerCleaning</em></td>
+					<td class="tg-0lax">Dispatch</td>
+					<td class="tg-0lax">-</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>stopTimerCleaningReq</em></td>
+					<td class="tg-0lax">Request</td>
+					<td class="tg-0lax">-</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>stopTimerCleaningReply</em></td>
+					<td class="tg-0lax">Reply</td>
+					<td class="tg-0lax">-</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>timerFinishedCorrectly</em></td>
+					<td class="tg-0lax">Dispatch</td>
+					<td class="tg-0lax">-</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>stopCleaningEngine</em></td>
+					<td class="tg-0lax">Dispatch</td>
+					<td class="tg-0lax">-</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>goToClearing</em></td>
+					<td class="tg-0lax">Dispatch</td>
+					<td class="tg-0lax">-</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>goToSanitizing</em></td>
+					<td class="tg-0lax">Dispatch</td>
+					<td class="tg-0lax">-</td>
+				</tr>
+				<tr>
+					<td class="tg-0lax"><em>goToCleaning</em></td>
+					<td class="tg-0lax">Dispatch</td>
+					<td class="tg-0lax">-</td>
+				</tr>
+			</tbody>
+		</table>
 		</br>
 		Dunque, il nuovo <b>modello</b> da mostrare al committente è il seguente:
 		</br>
