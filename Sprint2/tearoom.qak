@@ -165,7 +165,10 @@ QActor waitermind context ctxtearoom{
 		
 	}//end reachHome
 	Transition t2	whenReply done -> rest
-	//MODIFICA ASSOLUTAMENTE
+					whenMsg clientOrderReady -> reachTableOrder
+					whenMsg clientPaymentReady -> reachTableCollect
+					whenMsg barmanOrderReady -> reachBar
+					whenRequest smartbellEntryRequest -> accept
 	
 	State accept{ 
 		println("waitermind 		|| accept")
@@ -278,7 +281,11 @@ QActor waitermind context ctxtearoom{
 			forward barman -m waiterOrderForward : waiterOrderForward($payloadArg(0), $payloadArg(1))
 		}
 	}// end trasmit
-	Goto checkTableToClean
+	Transition t12	whenTime 100			 ->     checkTableToClean
+					whenMsg clientOrderReady -> reachTableOrder
+					whenMsg clientPaymentReady -> reachTableCollect
+					whenMsg barmanOrderReady -> reachBar
+					whenRequest smartbellEntryRequest -> accept
 	
 	State reachBar{
 		//[# readLine() #]
@@ -320,7 +327,11 @@ QActor waitermind context ctxtearoom{
 		//per essere realistici
 		delayVar DelayServeDrink
 	}
-	Goto checkTableToClean
+	Transition t12	whenTime 100			 ->     checkTableToClean
+					whenMsg clientOrderReady -> reachTableOrder
+					whenMsg clientPaymentReady -> reachTableCollect
+					whenMsg barmanOrderReady -> reachBar
+					whenRequest smartbellEntryRequest -> accept
 	
 	State reachTableCollect{
 		//[# readLine() #]
@@ -403,10 +414,15 @@ QActor waitermind context ctxtearoom{
 		}	
 	}//end reachTableClear
 	Transition t10 	whenReply done -> whichCleanState
+					whenMsg clientOrderReady -> reachTableOrder
+					whenMsg clientPaymentReady -> reachTableCollect
+					whenMsg barmanOrderReady -> reachBar
+					whenRequest smartbellEntryRequest -> accept
+	
 	
 	State whichCleanState{
-		if [# TableStateToClean == "tableClearing" #] {
-			forward waitermind -m goToCleaning : goToCleaning(P)
+		if [# TableStateToClean == "tableClearing" || TableStateToClean == "tableDirty" #] {
+			forward waitermind -m goToClearing : goToClearing(P)
 		}
 		if [# TableStateToClean == "tableSanitizing" #] {
 			forward waitermind -m goToSanitizing : goToSanitizing(P)
@@ -415,7 +431,7 @@ QActor waitermind context ctxtearoom{
 			forward waitermind -m goToCleaning : goToCleaning(P)
 		}
 	}
-	Transition t0	whenMsg goToCleaning 	-> tableClearing
+	Transition t0	whenMsg goToClearing 	-> tableClearing
 					whenMsg goToSanitizing 	-> tableSanitizing
 					whenMsg goToCleaning 	-> tableCleaning
 	
@@ -433,13 +449,12 @@ QActor waitermind context ctxtearoom{
 		forward tearoomglobalstate -m setWaiterState : setWaiterState(tableClearing)
 		
 		
+		forward tearoomglobalstate -m setStateTable : setStateTable($TableToClean,tableClearing,$TableTimerDone)
+		
 		[# 
 			CleaningON = true 
 			TableTimerDone = ClearTime-TableTimerDone
 		#]
-		
-		[# table1.state = "tableClearing" #]
-		
 		
 		forward waiterengine -m clean : clean($DoClear, $TableTimerDone)
 		[#
@@ -460,12 +475,12 @@ QActor waitermind context ctxtearoom{
 		
 		forward tearoomglobalstate -m setWaiterState : setWaiterState(tableSanitizing)
 		
+		forward tearoomglobalstate -m setStateTable : setStateTable($TableToClean,tableSanitizing,$TableTimerDone)
+	
 		[# 
 			CleaningON = true 
 			TableTimerDone = SanitizeTime-TableTimerDone
 		#]
-		
-		[# table1.state = "tableSanitizing" #]
 		
 		forward waiterengine -m clean : clean($DoSanitize, $TableTimerDone)
 		[#
@@ -486,12 +501,12 @@ QActor waitermind context ctxtearoom{
 		
 		forward tearoomglobalstate -m setWaiterState : setWaiterState(tableCleaning)
 		
+		forward tearoomglobalstate -m setStateTable : setStateTable($TableToClean,tableCleaning,$TableTimerDone)
+
 		[# 
 			CleaningON = true 
 			TableTimerDone = CleanTime-TableTimerDone
 		#]
-		
-		[# table1.state = "tableCleaning" #]
 		
 		forward waiterengine -m clean : clean($DoClean, $TableTimerDone)
 		[#
@@ -510,11 +525,20 @@ QActor waitermind context ctxtearoom{
 		println("waitermind 	|| updateTableCleaned")
 		updateResource [# "updateTableCleaned" #]
 		
-		[# CleaningON = false #]
+		forward tearoomglobalstate -m setStateTable : setStateTable($TableToClean,tableCleaned,$TableTimerDone)
 		
-		[# table1.state = "tableCleaned" #]
+		[# 
+			CleaningON = false 	
+			TableToClean =  0		
+		#]	
+		
 	}
-	Goto	checkTableToClean
+	Transition t12	whenTime 100			 ->     checkTableToClean
+					whenMsg clientOrderReady -> reachTableOrder
+					whenMsg clientPaymentReady -> reachTableCollect
+					whenMsg barmanOrderReady -> reachBar
+					whenRequest smartbellEntryRequest -> accept
+					
 	
 	
 	
