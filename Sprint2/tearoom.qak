@@ -38,7 +38,7 @@ Dispatch cmd : cmd(MOVE)
 Reply   stepfail   : stepfail(DURATION, CAUSE) 
 
 //***************************Messaggi 2' SPRINT
-Dispatch startTimerCleaning : startTimerCleaning(Timer) //da engine a timercleaning
+Dispatch startTimerCleaning : startTimerCleaning(TIMER) //da engine a timercleaning
 
 Request stopTimerCleaningReq : stopTimerCleaningReq(P) //da engine a timercleaning
 Reply stopTimerCleaningReply : stopTimerCleaningReply(TIMERDONE)//da timercleaning a engine
@@ -51,9 +51,41 @@ Dispatch stopCleaningEngine : stopCleaningEngine (P) //da Mind a engine
 Dispatch goToClearing : goToClearing(P)
 Dispatch goToSanitizing : goToSanitizing (P)
 Dispatch goToCleaning : goToCleaning(P)
+
+//***************************Messaggi 3' SPRINT
+Dispatch setWaiterState : setWaiterState(STATO)
+
+Dispatch removeOrderReady : removeOrderReady(ID)
+Dispatch addOrderReady : addOrderReady(ID)
+Dispatch setBarmanState : setBarmanState(STATO)
+
+Dispatch addClientAccepted : addClientAccepted(P)
+Dispatch addClientRejected : addClientRejected(P)
+
+Dispatch setStateTable : setStateTable(N, STATO, TIMERDONE)
+
+Dispatch occupyTable : occupyTable(N, ID)
+
+Request getTableToCleanReq : getTableToCleanReq(P)
+Reply 	getTableToCleanReply : getTableToCleanReply(N, STATO, TIMERDONE)
+
+Request getFreeCleanTableReq : getFreeCleanTableReq(P)
+Reply 	getFreeCleanTableReply : getFreeCleanTableReply(N)
+
+
+Request getTable1StateReq : getTable1StateReq(N)
+Request getTable2StateReq : getTable2StateReq(N)
+Reply	getTableNStateReply : getTableNStateRep(N, STATO, TIMERDONE)
+
+
+
+
+
+
+
 //end messages ******************************************************************* 
 //context and QActors 
-/*USE JSON FILE TO READ HOST AND PORT */
+ 
 Context ctxtearoom ip [host="127.0.0.1" port=8040] 
 Context ctxbasicrobot ip [host="localhost" port=8020] 
 ExternalQActor basicrobot context ctxbasicrobot 
@@ -77,67 +109,44 @@ QActor waitermind context ctxtearoom{
 		val DelayServeDrink = 2000L
 		val DelayTakeClient = 2000L
 				 
-		val X_home = "0"
-		val Y_home = "0"
-		
-		val X_bar = "6" 
-		val Y_bar = "0"
-		
-		val X_entrance = "0"
-		val Y_entrance = "4"
-		
-		val X_exit = "6"
-		val Y_exit = "4"
-		
-		val X_table_1 = "2"
-		val Y_table_1 = "2"
-		
-		val X_table_2 = "4"
-		val Y_table_2 = "2"
-		
-		
-		
+
 		var CleaningON = false
 		var TableToClean = 0
 		var TableStateToClean = ""
-		
-		
-		data class Table(var state: String ="tableClean") { }
-		val table1 = Table()
-		val table2 = Table()
-		var stateTable1 = "tableClean"
-		var stateTable2 = "tableClean"
-		
+		var TableTimerDone = 0L
+
 	#]
 	
 	State startState initial{
 		println("waitermind 		|| START")
 		updateResource [# "startState" #] 
 	}
-	Transition t0	whenMsg engineReady -> rest
+	Transition t0	whenMsg engineReady -> checkTableToClean
 	
 	State checkTableToClean{
-		//interrogare tearoomstate della situazione tavoli
-		
-		
-		//**********************
-		//if 
-		
-		 
-		[# 
-			TableToClean = 2 
-			TableStateToClean = "tableSanitizing"
+		request tearoomglobalstate -m getTableToCleanReq : getTableToCleanReq(P)		
+	}
+	Transition t1 whenReply getTableToCleanReply -> analizeReplyTableToClean
+	
+	
+	State analizeReplyTableToClean{
+		onMsg (getTableToCleanReply : getTableToCleanReply(N, STATO, TIMERDONE)){
+			[# 
+				TableToClean =  payloadArg(0).toInt()
+				TableStateToClean = payloadArg(1)
+				TableTimerDone = payloadArg(2).toLong()
 			
-		#]
-		
+			#]	
+		}
 	}
 	Goto reachHome if [# TableToClean == 0 #] else reachTableClean
-	
-	
+	 
 	
 	State rest{
 		println("waitermind 		|| rest")
 		updateResource [# "rest"#]
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(rest)
 	}//end rest
 	Transition t1	whenRequest smartbellEntryRequest -> accept
 					whenMsg clientOrderReady -> reachTableOrder
@@ -149,6 +158,9 @@ QActor waitermind context ctxtearoom{
 		//[# readLine() #]
 		println("waitermind 		|| reachHome")
 		updateResource [# "reachHome" #]
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(reachHome)
+		
 		request waiterengine -m moveTo : moveTo($X_home, $Y_home)
 		
 	}//end reachHome
@@ -179,7 +191,9 @@ QActor waitermind context ctxtearoom{
 	
 	State reachDoor{
 		println("waitermind 		|| reachDoor") 
-		updateResource [# "reachDoor" #]
+		updateResource [# "reachDoor" #] 
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(reachDoor)
 		
 //		//TEST
 //		println("waitermind 	|| wait Enter - doing reachDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
@@ -200,6 +214,9 @@ QActor waitermind context ctxtearoom{
 		
 		println("waitermind 		|| convoyTable")
 		updateResource [# "convoyTable"#]
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(convoyTable)
+		
 		delayVar DelayTakeClient	
 //		//TEST
 //		println("waitermind 	|| wait Enter - doing convoyTable || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
@@ -218,6 +235,8 @@ QActor waitermind context ctxtearoom{
 		//[# readLine() #]
 		println("waitermind 		|| reachTableOrder")
 		updateResource [# "reachTableOrder"#]
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(reachTableOrder)
 		
 		if [#CleaningON == true #]{
 			forward waiterengine -m stopCleaningEngine : stopCleaningEngine (P)
@@ -245,6 +264,8 @@ QActor waitermind context ctxtearoom{
 		println("waitermind 		|| waitOrderClient")
 		updateResource [# "waitOrderClient" #]
 		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(waitOrderClient)
+		
 	}
 	Transition t6	whenMsg clientOrder -> trasmit
 	
@@ -263,6 +284,8 @@ QActor waitermind context ctxtearoom{
 		//[# readLine() #]
 		println("waitermind 		|| reachBar")
 		updateResource [# "reachBar"#]	
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(reachBar)
 		
 		if [#CleaningON == true #]{
 			forward waiterengine -m stopCleaningEngine : stopCleaningEngine (P)
@@ -284,6 +307,9 @@ QActor waitermind context ctxtearoom{
 		//TEST
 		println("waitermind 		|| serveTable")
 		updateResource [# "serveTable"#]	
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(serveTable)
+		
 		delayVar DelayTakeDrink
 		request waiterengine -m moveTo : moveTo($X_table_1, $Y_table_1)
 				
@@ -300,6 +326,8 @@ QActor waitermind context ctxtearoom{
 		//[# readLine() #]
 		println("waitermind 		|| reachTableCollect")
 		updateResource [# "reachTableCollect"#]
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(reachTableCollect)
 		
 		if [#CleaningON == true #]{
 			forward waiterengine -m stopCleaningEngine : stopCleaningEngine (P)
@@ -325,6 +353,9 @@ QActor waitermind context ctxtearoom{
 		
 		println("waitermind 		|| collect")
 		updateResource [# "collect"#]
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(collect)
+		
 		//delay time perchè ci metto un po' a prendere il cash
 		delayVar CollectTime
 	}//end collect
@@ -334,6 +365,8 @@ QActor waitermind context ctxtearoom{
 		//[# readLine() #]
 		println("waitermind 	|| convoyExit")
 		updateResource [# "convoyExit"#]
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(convoyExit)
 		
 		//STATO DEL TAVOLO DA CAMBIARE
 		[# table1.state = "tableDirty" #]
@@ -352,6 +385,10 @@ QActor waitermind context ctxtearoom{
 		
 		println("waitermind 	|| reachTableClean")
 		updateResource [# "reachTableClean"#]
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(reachTableClean)
+		
+		//cliente deve uscire e devo chiudere la porta
 		delay 1000
 		//mi muovo verso il tavolo
 		
@@ -392,12 +429,22 @@ QActor waitermind context ctxtearoom{
 		
 		println("waitermind 	|| tableClearing")
 		updateResource [# "tableClearing"#]
-		[# CleaningON = true #]
+		
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(tableClearing)
+		
+		
+		[# 
+			CleaningON = true 
+			TableTimerDone = ClearTime-TableTimerDone
+		#]
 		
 		[# table1.state = "tableClearing" #]
 		
 		
-		forward waiterengine -m clean : clean($DoClear, $ClearTime)
+		forward waiterengine -m clean : clean($DoClear, $TableTimerDone)
+		[#
+			TableTimerDone = 0
+		#]
 	}//end tableClear
 	Transition t11	whenMsg doneCleanRun -> tableSanitizing
 					whenMsg clientOrderReady -> reachTableOrder
@@ -411,11 +458,19 @@ QActor waitermind context ctxtearoom{
 		println("waitermind 	|| tableSanitizing")
 		updateResource [# "tableSanitizing"#]
 		
-		[# CleaningON = true #]
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(tableSanitizing)
+		
+		[# 
+			CleaningON = true 
+			TableTimerDone = SanitizeTime-TableTimerDone
+		#]
 		
 		[# table1.state = "tableSanitizing" #]
 		
-		forward waiterengine -m clean : clean($DoSanitize, $SanitizeTime)
+		forward waiterengine -m clean : clean($DoSanitize, $TableTimerDone)
+		[#
+			TableTimerDone = 0
+		#]
 	}//end tableSanitize
 	Transition t12	whenMsg doneCleanRun -> tableCleaning
 					whenMsg clientOrderReady -> reachTableOrder
@@ -429,11 +484,19 @@ QActor waitermind context ctxtearoom{
 		println("waitermind 	|| tableCleaning")
 		updateResource [# "tableCleaning"#]
 		
-		[# CleaningON = true #]
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(tableCleaning)
+		
+		[# 
+			CleaningON = true 
+			TableTimerDone = CleanTime-TableTimerDone
+		#]
 		
 		[# table1.state = "tableCleaning" #]
 		
-		forward waiterengine -m clean : clean($DoClean, $CleanTime)
+		forward waiterengine -m clean : clean($DoClean, $TableTimerDone)
+		[#
+			TableTimerDone = 0
+		#]
 	}//end tableClean
 	Transition t12	whenMsg doneCleanRun -> updateTableCleaned
 					whenMsg clientOrderReady -> reachTableOrder
@@ -471,7 +534,6 @@ QActor smartbell context ctxtearoom{
 	[# 
 		val Temp_max = 42
 		var ID_client = 1 
-		var N_client_rejected = 0
 		var ClientTemp :Double = 0.0
 	#] 
 
@@ -487,6 +549,7 @@ QActor smartbell context ctxtearoom{
 	}
 	Transition t0 	whenRequest clientRingEntryRequest -> checkTempClient
 					whenMsg end -> endState
+					
 	State checkTempClient{  
 		//[#  var ClientTemp = Math.random()*6+35#] //random temperature
 		[# ClientTemp = kotlin.math.round(  (Math.random()*6+35)*10 )/10 #] 
@@ -509,6 +572,9 @@ QActor smartbell context ctxtearoom{
 					whenMsg 	smartbellClientRejected -> clientRejected
 	
 	State checkWaiterReply{
+		
+		forward tearoomglobalstate -m addClientAccepted : addClientAccepted(P)
+		
 		onMsg(smartbellEntryReply : smartbellEntryReply(ID)){
 			println("smartbell 		|| ricevuta reply ID : ${ payloadArg(0) }")
 			replyTo clientRingEntryRequest with clientRingEntryReply : clientRingEntryReply($payloadArg(0))
@@ -517,7 +583,9 @@ QActor smartbell context ctxtearoom{
 	Goto waitRing
 	
 	State clientRejected{
-		[# N_client_rejected++ #]
+		
+		forward tearoomglobalstate -m addClientRejected : addClientRejected(P)
+		
 		onMsg(smartbellClientRejected : smartbellClientRejected(TEMP)){ //rispondo con temperatura (maggior del normale)
 			replyTo clientRingEntryRequest with clientRingEntryReply : clientRingEntryReply(payloadArg(0)) 
 		}
@@ -700,6 +768,8 @@ QActor barman context ctxtearoom{
 		println("barman 	|| waitOrder")
 		updateResource [# "waitOrder" #]
 		
+		forward tearoomglobalstate -m setBarmanState : setBarmanState("waitOrder")
+		
 	}
 	Transition t0 	whenMsg waiterOrderForward -> prepareOrder
 					whenMsg end -> endState
@@ -707,10 +777,17 @@ QActor barman context ctxtearoom{
 	State prepareOrder{ 
 		println("barman 	|| prepareOrder")
 		updateResource [# "prepareOrder" #]
-		delayVar TimePrepareOrder
+
 		onMsg(waiterOrderForward : waiterOrderForward(ID, ORDER)){
 			println("barman 	|| Order:  ${payloadArg(1)}")
-			forward waitermind -m barmanOrderReady : barmanOrderReady($payloadArg(0))
+			
+			forward tearoomglobalstate -m setBarmanState : setBarmanState("prepareOrder( ${payloadArg(0)}, ${payloadArg(1)} )")
+		
+			delayVar TimePrepareOrder
+			
+			forward tearoomglobalstate -m addOrderReady : addOrderReady($payloadArg(0))
+			
+			forward waitermind -m barmanOrderReady : barmanOrderReady($payloadArg(0))	
 		}		
 	}
 	Goto waitOrder
@@ -740,7 +817,7 @@ QActor timercleaning context ctxtearoom{
 	
 	State startTimer{
 		println("timercleaning		|| startTimer")
-		onMsg(startTimerCleaning : startTimerCleaning(Timer)){
+		onMsg(startTimerCleaning : startTimerCleaning(TIMER)){
 			[# TimerTime = payloadArg(0).toLong() #]
 			println("timer ${payloadArg(0)}")
 			memoCurrentTime StartTime
@@ -760,6 +837,85 @@ QActor timercleaning context ctxtearoom{
 	}
 	Goto waitCmd
 
+}
+
+QActor tearoomglobalstate context ctxtearoom{
+	
+	State s0 initial{
+		println("tearoomglobalstate		|| START")
+		solve( consult("tearoomstate.pl") )
+	}
+	Goto wait
+	
+	State wait{
+		println("tearoomglobalstate		|| wait")
+	}
+	Transition t0 	whenMsg	setWaiterState	-> waiterState
+					whenMsg setBarmanState	-> barmanState
+					whenMsg addOrderReady	-> orderReady
+					whenMsg removeOrderReady -> orderTaken
+					whenMsg addClientAccepted -> clientAccepted
+					whenMsg addClientRejected -> clientRejected
+					whenMsg setStateTable 	-> stateTable
+					whenMsg occupyTable 		-> occupyTableState
+					whenRequest getTable1StateReq	-> returnTable1State
+					whenRequest getTable2StateReq -> returnTable2State
+					whenRequest	getTableToCleanReq -> returnTableToClean
+					whenRequest	getFreeCleanTableReq -> returnFreeTable
+					
+	State waiterState{
+		
+	}
+	
+	State barmanState{
+		
+	}
+	
+	
+	State orderReady{
+		
+	}
+	
+	State orderTaken{
+		
+	}
+	
+	State clientAccepted{
+		
+	}
+	
+	State clientRejected{
+		
+	}
+	
+	State stateTable{
+		
+	}
+	
+	State occupyTableState{
+		
+	}
+	
+	State returnTable1State{
+		
+	}
+	
+	State returnTable2State{
+		
+	}
+	
+	State returnTableToClean{
+		
+	}
+	
+	State returnFreeTable{
+		
+	}
+	
+	
+	
+	
+	
 }
 
 
