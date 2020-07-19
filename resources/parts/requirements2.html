@@ -43,44 +43,19 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td class="tg-0lax"><em>startTimerCleaning</em></td>
-					<td class="tg-0lax">Dispatch</td>
-					<td class="tg-0lax">-</td>
-				</tr>
-				<tr>
-					<td class="tg-0lax"><em>stopTimerCleaningReq</em></td>
-					<td class="tg-0lax">Request</td>
-					<td class="tg-0lax">-</td>
-				</tr>
-				<tr>
-					<td class="tg-0lax"><em>stopTimerCleaningReply</em></td>
-					<td class="tg-0lax">Reply</td>
-					<td class="tg-0lax">-</td>
-				</tr>
-				<tr>
-					<td class="tg-0lax"><em>timerFinishedCorrectly</em></td>
-					<td class="tg-0lax">Dispatch</td>
-					<td class="tg-0lax">-</td>
-				</tr>
-				<tr>
-					<td class="tg-0lax"><em>stopCleaningEngine</em></td>
-					<td class="tg-0lax">Dispatch</td>
-					<td class="tg-0lax">-</td>
-				</tr>
-				<tr>
 					<td class="tg-0lax"><em>goToClearing</em></td>
 					<td class="tg-0lax">Dispatch</td>
-					<td class="tg-0lax">-</td>
+					<td class="tg-0lax">Non usiamo l'Event perchè non vogliamo che altri <em>waiter</em> possano ascoltare il messaggio. Non si prevede una risposta quindi adottiamo un Dispatch. </td>
 				</tr>
 				<tr>
 					<td class="tg-0lax"><em>goToSanitizing</em></td>
 					<td class="tg-0lax">Dispatch</td>
-					<td class="tg-0lax">-</td>
+					<td class="tg-0lax">Per gli stessi motivi di <em>goToClearing</em> </td>
 				</tr>
 				<tr>
 					<td class="tg-0lax"><em>goToCleaning</em></td>
 					<td class="tg-0lax">Dispatch</td>
-					<td class="tg-0lax">-</td>
+					<td class="tg-0lax">Per gli stessi motivi di <em>goToClearing</em> </td>
 				</tr>
 			</tbody>
 		</table>
@@ -89,9 +64,6 @@
 		</br>
 		</br>
 		<a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnReq/src/tearoom.qak');">tearoom.qak</a>
-		<br/>
-		<br/>
-		Commenti
 		<br/>
 		<br/>
 		<a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnReq/src/client.qak');">client.qak</a>

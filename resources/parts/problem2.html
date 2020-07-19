@@ -21,6 +21,22 @@
 			<br/>
 			<br/>
 			Come è emerso negli sprint precedenti, serve memorizzare lo stato del sistema. Come scelta si è preferito memorizzarlo all'interno del <em>waiter</em>: si veda lo <a href="">sprint 1</a>.
+			E' stato inserito un'altro <b>QActor</b> perchè oltre a rendere il sistema più snello, questo approccio fa svolgere ad ogni attore un compito ben preciso:
+			<ul>
+				<li>
+					waitermind: "mente" del waiter;
+				</li>
+				<li>
+					waiterengine: esegue gli ordini del mind;
+				</li>
+				<li>
+					tearoomglobalstate: waitermind interroga questo attore per ottenere lo stato corrente della tearoom.
+				</li>
+			</ul>
+			Sicuramente il numero dei messaggi aumenta ma considerando questo caso specifico (vedi requisiti) non si viene a creare un collo di bottiglia da mettere in crisi il sistema.
+			<br/>
+			<br/>
+			Gli stati dei tavoli devono essere memorizzati da qualche parte. Ci aiutiamo tramite l'uso di Prolog perchè il QAK lo supporta. 
 			<br/>
 			<br/>
 			Dunque, da un punto di <b>vista logico</b> il nostro sistema è formato da più attori in contesti diversi:
@@ -29,9 +45,10 @@
 			<img src="../img/interazioni2.png" alt="img" width="75%" height="85%">
 			<br/>
 			<br/>
-			Di seguito è riportato il modello.
+			Di seguito è riportato il <b>modello</b>.
 			<br/>
-			All'avvio del <em>waiter</em> si controlla subito che i <em>table</em> siano puliti perchè è possibile che siano sportchi dalla serata del giorno prima.
+			<br/>
+			All'avvio del <em>waiter</em> si controlla subito che i <em>table</em> siano puliti perchè è possibile che siano sporchi dalla serata del giorno prima.
 			<br/>
 			<br/>
 			<a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnProbl/src/tearoom.qak');">tearoom.qak</a>

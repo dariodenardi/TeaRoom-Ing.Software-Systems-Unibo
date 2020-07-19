@@ -2,9 +2,9 @@ System tearoom
 
 //Messages **********************************************************************
 //DIVISI PER CHI INVIA 
-
+ 
 //**********CLIENT 
-
+ 
 Request clientRingEntryRequest : clientEntryRequest(PAYLOAD)
 Reply clientRingEntryReply : clientEntryReply(ID) //invia smartbell in realtà
 
@@ -29,8 +29,10 @@ Dispatch waiterOrderForward : waiterOrderForward(ID, ORDER) //Order contenente I
 Dispatch clean : clean(R, TIMER)
 Dispatch doneCleanRun : doneCleanRun(P)
 Dispatch engineReady : engineReady(P) 
-Request moveTo : moveTo(X,Y)
-Reply done : done(X,Y)
+
+Dispatch moveTo : moveTo(X,Y)
+Dispatch done : done(X,Y)
+
 Dispatch end : end(V)
 Request step : step( TIME )	
 Reply   stepdone   : stepdone(V)  
@@ -111,9 +113,18 @@ QActor waitermind context ctxtearoom{
 				 
 
 		var CleaningON = false
+		
 		var TableToClean = 0
 		var TableStateToClean = ""
 		var TableTimerDone = 0L
+		
+		var TableToOccupy = 0
+		var IdClientOccupy = 0
+		
+		var IdTableForOrder = 0
+		
+		var MoveX = 0
+		var MoveY = 0
 
 	#]
 	
@@ -123,6 +134,16 @@ QActor waitermind context ctxtearoom{
 	}
 	Transition t0	whenMsg engineReady -> checkTableToClean
 	
+	State checkQueue{
+		println("waitermind		|| checkingQueue")
+	}
+	Transition t12	whenTime 100			 ->     checkTableToClean
+					whenMsg clientOrderReady -> reachTableOrder
+					whenMsg clientPaymentReady -> reachTableCollect
+					whenMsg barmanOrderReady -> reachBar
+					whenRequest smartbellEntryRequest -> acceptorinform
+					
+					
 	State checkTableToClean{
 		request tearoomglobalstate -m getTableToCleanReq : getTableToCleanReq(P)		
 	}
@@ -161,23 +182,49 @@ QActor waitermind context ctxtearoom{
 		
 		forward tearoomglobalstate -m setWaiterState : setWaiterState(reachHome)
 		
-		request waiterengine -m moveTo : moveTo($X_home, $Y_home)
+		solve(pos(home, X, Y))
+			ifSolved{
+				[#
+					MoveX = getCurSol("X").toString().toInt()
+                	MoveY = getCurSol("Y").toString().toInt()
+                #]
+             forward waiterengine -m moveTo : moveTo($MoveX, $MoveY)	
+             }
 		
 	}//end reachHome
-	Transition t2	whenReply done -> rest
+	Transition t2	whenMsg done -> rest
 					whenMsg clientOrderReady -> reachTableOrder
 					whenMsg clientPaymentReady -> reachTableCollect
 					whenMsg barmanOrderReady -> reachBar
 					whenRequest smartbellEntryRequest -> accept
 	
-	State accept{ 
-		println("waitermind 		|| accept")
-		updateResource [# "accept" #]
-		
+	State acceptorinform{
 		if [#CleaningON == true #]{
 			forward waiterengine -m stopCleaningEngine : stopCleaningEngine (P)
 			[#CleaningON = false #]
 		}
+		request tearoomglobalstate -m getFreeCleanTableReq : getFreeCleanTableReq(P)
+	}
+	Transition	t1 		whenReply getFreeCleanTableReply -> analizeacceptorinform
+	
+	State analizeacceptorinform{
+		onMsg (getFreeCleanTableReply : getFreeCleanTableReply(N)){
+			[#
+				TableToOccupy = payloadArg(0).toInt() 	
+			#]
+		}
+	}
+	Goto inform if [#TableToOccupy == 0#] else accept
+	
+	State inform{
+		//LIMBO
+		//TOCHANGE
+	}
+	
+	
+	State accept{ 
+		println("waitermind 		|| accept")
+		updateResource [# "accept" #]
 		
 //		//TEST
 //		println("waitermind 	|| wait Enter - doing accept || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
@@ -187,6 +234,7 @@ QActor waitermind context ctxtearoom{
 		onMsg(smartbellEntryRequest : smartbellEntryRequest(ID)){
 			println("waitermind 		|| Ricevuta richiesta da ID: ${ payloadArg(0) }")
 			replyTo smartbellEntryRequest with smartbellEntryReply : smartbellEntryReply($payloadArg(0))	
+			[#IdClientOccupy = payloadArg(0).toInt()#]
 		}
 				
 	}//end accept
@@ -202,11 +250,17 @@ QActor waitermind context ctxtearoom{
 //		println("waitermind 	|| wait Enter - doing reachDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
 //		[# readLine() #]
 //		//TEST
-		 
-		request waiterengine -m moveTo : moveTo($X_entrance, $Y_entrance)
+		solve(pos(entrance, X, Y))
+			ifSolved{
+				[#
+					MoveX = getCurSol("X").toString().toInt()
+                	MoveY = getCurSol("Y").toString().toInt()
+                #]
+             forward waiterengine -m moveTo : moveTo($MoveX, $MoveY)	
+             } 
 		
 	}//end reachDoor
-	Transition t3	whenReply done -> convoyTable
+	Transition t3	whenMsg done -> convoyTable
 	
 	State convoyTable{
 		//TEST
@@ -227,11 +281,24 @@ QActor waitermind context ctxtearoom{
 //		//TEST
 		
 		//STATO TAVOLO TO CHANGE
-		[# table1.state = "tableOccupied" #]
+		forward tearoomglobalstate -m occupyTable : occupyTable($TableToOccupy, $IdClientOccupy)
 		//Controllare il tavolo libero
-		request waiterengine -m moveTo : moveTo($X_table_1, $Y_table_1)
+		if [# TableToOccupy==1 #]{
+			solve(pos(table1, X, Y))
+		}
+		if [# TableToOccupy==2 #]{
+			solve(pos(table2, X, Y))
+		}
+		ifSolved{
+					[#
+						MoveX = getCurSol("X").toString().toInt()
+	                	MoveY = getCurSol("Y").toString().toInt()
+	                #]
+	             forward waiterengine -m moveTo : moveTo($MoveX, $MoveY)	
+	             }
+             
 	}//end convoyTable
-	Transition t4	whenReply done -> checkTableToClean
+	Transition t4	whenMsg done -> checkQueue
 	
 	
 	State reachTableOrder{ 
@@ -241,17 +308,36 @@ QActor waitermind context ctxtearoom{
 		
 		forward tearoomglobalstate -m setWaiterState : setWaiterState(reachTableOrder)
 		
-		if [#CleaningON == true #]{
+		if [#CleaningON == true #]
+		{
 			forward waiterengine -m stopCleaningEngine : stopCleaningEngine (P)
 			[#CleaningON = false #]
 		}
 		
 		
 		//check table ordering
-		onMsg(clientOrderReady : clientOrderReady(ID) ){
+		onMsg(clientOrderReady : clientOrderReady(ID) )
+		{
 			println("waitermind 		|| client pronto per ordinare ID : ${payloadArg(0)}")
+			
+			solve (stateTable ( TABLE, $payloardArg(0)))
+				ifSolved{
+				[#
+					if(getCurSol("TABLE") == table1)
+					{
+						IdTableForOrder
+					}
+					IdTableForOrder = 0
+					getCurSol("ID").toInt()
+					
+	            #]
+		        forward waiterengine -m moveTo : moveTo($MoveX, $MoveY)
+				}
+			
+		
 		}
-		request waiterengine -m moveTo : moveTo($X_table_1, $Y_table_1)
+		
+//		request waiterengine -m moveTo : moveTo($X_table_1, $Y_table_1)
 		
 	}//end reachTableOrder
 	Transition t5	whenReply done -> waitOrderClient
@@ -407,13 +493,27 @@ QActor waitermind context ctxtearoom{
 		//DISTINGUO SE TAVOLO 1 TAVOLO 2
 		//TableToClean = 0
 		if [# TableToClean == 1#]{
-			request waiterengine -m moveTo : moveTo($X_table_1, $Y_table_1)	
+			solve(pos(table1, X, Y))
+			ifSolved{
+				[#
+					MoveX = getCurSol("X").toString().toInt()
+                	MoveY = getCurSol("Y").toString().toInt()
+                #]
+             forward waiterengine -m moveTo : moveTo($MoveX, $MoveY)	
+			}	
 		}
 		if [# TableToClean == 2#]{
-			request waiterengine -m moveTo : moveTo($X_table_2, $Y_table_2)	
+			solve(pos(table2, X, Y))
+			ifSolved{
+				[#
+					MoveX = getCurSol("X").toString().toInt()
+                	MoveY = getCurSol("Y").toString().toInt()
+                #]
+             forward waiterengine -m moveTo : moveTo($MoveX, $MoveY)	
+			}
 		}	
 	}//end reachTableClear
-	Transition t10 	whenReply done -> whichCleanState
+	Transition t10 	whenMsg done -> whichCleanState
 					whenMsg clientOrderReady -> reachTableOrder
 					whenMsg clientPaymentReady -> reachTableCollect
 					whenMsg barmanOrderReady -> reachBar
