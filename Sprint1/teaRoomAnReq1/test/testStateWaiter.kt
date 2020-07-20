@@ -41,7 +41,7 @@ class TestWaiterPosition {
 	}
 	
 	@Test
-	fun testRobotboundary(){
+	fun testStateWaiter(){
 	 	runBlocking{
  			while( waiter == null ){
 				println("waits for waiter ... ")

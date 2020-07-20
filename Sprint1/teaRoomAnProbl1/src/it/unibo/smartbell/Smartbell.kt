@@ -20,10 +20,11 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				val Temp_max = 37.5
 				var ID_client = 1 
 				var N_client_rejected = 0
+				var ClientTemp :Double = 0.0
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("smartbell || START")
+						println("smartbell 		|| START")
 						updateResourceRep( "START"  
 						)
 					}
@@ -31,7 +32,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("waitRing") { //this:State
 					action { //it:State
-						println("smartbell || waitRing")
+						println("smartbell 		|| waitRing")
 						updateResourceRep( "waitRing"  
 						)
 					}
@@ -40,17 +41,17 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("checkTempClient") { //this:State
 					action { //it:State
-						  var ClientTemp = Math.random()*6+35 
-						println("smartbell || checkTempClient")
+						 ClientTemp = kotlin.math.round(  (Math.random()*6+35)*10 )/10  
+						println("smartbell 		|| checkTempClient")
 						updateResourceRep( "checkTempClient"  
 						)
 						if(  ClientTemp < Temp_max  
-						 ){println("smartbell || clienteAccettatoDaSmartBell || temperatura = $ClientTemp || id_client = $ID_client")
+						 ){println("smartbell 		|| clienteAccettatoDaSmartBell || temperatura = $ClientTemp || id_client = $ID_client")
 						request("smartbellEntryRequest", "smartbellEntryRequest($ID_client)" ,"waitermind" )  
 						 ID_client++  
 						}
 						else
-						 {println("smartbell || clienteRifiutatoDaSmartBell || temperatura = $ClientTemp")
+						 {println("smartbell 		|| clienteRifiutatoDaSmartBell || temperatura = $ClientTemp")
 						 forward("smartbellClientRejected", "smartbellClientRejected($ClientTemp)" ,"smartbell" ) 
 						 }
 					}
@@ -61,7 +62,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("smartbellEntryReply(ID)"), Term.createTerm("smartbellEntryReply(ID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("smartbell || ricevuta reply ID : ${ payloadArg(0) }")
+								println("smartbell 		|| ricevuta reply ID : ${ payloadArg(0) }")
 								answer("clientRingEntryRequest", "clientRingEntryReply", "clientRingEntryReply(${payloadArg(0)})"   )  
 						}
 					}
@@ -79,7 +80,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("endState") { //this:State
 					action { //it:State
-						println("smartbell || END")
+						println("smartbell 		|| END")
 						terminate(0)
 					}
 				}	 
