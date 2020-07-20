@@ -121,8 +121,12 @@ QActor waitermind context ctxtearoom{
 		var TableToOccupy = 0
 		var IdClientOccupy = 0
 		
+<<<<<<< HEAD
 		var TableForOrder = ""
 		var IdForOrder = 0
+=======
+		var IdTableForOrder = 0
+>>>>>>> f86e879110910eed5a4059498b010ebdd12e61d6
 		
 		var MoveX = 0
 		var MoveY = 0
@@ -320,6 +324,7 @@ QActor waitermind context ctxtearoom{
 		onMsg(clientOrderReady : clientOrderReady(ID) )
 		{
 			println("waitermind 		|| client pronto per ordinare ID : ${payloadArg(0)}")
+<<<<<<< HEAD
 			[#
 				IdForOrder = payloadArg(0)
 			#]
@@ -338,6 +343,26 @@ QActor waitermind context ctxtearoom{
                 #]
              forward waiterengine -m moveTo : moveTo($MoveX, $MoveY)	
              } 
+=======
+			
+			solve (stateTable ( TABLE, $payloardArg(0)))
+				ifSolved{
+				[#
+					if(getCurSol("TABLE") == table1)
+					{
+						IdTableForOrder
+					}
+					IdTableForOrder = 0
+					getCurSol("ID").toInt()
+					
+	            #]
+		        forward waiterengine -m moveTo : moveTo($MoveX, $MoveY)
+				}
+			
+		
+		}
+		
+>>>>>>> f86e879110910eed5a4059498b010ebdd12e61d6
 //		request waiterengine -m moveTo : moveTo($X_table_1, $Y_table_1)
 		
 	}//end reachTableOrder

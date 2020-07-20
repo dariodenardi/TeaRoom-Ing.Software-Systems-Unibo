@@ -11,18 +11,52 @@
 	</head>
 	<body>
 		<div class="body">
-			La prima conseguenza che porta la gestione di più di un cliente è quella di dover assegnare un tavolo ad esso. Questo può essere fatto in modo semplice, poichè abbiamo accesso allo stato degli oggetti tavolo; basta infatti assegnare il primo tavolo con lo stato "cleaned" nel sistema.
-	
-	
-			
-			Dall'analisi dei requisiti emerge la necessità di introdurre un timer in modo da tenere sotto controllo il tempo trascorso e rimanente dei task interrompibili
-			
-			L'ultimo stato del clean ,"sanitized", viene modellato in modo che duri 15 secondi, così da renderlo non interrompibile e semplificarne la gestione. Per effettuare questa gestione, è opportuno modellare un'entità "timer", la quale fa da supporto al waitercleaner. Inoltre l'introduzione di questa entità risolverà il problema di rimanere bloccati in uno stato, nel caso di ripetute interruzioni.
-
-			Questo timer riceve un Dispatch starttimer : starttimer(T) con l'indicazione del tempo del timer da innescare, in modo tale da simulare anche il tempo passato di ciascuno stato del clean. Quindi, ogni volta che interrompiamo il clean, viene memorizzato il tempo trascorso, cosicchè quando il task verrà ripristinato, si ripartirà innescando il timer solo con il tempo rimanente e non solo da un particolare stato, altrimenti si dovrebbe ripartire dal solito stato che precedentemente avrebbe potuto essere quasi ultimato.
-
-			Di seguito è riportato il modello. waiterengine non è stato riportato, in quanto invariato.
-
+			La prima conseguenza che porta la gestione di più di un <em>client</em> è quella di dover assegnare un <em>table</em> ad esso. Come migliore scelta è stata presa quella di verificare
+			prima il <em>table</em> uno e poi il due perchè il <em>table</em> uno è quello più vicino alla porta.
+			<br/>
+			<br/>
+			Dall'analisi dei requisiti emerge la necessità di introdurre un <b>timer</b> in modo da tenere sotto controllo il tempo trascorso e quello rimanente dei task interrompibili.
+			Questo timer riceve un Dispatch con l'indicazione del tempo da cui partire.
+			Dunque, quando si interrompe il task clean, viene memorizzato il tempo trascorso in modo da non dover ricominciare tutto da capo.
+			<br/>
+			<br/>
+			Come è emerso negli sprint precedenti, serve memorizzare lo stato del sistema. Come scelta si è preferito memorizzarlo all'interno del <em>waiter</em>: si veda lo <a href="">sprint 1</a>.
+			E' stato inserito un'altro <b>QActor</b> perchè oltre a rendere il sistema più snello, questo approccio fa svolgere ad ogni attore un compito ben preciso:
+			<ul>
+				<li>
+					waitermind: "mente" del waiter;
+				</li>
+				<li>
+					waiterengine: esegue gli ordini del mind;
+				</li>
+				<li>
+					tearoomglobalstate: waitermind interroga questo attore per ottenere lo stato corrente della tearoom.
+				</li>
+			</ul>
+			Sicuramente il numero dei messaggi aumenta ma considerando questo caso specifico (vedi requisiti) non si viene a creare un collo di bottiglia da mettere in crisi il sistema.
+			<br/>
+			<br/>
+			Gli stati dei tavoli devono essere memorizzati da qualche parte. Ci aiutiamo tramite l'uso di Prolog perchè il QAK lo supporta. 
+			<br/>
+			<br/>
+			Dunque, da un punto di <b>vista logico</b> il nostro sistema è formato da più attori in contesti diversi:
+			<br/>
+			<br/>
+			<img src="../img/interazioni2.png" alt="img" width="75%" height="85%">
+			<br/>
+			<br/>
+			Di seguito è riportato il <b>modello</b>.
+			<br/>
+			<br/>
+			All'avvio del <em>waiter</em> si controlla subito che i <em>table</em> siano puliti perchè è possibile che siano sporchi dalla serata del giorno prima.
+			<br/>
+			<br/>
+			<a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnProbl/src/tearoom.qak');">tearoom.qak</a>
+			<br/>
+			<br/>
+			<a href="" onClick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnProbl/src/client.qak');">client.qak</a>
+			<br/>
+			<br/>
 		</div>
 	</body>
 </html>
