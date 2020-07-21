@@ -1,0 +1,2 @@
+dario conf: var StepTime = 365L
+bida conf: var StepTime = 445L

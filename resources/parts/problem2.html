@@ -11,32 +11,43 @@
 	</head>
 	<body>
 		<div class="body">
-			La prima conseguenza che porta la gestione di più di un <em>client</em> è quella di dover assegnare un <em>table</em> ad esso. Come migliore scelta è stata presa quella di verificare
-			prima il <em>table</em> uno e poi il due perchè il <em>table</em> uno è quello più vicino alla porta.
-			<br/>
-			<br/>
-			Dall'analisi dei requisiti emerge la necessità di introdurre un <b>timer</b> in modo da tenere sotto controllo il tempo trascorso e quello rimanente dei task interrompibili.
-			Questo timer riceve un Dispatch con l'indicazione del tempo da cui partire.
-			Dunque, quando si interrompe il task clean, viene memorizzato il tempo trascorso in modo da non dover ricominciare tutto da capo.
-			<br/>
-			<br/>
-			Come è emerso negli sprint precedenti, serve memorizzare lo stato del sistema. Come scelta si è preferito memorizzarlo all'interno del <em>waiter</em>: si veda lo <a href="">sprint 1</a>.
-			E' stato inserito un'altro <b>QActor</b> perchè oltre a rendere il sistema più snello, questo approccio fa svolgere ad ogni attore un compito ben preciso:
+		Nello <a href="" onclick="openInNewTab('../../Sprint1/Sprint 1.html');">sprint 1</a> abbiamo deciso di mantenere lo stato complessivo della <em>tearoom</em> all'interno della waitermind tuttavia con i nuovi requisiti lo stato della
+		<em>tearoom</em> è diventato più complesso e il <em>waiter</em> ha bisogno di prendere delle scelte a seconda dello stato.
+		<br/>
+		<br/>
+		Allo scopo di allegerire da questi compiti la waitermind e di facilitare lo sviluppo futuro di una Web App che consenta il monitoraggio della <em>tearoom</em> secegliamo di introdurre un 
+		nuovo attore <b>tearoomglobalstate</b> al quale gli altri attori si rivolgeranno per registrare cambiamenti nello stato della <em>tearoom</em>.
+		<br/>
+		<br/>
+		maxstaytime
+		attore: timer
+		Dall'analisi dei requisiti emerge la necessità di introdurre un timer in modo da tenere sotto controllo il tempo trascorso e quello rimanente dei task interrompibili. Questo timer riceve un Dispatch con l'indicazione del tempo da cui partire. Dunque, quando si interrompe il task clean, viene memorizzato il tempo trascorso in modo da non dover ricominciare tutto da capo. 
+		
+		Inoltre, il modello è stato raffinato ulteriormente:
+		nello sprint 1 solo quando il waiter ritorna a casa vede se ci sono altre azioni
+		da eseguire mentre adesso viene interrotto mentre va verso casa. 
+		<br/>
+		<br/>
+		Possiamo riassumere il compito di ogni attore:
 			<ul>
 				<li>
-					waitermind: "mente" del waiter;
+					<b>waitermind:</b> master del waiterengine, mantine la logica di esecuzione;
 				</li>
 				<li>
-					waiterengine: esegue gli ordini del mind;
+					<b>waiterengine:</b> slave del waitermind, esegue i movimenti e le pulizie;
 				</li>
 				<li>
-					tearoomglobalstate: waitermind interroga questo attore per ottenere lo stato corrente della tearoom.
+					<b>tearoomglobalstate:</b> mantiene lo stato complessivo della <em>tearoom</em> e risponde alla richieste di conoscenza di stato da parte di altri attori.
 				</li>
 			</ul>
-			Sicuramente il numero dei messaggi aumenta ma considerando questo caso specifico (vedi requisiti) non si viene a creare un collo di bottiglia da mettere in crisi il sistema.
+			Il tearoomglobalstate può essere un potenziale collo di bottiglia ma dato che la maggior parte dei messaggi sono delle Dispatch il sistema non dovrebbe risentirne.
 			<br/>
 			<br/>
-			Gli stati dei tavoli devono essere memorizzati da qualche parte. Ci aiutiamo tramite l'uso di Prolog perchè il QAK lo supporta. 
+			Il tearoomglobalstate memorizza la <b>conoscenza di base</b> della <em>tearoom</em>, ovvero dove si trovano le entità, e i futuri cambiamenti di stato in un file <b>Prolog</b>.
+			<br/>
+			<br/>
+			Inoltre, il tearoomglobalstate sceglie quale <em>table</em> assegnare a un nuovo <em>client</em> controllando prima il tavolo 1 e poi il tavolo 2 perchè il <em>table</em> uno è quello più vicino alla porta.
+			All'avvio del <em>waiter</em> si controlla subito che i <em>table</em> siano puliti perchè è possibile che siano sporchi dalla serata del giorno prima.
 			<br/>
 			<br/>
 			Dunque, da un punto di <b>vista logico</b> il nostro sistema è formato da più attori in contesti diversi:
@@ -48,13 +59,10 @@
 			Di seguito è riportato il <b>modello</b>.
 			<br/>
 			<br/>
-			All'avvio del <em>waiter</em> si controlla subito che i <em>table</em> siano puliti perchè è possibile che siano sporchi dalla serata del giorno prima.
+			<a href="" onclick="openInNewTab('../Sprint2');">tearoom.qak</a>
 			<br/>
 			<br/>
-			<a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnProbl/src/tearoom.qak');">tearoom.qak</a>
-			<br/>
-			<br/>
-			<a href="" onClick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnProbl/src/client.qak');">client.qak</a>
+			<a href="" onClick="openInNewTab('../Sprint2');">client.qak</a>
 			<br/>
 			<br/>
 		</div>

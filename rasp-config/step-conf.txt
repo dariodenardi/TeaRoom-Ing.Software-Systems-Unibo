@@ -1,2 +1,0 @@
-dario conf: var StepTime = 380L
-bida conf: var StepTime = 445L

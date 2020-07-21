@@ -60,11 +60,11 @@
 			<ul>
 				<li>
 					<u>clientEntryRequest</u> : request inviata dal <em>client</em>, indica che il <em>client</em> vuole entrare nella <em>tearoom</em>.
-					Stando alle <a href="#ass">assunzioni</a> il controllo sulla condizione dei <em>table</em> ritorna sempre che c'è un <em>table</em> libero, quindi clientEntryRequest provoca la transizione allo stato &lt;accept&gt;.
+					Stando alle <a href="" onclick="openInNewTab('./requirements1.html');">assunzioni</a> il controllo sulla condizione dei <em>table</em> ritorna sempre che c'è un <em>table</em> libero, quindi clientEntryRequest provoca la transizione allo stato &lt;accept&gt;.
 					La sequenza di transizioni termina quando il <em>client</em> è stato portato al <em>table</em>.
 				</li>
 				<li>
-					<u>clientOrderReady</u>: dispatch inviata dal <em>client</em>, indica che il <em>client</em> è pronto per ordinare. La sequenza di transizioni termina con la trasmissione dell'ordine a <em>barman</em>. Dato che <em>waiter</em> usa sempre lo stesso <em>table</em>, secondo le <a href="#ass">assunzioni</a> di questo sprint la dispatch non contiene parametri. In futuro potrebbe essere opportuno inserire l'id del <em>client</em> o il numero di <em>table</em>.
+					<u>clientOrderReady</u>: dispatch inviata dal <em>client</em>, indica che il <em>client</em> è pronto per ordinare. La sequenza di transizioni termina con la trasmissione dell'ordine a <em>barman</em>. Dato che <em>waiter</em> usa sempre lo stesso <em>table</em>, secondo le <a href="" onclick="openInNewTab('./requirements1.html');">assunzioni</a> di questo sprint la dispatch non contiene parametri. In futuro potrebbe essere opportuno inserire l'id del <em>client</em> o il numero di <em>table</em>.
 				</li>
 				<li>
 					<u>barmanOrderReady</u>: dispatch inviata da <em>barman</em>, indica che il drink è pronto. Come per il caso precedente non contiene parametri ma in futuro potrà essere opportuno aggiungerne. La sequenza di transizioni termina quando il <em>waiter</em> ha portato il drink al <em>table</em>. 
@@ -96,10 +96,10 @@
 			Siamo già in grado di mostrare un primo <b>modello</b> al committente grazie all'ausilio di un <a href="" onClick="openInNewTab('https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.virtualRobot2020/userDocs/LabVirtualRobot.html');">robot virtuale</a>.
 			<br/>
 			<br/>
-			<a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnProbl1/src/tearoom.qak');">tearoom.qak</a>
+			<a href="" onclick="openInNewTab('../../Sprint1/teaRoomAnProbl1/src/tearoom.qak');">tearoom.qak</a>
 			<br/>
 			<br/>
-			<a href="" onClick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnProbl1/src/client.qak');">client.qak</a>
+			<a href="" onclick="openInNewTab('../../Sprint1/teaRoomAnProbl1/src/client.qak');">client.qak</a>
 			<br/>
 			<br/>
 		</div>

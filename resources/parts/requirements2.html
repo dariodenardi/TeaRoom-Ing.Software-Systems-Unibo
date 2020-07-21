@@ -20,17 +20,90 @@
 				Il <em>waiter</em> può essere interrotto;
 			</li>
 			<li>
-				All'inizio della simulazione <em>waiter</em> si trova in <em>home</em>
+				All'inizio della simulazione il <em>waiter</em> si trova in <em>home</em>.
 			</li>
 		</ul>
+		Riprendiamo la tabella dei task dello sprint iniziale:
+		<br/>
+		<br/>
+		<table>
+				<thead>
+					<tr>
+						<th class="tg-0lax">nome task</th>
+						<th class="tg-0lax">cosa fa</th>
+						<th class="tg-0lax">tempo qualitativo</th>
+						<th class="tg-0lax">tempo quantitativo</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="tg-0lax"><em>accept</em></td>
+						<td class="tg-0lax">conferma la richiesta del <em>client</em> se è presente un <em>table</em> nello stato <em>tableclean</em></td>
+						<td class="tg-0lax">poco</td>
+						<td class="tg-0lax">2s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>inform</em></td>
+						<td class="tg-0lax">informa il <em>client</em> sul tempo massimo di attesa <em>maxwaittime</em> nel caso non sia possibile eseguire il task <em>accept</em>  <br></td>
+						<td class="tg-0lax">poco</td>
+						<td class="tg-0lax">2s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>reach</em></td>
+						<td class="tg-0lax">raggiunge la porta di ingresso e accompagna il <em>client</em> (accettato) al <em>table</em> selezionato</td>
+						<td class="tg-0lax">alto<br></td>
+						<td class="tg-0lax">60s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>take</em></td>
+						<td class="tg-0lax">va al <em>table</em> del <em>client</em>, prende l'ordine e lo trasmette al <em>barman</em></td>
+						<td class="tg-0lax">poco</td>
+						<td class="tg-0lax">8s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>serve</em></td>
+						<td class="tg-0lax">quando il <em>barman</em> dice che la bevanda è pronta va a prenderla e la porta al <em>client</em> che l'aveva richiesta</td>
+						<td class="tg-0lax">medio</td>
+						<td class="tg-0lax">30s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>collect</em></td>
+						<td class="tg-0lax">va al <em>table</em> del <em>client</em> per riscuotere il pagamento</td>
+						<td class="tg-0lax">poco</td>
+						<td class="tg-0lax">8s<br></td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>convoy</em></td>
+						<td class="tg-0lax">accompagna il <em>client</em> alla porta</td>
+						<td class="tg-0lax">medio</td>
+						<td class="tg-0lax">30s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>clean</em></td>
+						<td class="tg-0lax">pulisce il <em>table</em></td>
+						<td class="tg-0lax">medio</td>
+						<td class="tg-0lax">45s</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax"><em>rest</em></td>
+						<td class="tg-0lax">va in home se non c'è niente da fare</td>
+						<td class="tg-0lax">medio/alto<br></td>
+						<td class="tg-0lax">variabile</td>
+					</tr>
+				</tbody>
+			</table>
+		</br>
+		Rispetto allo <a href="" onclick="openInNewTab('../../Sprint1/Sprint 1.html');">sprint uno</a>, modelliamo anche il task <em>inform</em>.
+		</br>
+		</br>
 		Dato che ci sono più <em>client</em> è possibile che ci siano richieste quando il <em>waiter</em> stia ancora eseguendo un task:
-		si veda l'analisi del problema delle <a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/resources/parts/problem0.html');">considerazioni iniziali</a> quando si parla di interompibilità dei task.
+		si veda l'analisi del problema delle <a href="" onclick="openInNewTab('./problem0.html');">considerazioni iniziali</a> quando si parla di interompibilità dei task.
 		</br>
 		</br>
-		Il punto importante dell'interompibilità è che il <em>waiter</em> riesca a riprendere quello che stava facendo prima di essere interrotto. Dunque, il <em>waiter</em> si deve "ricordare" quello che stava facendo.
+		Nel caso particolare dell'interrompibilità del task <em>clean</em>, il <em>waiter</em> deve riprendere la pulizia dal punto in cui l'ha lasciata.
 		</br>
 		</br>
-		Dunque, sono stati introdotti nuovi messaggi:
+		Dunque, sono stati introdotti nuovi messaggi per distinguere quale tipo di pulizia è da eseguire:
 		</br>
 		</br>
 		<table>
@@ -61,6 +134,10 @@
 		</table>
 		</br>
 		Dunque, il nuovo <b>modello</b> da mostrare al committente è il seguente:
+		</br>
+		</br>
+		Quando termina un task il <em>waiter</em> deve controllare che non abbia richieste di <em>client</em> pendenti o <em>table</em> da pulire. In caso negativo il <em>waiter</em>
+		ritorna in <em>home</em>.
 		</br>
 		</br>
 		<a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnReq/src/tearoom.qak');">tearoom.qak</a>
