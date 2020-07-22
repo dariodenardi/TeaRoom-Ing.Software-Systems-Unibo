@@ -1,7 +1,8 @@
 System client 
 
 Request clientRingEntryRequest : clientEntryRequest(PAYLOAD)
-Reply clientRingEntryReply : clientRingEntryReply(ID) //invia smartbell in realtà
+Reply clientRingEntryReply : clientRingEntryReply(ENTRATA, ID) //invia smartbell in realtà
+
 
 Dispatch clientOrderReady : clientOrderReady(ID)
 Dispatch clientOrder : clientOrder (ID, ORDER)
@@ -23,7 +24,7 @@ QActor client context ctxclient {
 		discardMsg Off
 		println("client || START")
 		updateResource [# "START" #]
-	}
+	} 
 	//Transition t0 	whenMsg initSimulation -> ringBell
 	Goto ringBell 
 	
@@ -31,7 +32,7 @@ QActor client context ctxclient {
 		println("client || Ring the bell")
 		updateResource [# "Ring" #]
 		 
-		//TEST
+		//TEST 
 		println("client 	|| wait Enter - to Ring the Bell)" )
 		[# readLine() #]
 		//TEST
@@ -43,9 +44,10 @@ QActor client context ctxclient {
 	
 	State simulate{		
 		
-		onMsg(clientRingEntryReply : clientRingEntryReply(ID)){
-			println("client 	|| Mio ID = ${payloadArg(0)}")
-			[#ID_client = payloadArg(0).toString()#] 
+		onMsg(clientRingEntryReply : clientRingEntryReply(ENTRATA, ID)){
+			println("client 	||  ${payloadArg(0)}  ${payloadArg(1)}")
+			//if primo campo accettato, allora IDCLIENT TOT
+			[#ID_client = payloadArg(1).toString()#] 
 		}
 		
 		//TEST
