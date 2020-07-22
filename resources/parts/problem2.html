@@ -19,13 +19,9 @@
 		nuovo attore <b>tearoomglobalstate</b> al quale gli altri attori si rivolgeranno per registrare cambiamenti nello stato della <em>tearoom</em>.
 		<br/>
 		<br/>
-		maxstaytime
-		attore: timer
-		Dall'analisi dei requisiti emerge la necessità di introdurre un timer in modo da tenere sotto controllo il tempo trascorso e quello rimanente dei task interrompibili. Questo timer riceve un Dispatch con l'indicazione del tempo da cui partire. Dunque, quando si interrompe il task clean, viene memorizzato il tempo trascorso in modo da non dover ricominciare tutto da capo. 
-		
-		Inoltre, il modello è stato raffinato ulteriormente:
-		nello sprint 1 solo quando il waiter ritorna a casa vede se ci sono altre azioni
-		da eseguire mentre adesso viene interrotto mentre va verso casa. 
+		Dall'analisi dei requisiti emerge la necessità di introdurre un <b>timer</b> in modo da tenere sotto controllo il tempo trascorso del task <em>clean</em>.
+		Questo timer riceve un Dispatch con l'indicazione del tempo da cui partire.
+		Dunque, quando si interrompe il task <em>clean</em>, viene memorizzato il tempo trascorso in modo da non dover ricominciare tutto da capo. 
 		<br/>
 		<br/>
 		Possiamo riassumere il compito di ogni attore:
@@ -37,7 +33,10 @@
 					<b>waiterengine:</b> slave del waitermind, esegue i movimenti e le pulizie;
 				</li>
 				<li>
-					<b>tearoomglobalstate:</b> mantiene lo stato complessivo della <em>tearoom</em> e risponde alla richieste di conoscenza di stato da parte di altri attori.
+					<b>tearoomglobalstate:</b> mantiene lo stato complessivo della <em>tearoom</em> e risponde alla richieste di conoscenza di stato da parte di altri attori;
+				</li>
+				<li>
+					<b>timer:</b> tiene in memoria del tempo trascorso a pulire.
 				</li>
 			</ul>
 			Il tearoomglobalstate può essere un potenziale collo di bottiglia ma dato che la maggior parte dei messaggi sono delle Dispatch il sistema non dovrebbe risentirne.
@@ -46,14 +45,28 @@
 			Il tearoomglobalstate memorizza la <b>conoscenza di base</b> della <em>tearoom</em>, ovvero dove si trovano le entità, e i futuri cambiamenti di stato in un file <b>Prolog</b>.
 			<br/>
 			<br/>
-			Inoltre, il tearoomglobalstate sceglie quale <em>table</em> assegnare a un nuovo <em>client</em> controllando prima il tavolo 1 e poi il tavolo 2 perchè il <em>table</em> uno è quello più vicino alla porta.
+			Inoltre, il tearoomglobalstate sceglie quale <em>table</em> assegnare a un nuovo <em>client</em> controllando prima il <em>table</em> 1 e poi il <em>table</em> 2 perchè il <em>table</em> uno è quello più vicino alla porta.
 			All'avvio del <em>waiter</em> si controlla subito che i <em>table</em> siano puliti perchè è possibile che siano sporchi dalla serata del giorno prima.
+			<br/>
+			<br/>
+			Inoltre, il modello è stato <b>raffinato</b> ulteriormente:
+			nello sprint 1 solo quando il <em>waiter</em> ritorna a casa vede se ci sono altre azioni
+			da eseguire mentre adesso viene interrotto mentre va verso casa. 
+			<br/>
+			<br/>
+			Sono stati aggiunti altri tre <b>attori</b> per soddisfare il requisito di <em>maxstaytime</em>.
+			Per <em>maxstaytime</em> si intende il tempo che il <em>client</em> ha a disposizione per effettuare la sua consumazione nella <em>tearoom</em>.
+			Quando il cliente decide cosa prendere, il contatore parte e viene bloccato quando viene fatta la Request dal cliente al waiter.
+			Per semplificare l'accesso a <em>maxstaytime</em> di ogni <em>client</em> è stato introdotto un attore chiamato maxstaytimer.
+			Esso gestisce il tempo a disposizione ad ogni <em>cliente</em> inviando al waitermind un Dispatch quando il tempo scade.
+			L'attore maxstaytimer usa due attori, ciascuno dei quali gestisce a sua volta il tempo trascorso per ogni cliente nella tearoom.
 			<br/>
 			<br/>
 			Dunque, da un punto di <b>vista logico</b> il nostro sistema è formato da più attori in contesti diversi:
 			<br/>
 			<br/>
-			<img src="../img/interazioni2.png" alt="img" width="75%" height="85%">
+			<img src="../img/interazioni2a.png" alt="img" width="75%" height="85%">
+			<img src="../img/interazioni2b.png" alt="img" width="75%" height="85%">
 			<br/>
 			<br/>
 			Di seguito è riportato il <b>modello</b>.
