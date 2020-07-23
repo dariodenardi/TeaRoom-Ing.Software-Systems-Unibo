@@ -103,6 +103,10 @@
 		Nel caso particolare dell'interrompibilità del task <em>clean</em>, il <em>waiter</em> deve riprendere la pulizia dal punto in cui l'ha lasciata.
 		</br>
 		</br>
+		Quando termina un task il <em>waiter</em> deve controllare che non abbia richieste di <em>client</em> pendenti o <em>table</em> da pulire. In caso negativo il <em>waiter</em>
+		ritorna in <em>home</em>.
+		</br>
+		</br>
 		Dunque, sono stati introdotti nuovi messaggi per distinguere quale tipo di pulizia è da eseguire:
 		</br>
 		</br>
@@ -136,14 +140,10 @@
 		Dunque, il nuovo <b>modello</b> da mostrare al committente è il seguente:
 		</br>
 		</br>
-		Quando termina un task il <em>waiter</em> deve controllare che non abbia richieste di <em>client</em> pendenti o <em>table</em> da pulire. In caso negativo il <em>waiter</em>
-		ritorna in <em>home</em>.
-		</br>
-		</br>
-		<a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnReq/src/tearoom.qak');">tearoom.qak</a>
+		<a href="" onclick="openInNewTab('../../Sprint2/teaRoomAnReq2/src/tearoom.qak');">tearoom.qak</a>
 		<br/>
 		<br/>
-		<a href="" onclick="openInNewTab('https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Sprint1/teaRoomAnReq/src/client.qak');">client.qak</a>
+		<a href="" onclick="openInNewTab('../../Sprint2/teaRoomAnReq2/src/client.qak');">client.qak</a>
 		<br/>
 		<br/>
 	</div>

@@ -36,30 +36,68 @@
 					<b>tearoomglobalstate:</b> mantiene lo stato complessivo della <em>tearoom</em> e risponde alla richieste di conoscenza di stato da parte di altri attori;
 				</li>
 				<li>
-					<b>timer:</b> tiene in memoria del tempo trascorso a pulire.
+					<b>timer:</b> conta il tempo trascorso e all'interruzione informa il waiterengine che a sua volta aggiorna lo stato.
 				</li>
 			</ul>
-			Il tearoomglobalstate può essere un potenziale collo di bottiglia ma dato che la maggior parte dei messaggi sono delle Dispatch il sistema non dovrebbe risentirne.
+			Il <b>tearoomglobalstate</b> può essere un potenziale collo di bottiglia ma dato che le azioni sono sufficientemente veloci il sistema non ne risente.
 			<br/>
 			<br/>
-			Il tearoomglobalstate memorizza la <b>conoscenza di base</b> della <em>tearoom</em>, ovvero dove si trovano le entità, e i futuri cambiamenti di stato in un file <b>Prolog</b>.
+			Il <b>tearoomglobalstate</b> memorizza la <b>conoscenza di base</b> della <em>tearoom</em>, ovvero dove si trovano le entità, e i futuri cambiamenti di stato in un file <b>Prolog</b>.
 			<br/>
 			<br/>
-			Inoltre, il tearoomglobalstate sceglie quale <em>table</em> assegnare a un nuovo <em>client</em> controllando prima il <em>table</em> 1 e poi il <em>table</em> 2 perchè il <em>table</em> uno è quello più vicino alla porta.
-			All'avvio del <em>waiter</em> si controlla subito che i <em>table</em> siano puliti perchè è possibile che siano sporchi dalla serata del giorno prima.
+			Inoltre, il <b>tearoomglobalstate</b> sceglie e ritorna quale <em>table</em> assegnare a un nuovo <em>client</em> controllando prima il <em>table</em> 1 e poi il <em>table</em> 2 perchè il <em>table</em> uno è quello più vicino alla porta.
 			<br/>
+			<br/>
+			All'avvio del <em>waiter</em> si controlla subito che i <em>table</em> siano puliti perchè è possibile che siano sporchi dalla serata del giorno prima e in questo caso il <em>waiter</em> li pulisce
+			<br/>
+			<br/>
+			Sono state individuate le seguenti <b>situazioni critiche</b>:
+			<br/>
+			<br/>
+			<table>
+				<thead>
+					<tr>
+						<th class="tg-0lax">Problematica</th>
+						<th class="tg-0lax">Soluzione</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="tg-0lax">quale <em>table</em> pulisce per primo il <em>waiter</em> quando sono entrambi da pulire</td>
+						<td class="tg-0lax">il <em>waiter</em> sceglie il <em>table</em> nella fase di pulizia più avanzata.</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax">gestione della richiesta di uscita a timer scaduto</td>
+						<td class="tg-0lax">se arriva una richiesta di uscita dalla stanza quando è già scattata il maxstaytime viene ingnorata.</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax">gestione drink per <em>client</em> non al <em>table</em></td>
+						<td class="tg-0lax">il <em>client</em> non è seduto all'interno della stanza perchè ha chiesto di pagare prima, quando il <em>barman</em> dice che l'ordine è pronto il <em>waiter</em> va al bar,
+						ignora il drink e controlla la coda.</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax">gestione della <em>collect</em> quando il <em>client</em> viene cacciato prima di ordinare</td>
+						<td class="tg-0lax">dato che non abbiamo messo informazioni sul pagamento il <em>waiter</em> esegue le stesse operazioni come se il <em>client</em> dovesse pagare.</td>
+					</tr>
+					<tr>
+						<td class="tg-0lax">calcolo del tempo di attesa per l'<em>inform</em></td>
+						<td class="tg-0lax">il <em>client</em> viene informato dallo <em>smartbell</em> del tempo esatto massimo (maxstaytime più corto + tempo di pulizia) di attesa, senza contare interruzioni nella pulizia, prima di trovare un <em>table</em> pulito.
+						L'attesa non viene gestita tramite una coda ma il <em>client</em> deve risuonare il <em>smartbell</em>.</td>
+					</tr>
+				</tbody>
+			</table>
 			<br/>
 			Inoltre, il modello è stato <b>raffinato</b> ulteriormente:
-			nello sprint 1 solo quando il <em>waiter</em> ritorna a casa vede se ci sono altre azioni
-			da eseguire mentre adesso viene interrotto mentre va verso casa. 
+			nello sprint 1 solo quando il <em>waiter</em> ritorna in <em>home</em> vede se ci sono altre azioni
+			da eseguire mentre adesso viene interrotto mentre va verso <em>home</em>. 
 			<br/>
 			<br/>
 			Sono stati aggiunti altri tre <b>attori</b> per soddisfare il requisito di <em>maxstaytime</em>.
 			Per <em>maxstaytime</em> si intende il tempo che il <em>client</em> ha a disposizione per effettuare la sua consumazione nella <em>tearoom</em>.
-			Quando il cliente decide cosa prendere, il contatore parte e viene bloccato quando viene fatta la Request dal cliente al waiter.
-			Per semplificare l'accesso a <em>maxstaytime</em> di ogni <em>client</em> è stato introdotto un attore chiamato maxstaytimer.
-			Esso gestisce il tempo a disposizione ad ogni <em>cliente</em> inviando al waitermind un Dispatch quando il tempo scade.
-			L'attore maxstaytimer usa due attori, ciascuno dei quali gestisce a sua volta il tempo trascorso per ogni cliente nella tearoom.
+			Quando il <em>client</em> decide cosa prendere, il contatore parte e viene bloccato quando viene fatta la Request dal <em>client</em> al <em>waiter</em> quando il <em>client</em> deve ordinare.
+			Per semplificare l'accesso a <em>maxstaytime</em> di ogni <em>client</em> è stato introdotto un attore chiamato <b>maxstaytimer</b>.
+			Esso gestisce il tempo a disposizione ad ogni <em>client</em> inviando al waitermind un Dispatch quando il tempo scade.
+			L'attore maxstaytimer usa due attori, ciascuno dei quali gestisce a sua volta il tempo trascorso per ogni <em>client</em> nella <em>tearoom</em>.
 			<br/>
 			<br/>
 			Dunque, da un punto di <b>vista logico</b> il nostro sistema è formato da più attori in contesti diversi:
@@ -72,10 +110,10 @@
 			Di seguito è riportato il <b>modello</b>.
 			<br/>
 			<br/>
-			<a href="" onclick="openInNewTab('../Sprint2');">tearoom.qak</a>
+			<a href="" onclick="openInNewTab('../../Sprint2/teaRoomAnProbl2/src/tearoom.qak');">tearoom.qak</a>
 			<br/>
 			<br/>
-			<a href="" onClick="openInNewTab('../Sprint2');">client.qak</a>
+			<a href="" onClick="openInNewTab('../../Sprint2/teaRoomAnProbl2/src/client.qak');">client.qak</a>
 			<br/>
 			<br/>
 		</div>
