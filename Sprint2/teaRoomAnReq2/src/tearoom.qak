@@ -41,6 +41,8 @@ Reply   stepfail   : stepfail(DURATION, CAUSE)
 Dispatch goToClearing : goToClearing(P)
 Dispatch goToSanitizing : goToSanitizing (P)
 Dispatch goToCleaning : goToCleaning(P)
+
+Dispatch stopClean : stopClean(P)
   
 
 //**********
@@ -93,6 +95,8 @@ QActor waitermind context ctxtearoom{
 		var Table1IdClient = 0
 		var Table2IdClient = 0
 		
+		var CleaningON = false
+		
 		var IdClientOccupy = 0
 		var TableToOccupy = 0
 		var TableToClean = 0
@@ -103,9 +107,13 @@ QActor waitermind context ctxtearoom{
 	
 	State startState initial{
 		println("waitermind || START")
-		updateResource [# "startState" #] 
+		updateResource [# "startState" #]
+		
+		//TEST
+		[# table1.state = "tableDirty" #]
+		//TEST
 	}
-	Transition t0	whenMsg engineReady -> rest
+	Transition t0	whenMsg engineReady -> checkTableToClean
 	
 	State checkQueue{
 		println("waitermind	|| checkingQueue")
@@ -157,6 +165,17 @@ QActor waitermind context ctxtearoom{
 	Transition t2	whenReply done -> rest
 					
 	State acceptorinform{
+		//TEST
+		[# readLine() #]
+		//TEST
+		
+		if [#CleaningON == true #]{
+            forward waiterengine -m stopClean : stopClean(P)
+            [#
+                CleaningON = false
+                TableToClean = 0
+            #]
+        }
 		
 		println("waitermind || accept or inform")
 		
@@ -207,18 +226,19 @@ QActor waitermind context ctxtearoom{
 		println("waitermind || reachDoor") 
 		updateResource [# "reachDoor" #]
 		
-//		//TEST
-//		println("waitermind 	|| wait Enter - doing reachDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-//		[# readLine() #]
-//		//TEST
-		
 		request waiterengine -m moveTo : moveTo($X_entrance, $Y_entrance)
 		
 	}//end reachDoor
 	Transition t3	whenReply done -> convoyTable
 	
 	State convoyTable{
-		//[# readLine() #]
+		
+		//TEST
+		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		println("waitermind 		|| wait Enter - pos-> EntranceDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		[# readLine() #]
+		//TEST
+		
 		println("waitermind || convoyTable")
 		updateResource [# "convoyTable"#]
 		delayVar DelayTakeClient
@@ -244,8 +264,17 @@ QActor waitermind context ctxtearoom{
 	Transition t4	whenReply done -> checkQueue
 	
 	
-	State reachTableOrder{ 
+	State reachTableOrder{
 		//[# readLine() #]
+		
+		if [#CleaningON == true #]{
+			forward waiterengine -m stopClean : stopClean (P)
+			[# 
+				CleaningON = false 
+				TableToClean = 0
+			#]
+		}
+		
 		println("waitermind || reachTableOrder")
 		updateResource [# "reachTableOrder"#]
 		//check table ordering
@@ -269,7 +298,14 @@ QActor waitermind context ctxtearoom{
 	}//end reachTableOrder
 	Transition t5	whenReply done -> waitOrderClient
 
-	State waitOrderClient{ 		
+	State waitOrderClient{
+		
+		//TEST
+		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		[# readLine() #]
+		//TEST
+				
 		println("waitermind || waitOrderClient")
 		updateResource [# "waitOrderClient" #]
 		
@@ -289,6 +325,15 @@ QActor waitermind context ctxtearoom{
 	
 	State reachBar{
 		//[# readLine() #]
+		
+		if [#CleaningON == true #]{
+			forward waiterengine -m stopClean : stopClean (P)
+			[# 
+				CleaningON = false 
+				TableToClean = 0
+			#]
+		}
+		
 		println("waitermind || reachBar")
 		updateResource [# "reachBar"#]	
 		onMsg(barmanOrderReady : barmanOrderReady(ID)){
@@ -299,6 +344,12 @@ QActor waitermind context ctxtearoom{
 	Transition t6	whenReply done -> serveTable
 	
 	State serveTable{
+		//TEST
+		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		println("waitermind 		|| wait Enter - pos-> BARMAN || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		[# readLine() #]
+		//TEST
+		
 		println("waitermind || serveTable")
 		updateResource [# "serveTable"#]	
 		delayVar DelayTakeDrink
@@ -327,6 +378,15 @@ QActor waitermind context ctxtearoom{
 	
 	State reachTableCollect{
 		//[# readLine() #]
+		
+		if [#CleaningON == true #]{
+			forward waiterengine -m stopClean : stopClean (P)
+			[# 
+				CleaningON = false 
+				TableToClean = 0
+			#]
+		}
+		
 		println("waitermind || reachTableCollect")
 		updateResource [# "reachTableCollect"#]
 		onMsg(clientPaymentReady : clientPaymentReady(ID)){
@@ -347,6 +407,12 @@ QActor waitermind context ctxtearoom{
 	Transition t8	whenReply done -> collect
 	
 	State collect{
+		//TEST
+		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		[# readLine() #]
+		//TEST
+		
 		println("waitermind || collect")
 		updateResource [# "collect"#]
 		//delay time perchè ci metto un po' a prendere il cash
@@ -372,6 +438,13 @@ QActor waitermind context ctxtearoom{
 	Transition t9 	whenReply done -> checkQueue
 	
 	State reachTableClean{
+		
+		//TEST
+		//updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		//println("waitermind 		|| wait Enter - pos-> TableClean  || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		//[# readLine() #]
+		//TEST
+		
 		println("waitermind || reachTableClean")
 		updateResource [# "reachTableClean"#]
 		delay 1000
@@ -423,9 +496,18 @@ QActor waitermind context ctxtearoom{
 	
 
 	State tableClearing{	
-		[# readLine() #]	
+		
+		//TEST
+		//updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+		//println("waitermind 		|| wait Enter - Sto andando a pulire || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		//[# readLine() #]
+		//TEST
+	
 		println("waitermind || tableClearing")
 		updateResource [# "tableClearing"#]
+		
+		//TEST
+		[# readLine() #]
 		
 		if [# TableToClean ==  1 #] {
 			[# table1.state = "tableClearing" #]
@@ -433,6 +515,10 @@ QActor waitermind context ctxtearoom{
 		if [# TableToClean ==  2 #] {
 			[# table2.state = "tableClearing" #]
 		}
+		
+		[# 
+			CleaningON = true
+		#]
 		
 		forward waiterengine -m clean : clean($DoClear)
 	}//end tableClear
@@ -444,7 +530,7 @@ QActor waitermind context ctxtearoom{
 	
 	
 	State tableSanitizing{
-		[# readLine() #]
+		//[# readLine() #]
 		println("waitermind || tableSanitizing")
 		updateResource [# "tableSanitizing"#]
 		
@@ -455,7 +541,13 @@ QActor waitermind context ctxtearoom{
 			[# table2.state = "tableSanitizing" #]
 		}
 		
+		[# 
+			CleaningON = true
+		#]
 		
+		//TEST
+		[# readLine() #]
+		//TEST
 		
 		forward waiterengine -m clean : clean($DoSanitize)
 	}//end tableSanitize
@@ -466,7 +558,7 @@ QActor waitermind context ctxtearoom{
 					whenRequest smartbellEntryRequest -> acceptorinform
 	
 	State tableCleaning{
-		[# readLine() #] 
+		//[# readLine() #] 
 		println("waitermind || tableCleaning")
 		updateResource [# "tableCleaning"#]
 		
@@ -477,7 +569,9 @@ QActor waitermind context ctxtearoom{
 			[# table2.state = "tableCleaning" #]
 		}
 		
-		
+		[# 
+			CleaningON = true
+		#]
 		
 		forward waiterengine -m clean : clean($DoClean)
 	}//end tableClean
@@ -499,7 +593,10 @@ QActor waitermind context ctxtearoom{
 			[# table2.state = "tableCleaned" #]
 		}
 		
-		[# TableToClean =  0 #]
+		[# 
+			CleaningON = false
+			TableToClean =  0
+		#]
 	}
 	Transition t12	whenTime 100			 ->     checkTableToClean
 					whenMsg clientOrderReady -> reachTableOrder
@@ -599,6 +696,8 @@ QActor waiterengine context ctxtearoom{
 			val TableClearTime = 4000L
 			val TableSanitizeTime = 2000L
 			val TableCleanTime = 2000L
+			
+			var TimeToClean = 0L
 			
 			var CmdToPerform = ""  
 		#]
@@ -703,19 +802,24 @@ QActor waiterengine context ctxtearoom{
 			if [# payloadArg(0) == "1" #] 
 			{//sono in clear
 				println("waiterengine || clearing")
-				delayVar TableClearTime
+				[# TimeToClean = TableClearTime #]
 			}//else if
 			if [# payloadArg(0) == "2" #]
 			{
 				println("waiterengine || sanitizing")
-				delayVar TableSanitizeTime
+				[# TimeToClean = TableSanitizeTime #]
 			}
 			if [# payloadArg(0) == "3" #]
 			{
 				println("waiterengine || cleaning")
-				delayVar TableCleanTime
+				[# TimeToClean = TableCleanTime #]
 			} 
 		}
+	}
+	Transition t0 	whenTimeVar TimeToClean  -> informStateAboutEndCleaning
+					whenMsg stopClean  -> waitCmd
+	
+	State informStateAboutEndCleaning{
 		forward waitermind -m doneCleanRun : doneCleanRun(P)
 	}
 	Goto waitCmd

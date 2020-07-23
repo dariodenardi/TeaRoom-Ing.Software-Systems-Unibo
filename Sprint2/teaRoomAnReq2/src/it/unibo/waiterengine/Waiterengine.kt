@@ -28,6 +28,8 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					val TableSanitizeTime = 2000L
 					val TableCleanTime = 2000L
 					
+					var TimeToClean = 0L
+					
 					var CmdToPerform = ""  
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
@@ -135,17 +137,25 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								if(  payloadArg(0) == "1"  
 								 ){println("waiterengine || clearing")
-								delay(TableClearTime)
+								 TimeToClean = TableClearTime  
 								}
 								if(  payloadArg(0) == "2"  
 								 ){println("waiterengine || sanitizing")
-								delay(TableSanitizeTime)
+								 TimeToClean = TableSanitizeTime  
 								}
 								if(  payloadArg(0) == "3"  
 								 ){println("waiterengine || cleaning")
-								delay(TableCleanTime)
+								 TimeToClean = TableCleanTime  
 								}
 						}
+						stateTimer = TimerActor("timer_cleanTable", 
+							scope, context!!, "local_tout_waiterengine_cleanTable", TimeToClean )
+					}
+					 transition(edgeName="t052",targetState="informStateAboutEndCleaning",cond=whenTimeout("local_tout_waiterengine_cleanTable"))   
+					transition(edgeName="t053",targetState="waitCmd",cond=whenDispatch("stopClean"))
+				}	 
+				state("informStateAboutEndCleaning") { //this:State
+					action { //it:State
 						forward("doneCleanRun", "doneCleanRun(P)" ,"waitermind" ) 
 					}
 					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )

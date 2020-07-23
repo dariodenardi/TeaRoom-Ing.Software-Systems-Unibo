@@ -51,6 +51,8 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				var Table1IdClient = 0
 				var Table2IdClient = 0
 				
+				var CleaningON = false
+				
 				var IdClientOccupy = 0
 				var TableToOccupy = 0
 				var TableToClean = 0
@@ -63,8 +65,9 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						println("waitermind || START")
 						updateResourceRep( "startState"  
 						)
+						 table1.state = "tableDirty"  
 					}
-					 transition(edgeName="t00",targetState="rest",cond=whenDispatch("engineReady"))
+					 transition(edgeName="t00",targetState="checkTableToClean",cond=whenDispatch("engineReady"))
 				}	 
 				state("checkQueue") { //this:State
 					action { //it:State
@@ -122,6 +125,13 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("acceptorinform") { //this:State
 					action { //it:State
+						 readLine()  
+						if( CleaningON == true  
+						 ){forward("stopClean", "stopClean(P)" ,"waiterengine" ) 
+						
+						                CleaningON = false
+						                TableToClean = 0
+						}
 						println("waitermind || accept or inform")
 						if( checkMsgContent( Term.createTerm("smartbellEntryRequest(ID)"), Term.createTerm("smartbellEntryRequest(ID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
@@ -174,6 +184,10 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("convoyTable") { //this:State
 					action { //it:State
+						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
+						)
+						println("waitermind 		|| wait Enter - pos-> EntranceDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						 readLine()  
 						println("waitermind || convoyTable")
 						updateResourceRep( "convoyTable" 
 						)
@@ -196,6 +210,12 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("reachTableOrder") { //this:State
 					action { //it:State
+						if( CleaningON == true  
+						 ){forward("stopClean", "stopClean(P)" ,"waiterengine" ) 
+						 
+										CleaningON = false 
+										TableToClean = 0
+						}
 						println("waitermind || reachTableOrder")
 						updateResourceRep( "reachTableOrder" 
 						)
@@ -216,6 +236,10 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("waitOrderClient") { //this:State
 					action { //it:State
+						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
+						)
+						println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						 readLine()  
 						println("waitermind || waitOrderClient")
 						updateResourceRep( "waitOrderClient"  
 						)
@@ -237,6 +261,12 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("reachBar") { //this:State
 					action { //it:State
+						if( CleaningON == true  
+						 ){forward("stopClean", "stopClean(P)" ,"waiterengine" ) 
+						 
+										CleaningON = false 
+										TableToClean = 0
+						}
 						println("waitermind || reachBar")
 						updateResourceRep( "reachBar" 
 						)
@@ -250,6 +280,10 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("serveTable") { //this:State
 					action { //it:State
+						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
+						)
+						println("waitermind 		|| wait Enter - pos-> BARMAN || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						 readLine()  
 						println("waitermind || serveTable")
 						updateResourceRep( "serveTable" 
 						)
@@ -273,6 +307,12 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("reachTableCollect") { //this:State
 					action { //it:State
+						if( CleaningON == true  
+						 ){forward("stopClean", "stopClean(P)" ,"waiterengine" ) 
+						 
+										CleaningON = false 
+										TableToClean = 0
+						}
 						println("waitermind || reachTableCollect")
 						updateResourceRep( "reachTableCollect" 
 						)
@@ -292,6 +332,10 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("collect") { //this:State
 					action { //it:State
+						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
+						)
+						println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						 readLine()  
 						println("waitermind || collect")
 						updateResourceRep( "collect" 
 						)
@@ -360,16 +404,18 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("tableClearing") { //this:State
 					action { //it:State
-						 readLine()  
 						println("waitermind || tableClearing")
 						updateResourceRep( "tableClearing" 
 						)
+						 readLine()  
 						if(  TableToClean ==  1  
 						 ){ table1.state = "tableClearing"  
 						}
 						if(  TableToClean ==  2  
 						 ){ table2.state = "tableClearing"  
 						}
+						 
+									CleaningON = true
 						forward("clean", "clean($DoClear)" ,"waiterengine" ) 
 					}
 					 transition(edgeName="t1124",targetState="tableSanitizing",cond=whenDispatch("doneCleanRun"))
@@ -380,7 +426,6 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("tableSanitizing") { //this:State
 					action { //it:State
-						 readLine()  
 						println("waitermind || tableSanitizing")
 						updateResourceRep( "tableSanitizing" 
 						)
@@ -390,6 +435,9 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						if(  TableToClean ==  2  
 						 ){ table2.state = "tableSanitizing"  
 						}
+						 
+									CleaningON = true
+						 readLine()  
 						forward("clean", "clean($DoSanitize)" ,"waiterengine" ) 
 					}
 					 transition(edgeName="t1229",targetState="tableCleaning",cond=whenDispatch("doneCleanRun"))
@@ -400,7 +448,6 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("tableCleaning") { //this:State
 					action { //it:State
-						 readLine()  
 						println("waitermind || tableCleaning")
 						updateResourceRep( "tableCleaning" 
 						)
@@ -410,6 +457,8 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						if(  TableToClean ==  2  
 						 ){ table2.state = "tableCleaning"  
 						}
+						 
+									CleaningON = true
 						forward("clean", "clean($DoClean)" ,"waiterengine" ) 
 					}
 					 transition(edgeName="t1234",targetState="updateTableCleaned",cond=whenDispatch("doneCleanRun"))
@@ -429,7 +478,9 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						if(  TableToClean ==  2  
 						 ){ table2.state = "tableCleaned"  
 						}
-						 TableToClean =  0  
+						 
+									CleaningON = false
+									TableToClean =  0
 						stateTimer = TimerActor("timer_updateTableCleaned", 
 							scope, context!!, "local_tout_waitermind_updateTableCleaned", 100.toLong() )
 					}

@@ -33,8 +33,8 @@ class Barman ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						updateResourceRep( "waitOrder"  
 						)
 					}
-					 transition(edgeName="t052",targetState="prepareOrder",cond=whenDispatch("waiterOrderForward"))
-					transition(edgeName="t053",targetState="endState",cond=whenDispatch("end"))
+					 transition(edgeName="t054",targetState="prepareOrder",cond=whenDispatch("waiterOrderForward"))
+					transition(edgeName="t055",targetState="endState",cond=whenDispatch("end"))
 				}	 
 				state("prepareOrder") { //this:State
 					action { //it:State
