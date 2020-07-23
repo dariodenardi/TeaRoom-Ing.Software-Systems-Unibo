@@ -181,7 +181,6 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 								updateResourceRep("inform ${payloadArg(0)}" 
 								)
 						}
-						 readLine()  
 					}
 					 transition( edgeName="goto",targetState="checkQueue", cond=doswitch() )
 				}	 

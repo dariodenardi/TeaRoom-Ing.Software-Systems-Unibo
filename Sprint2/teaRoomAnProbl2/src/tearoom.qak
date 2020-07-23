@@ -275,7 +275,7 @@ QActor waitermind context ctxtearoom{
 			updateResource[#"inform ${payloadArg(0)}"#]	
 		}
 		//test inform
-		[# readLine() #]
+		//[# readLine() #]
 	}
 	Goto checkQueue
 	
