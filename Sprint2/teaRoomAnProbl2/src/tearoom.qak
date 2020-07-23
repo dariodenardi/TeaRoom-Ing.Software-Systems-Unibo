@@ -270,8 +270,12 @@ QActor waitermind context ctxtearoom{
 	
 	State analizeTimeForInform{
 		onMsg (getTimerForInformReply : getTimerForInformReply(TIMER)){
-			replyTo smartbellEntryRequest with smartbellEntryReply : smartbellEntryReply(inform, $payloadArg(0))	
+			replyTo smartbellEntryRequest with smartbellEntryReply : smartbellEntryReply(inform, $payloadArg(0))
+			//test inform
+			updateResource[#"inform ${payloadArg(0)}"#]	
 		}
+		//test inform
+		[# readLine() #]
 	}
 	Goto checkQueue
 	
@@ -299,6 +303,7 @@ QActor waitermind context ctxtearoom{
 //		println("waitermind 	|| wait Enter - doing reachDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
 //		[# readLine() #]
 //		//TEST
+
 		solve(pos(entrance, X, Y))
 			ifSolved{
 				[#
@@ -837,7 +842,7 @@ QActor waitermind context ctxtearoom{
  
 QActor smartbell context ctxtearoom{
 	[# 
-		val Temp_max = 37.5
+		val Temp_max = 40
 		var ID_client = 1 
 		var ClientTemp :Double = 0.0
 	#] 
@@ -878,10 +883,12 @@ QActor smartbell context ctxtearoom{
 	
 	State checkWaiterReply{
 		
-		forward tearoomglobalstate -m addClientAccepted : addClientAccepted(P)
-		
 		onMsg(smartbellEntryReply : smartbellEntryReply(ENTRATA, ID)){
 			println("smartbell 		|| ricevuta reply : ${ payloadArg(0) }")
+			if [# payloadArg(0) == "accept"#]
+			{
+					forward tearoomglobalstate -m addClientAccepted : addClientAccepted(P)
+			}
 			replyTo clientRingEntryRequest with clientRingEntryReply : clientRingEntryReply($payloadArg(0), $payloadArg(1))
 		}
 	}
@@ -1435,6 +1442,9 @@ QActor tearoomglobalstate context ctxtearoom{
 	[#
 		val TimeMaxStay 	= 90000L
 		val TotalCleaning	= 1600L	
+		var TimeLeft1 		= 0L
+		var TimeLeft2 		= 0L
+		var ToReturnTimer 	= 0L
 	#]
 	State s0 initial{
 		println("tearoomglobalstate		|| START")
@@ -1537,7 +1547,6 @@ QActor tearoomglobalstate context ctxtearoom{
 				solve( stateTable($payloadArg(0), S, T))
 				ifSolved
 				{
-					println("ERRORE ${payloadArg(1)}")
 					[#
 						var Stato = getCurSol("S").toString()
 						var Tempo = getCurSol("T").toString().toLong() + payloadArg(1).toLong()
@@ -1560,7 +1569,35 @@ QActor tearoomglobalstate context ctxtearoom{
 	Goto wait
 	
 	State returnTimeInform{
-		[# var ToReturnTimer = 0L #]
+		[# ToReturnTimer = 0L #]
+//		solve ( stateTable(1, S, T))
+//		ifSolved
+//		{
+//			[# var Stato = getCurSol("S").toString() #]
+//			if [# Stato == "tableDirty" || Stato == "tableCleaning" || Stato == "tableClearing" || Stato == "tableSanitizing"#]
+//			{
+//				[# ToReturnTimer = TotalCleaning #] 
+//			}
+//		}
+//		if[# ToReturnTimer == 0L #]
+//		{
+//			solve ( stateTable(2, S, T))
+//			ifSolved
+//			{
+//				[# var Stato = getCurSol("S").toString() #]
+//				if [# Stato == "tableDirty" || Stato == "tableCleaning" || Stato == "tableClearing" || Stato == "tableSanitizing"#]
+//				{
+//					[# ToReturnTimer = TotalCleaning #] 
+//				}
+//			}
+//		}
+//		
+//		if[# ToReturnTimer == 0L #]
+//		{
+//			[# ToReturnTimer = TotalCleaning+TimeMaxStay #]
+//		}
+//		replyTo getTimerForInformReq with getTimerForInformReply : getTimerForInformReply($ToReturnTimer)
+//		
 		solve ( stateTable(1, S, T))
 		ifSolved
 		{
@@ -1583,13 +1620,42 @@ QActor tearoomglobalstate context ctxtearoom{
 			}
 		}
 		
-		if[# ToReturnTimer == 0L #]
+		if[# ToReturnTimer != 0L #]
 		{
-			[# ToReturnTimer = TotalCleaning+TimeMaxStay #]
+			replyTo getTimerForInformReq with getTimerForInformReply : getTimerForInformReply($ToReturnTimer)
+		}
+		
+	}
+	Goto wait if [# ToReturnTimer != 0L #] else askTimeLeft1
+	
+	State askTimeLeft1{
+		request maxstaytime -m askMaxStayTimeLeftReq : askMaxStayTimeLeftReq(1)	
+	}
+	Transition t0	whenReply	askMaxStayTimeLeftReply -> askTimeLeft2
+	 
+	State askTimeLeft2{
+		onMsg(askMaxStayTimeLeftReply : askMaxStayTimeLeftReply(TIMERLEFT)){
+			[# TimeLeft1 = payloadArg(0).toLong()#]
+		}
+		request maxstaytime -m askMaxStayTimeLeftReq : askMaxStayTimeLeftReq(2)	
+	}
+	Transition t0	whenReply	askMaxStayTimeLeftReply -> respondForInform
+	
+	State respondForInform{
+		[# ToReturnTimer = 0L #]
+		onMsg(askMaxStayTimeLeftReply : askMaxStayTimeLeftReply(TIMERLEFT)){
+			[# TimeLeft2 = payloadArg(0).toLong()#]
+		}
+		[# ToReturnTimer = TotalCleaning #] 
+		if[# TimeLeft1 < TimeLeft2 #]
+		{
+			[# ToReturnTimer += TimeLeft1 #] 
+		}
+		else 
+		{
+			[# ToReturnTimer += TimeLeft2 #] 
 		}
 		replyTo getTimerForInformReq with getTimerForInformReply : getTimerForInformReply($ToReturnTimer)
-		
-		
 	}
 	Goto wait
 	

@@ -4,7 +4,7 @@ bin/default
 .classpath
 .project
 build
-logs
+log
 
 log4jInfo.log
 

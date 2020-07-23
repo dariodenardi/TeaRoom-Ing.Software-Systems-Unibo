@@ -19,6 +19,9 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 		
 				val TimeMaxStay 	= 90000L
 				val TotalCleaning	= 1600L	
+				var TimeLeft1 		= 0L
+				var TimeLeft2 		= 0L
+				var ToReturnTimer 	= 0L
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -134,8 +137,7 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 						if( checkMsgContent( Term.createTerm("setTimerTableStopped(N,TIMER)"), Term.createTerm("setTimerTableStopped(N,TIMER)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								solve("stateTable(${payloadArg(0)},S,T)","") //set resVar	
-								if( currentSolution.isSuccess() ) {println("ERRORE ${payloadArg(1)}")
-								
+								if( currentSolution.isSuccess() ) {
 														var Stato = getCurSol("S").toString()
 														var Tempo = getCurSol("T").toString().toLong() + payloadArg(1).toLong()
 								solve("setStateTable(${payloadArg(0)},$Stato,$Tempo)","") //set resVar	
@@ -158,7 +160,7 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 				}	 
 				state("returnTimeInform") { //this:State
 					action { //it:State
-						 var ToReturnTimer = 0L  
+						 ToReturnTimer = 0L  
 						solve("stateTable(1,S,T)","") //set resVar	
 						if( currentSolution.isSuccess() ) { var Stato = getCurSol("S").toString()  
 						if(  Stato == "tableDirty" || Stato == "tableCleaning" || Stato == "tableClearing" || Stato == "tableSanitizing" 
@@ -177,9 +179,45 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 						else
 						{}
 						}
-						if(  ToReturnTimer == 0L  
-						 ){ ToReturnTimer = TotalCleaning+TimeMaxStay  
+						if(  ToReturnTimer != 0L  
+						 ){answer("getTimerForInformReq", "getTimerForInformReply", "getTimerForInformReply($ToReturnTimer)"   )  
 						}
+					}
+					 transition( edgeName="goto",targetState="wait", cond=doswitchGuarded({ ToReturnTimer != 0L  
+					}) )
+					transition( edgeName="goto",targetState="askTimeLeft1", cond=doswitchGuarded({! ( ToReturnTimer != 0L  
+					) }) )
+				}	 
+				state("askTimeLeft1") { //this:State
+					action { //it:State
+						request("askMaxStayTimeLeftReq", "askMaxStayTimeLeftReq(1)" ,"maxstaytime" )  
+					}
+					 transition(edgeName="t0145",targetState="askTimeLeft2",cond=whenReply("askMaxStayTimeLeftReply"))
+				}	 
+				state("askTimeLeft2") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("askMaxStayTimeLeftReply(TIMERLEFT)"), Term.createTerm("askMaxStayTimeLeftReply(TIMERLEFT)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 TimeLeft1 = payloadArg(0).toLong() 
+						}
+						request("askMaxStayTimeLeftReq", "askMaxStayTimeLeftReq(2)" ,"maxstaytime" )  
+					}
+					 transition(edgeName="t0146",targetState="respondForInform",cond=whenReply("askMaxStayTimeLeftReply"))
+				}	 
+				state("respondForInform") { //this:State
+					action { //it:State
+						 ToReturnTimer = 0L  
+						if( checkMsgContent( Term.createTerm("askMaxStayTimeLeftReply(TIMERLEFT)"), Term.createTerm("askMaxStayTimeLeftReply(TIMERLEFT)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 TimeLeft2 = payloadArg(0).toLong() 
+						}
+						 ToReturnTimer = TotalCleaning  
+						if(  TimeLeft1 < TimeLeft2  
+						 ){ ToReturnTimer += TimeLeft1  
+						}
+						else
+						 { ToReturnTimer += TimeLeft2  
+						 }
 						answer("getTimerForInformReq", "getTimerForInformReply", "getTimerForInformReply($ToReturnTimer)"   )  
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )

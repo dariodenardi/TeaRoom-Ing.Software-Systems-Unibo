@@ -178,7 +178,10 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						if( checkMsgContent( Term.createTerm("getTimerForInformReply(TIMER)"), Term.createTerm("getTimerForInformReply(TIMER)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								answer("smartbellEntryRequest", "smartbellEntryReply", "smartbellEntryReply(inform,${payloadArg(0)})"   )  
+								updateResourceRep("inform ${payloadArg(0)}" 
+								)
 						}
+						 readLine()  
 					}
 					 transition( edgeName="goto",targetState="checkQueue", cond=doswitch() )
 				}	 

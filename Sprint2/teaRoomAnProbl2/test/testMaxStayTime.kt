@@ -35,41 +35,47 @@ class TestMaxStayTime {
 		println("%%%  TestPosition terminate ")
 	}
 	
-	fun check(x: String){		
+	fun check1(x: String){		
 		if( maxstaytime1 != null ){
 			println(" --- check--- ${maxstaytime1!!.geResourceRep()}")
-			assertTrue( maxstaytime1!!.geResourceRep() == "$x")
+			assertTrue( maxstaytime1!!.geResourceRep().contains("$x"))
 		}  
 	}
 	
 @Test
-	fun testPosition(){
+	fun testMaxStayTime1(){
 	 	runBlocking{
  			while( maxstaytime1 == null ){
 				println("waits  ... ")
 				delay(initDelayTime)  //time for robot to start
 				maxstaytime1 = it.unibo.kactor.sysUtil.getActor("maxstaytime1")
  			}
-			println(maxstaytime1!!.geResourceRep())
+			//println(maxstaytime1!!.geResourceRep())
+			check1("waitCmd1")
 			MsgUtil.sendMsg(MsgUtil.buildDispatch("maxstaytime1","startTimer","startTimer","maxstaytime1"),maxstaytime1!!)
  			delay(2000)
-			println(maxstaytime1!!.geResourceRep())
+			//println(maxstaytime1!!.geResourceRep())
+			check1("StartTimerCount1")
 			MsgUtil.sendMsg(MsgUtil.buildDispatch("maxstaytime1","stopTimer","stopTimer","maxstaytime1"),maxstaytime1!!)
  			delay(2000)
-			println(maxstaytime1!!.geResourceRep())
+			//println(maxstaytime1!!.geResourceRep())
+			check1("Stop1")
 			MsgUtil.sendMsg(MsgUtil.buildRequest("maxstaytime1","getMaxStayTimeLeftReq","getMaxStayTimeLeftReq","maxstaytime1"),maxstaytime1!!)
 			delay(2000)
-			println(maxstaytime1!!.geResourceRep())
+			//println(maxstaytime1!!.geResourceRep())
+			check1("Return1")
 			MsgUtil.sendMsg(MsgUtil.buildDispatch("maxstaytime1","resumeTimer","resumeTimer","maxstaytime1"),maxstaytime1!!)
 			delay(2000)
-			println(maxstaytime1!!.geResourceRep())
-			//sono in resume, difficile da beccare
+			//println(maxstaytime1!!.geResourceRep())
+			check1("Resume1")
+
 			MsgUtil.sendMsg(MsgUtil.buildRequest("maxstaytime1","getMaxStayTimeLeftReq","getMaxStayTimeLeftReq","maxstaytime1"),maxstaytime1!!)
 			delay(2000)
-			println(maxstaytime1!!.geResourceRep())
+			//println(maxstaytime1!!.geResourceRep())
+			check1("Resume1")
 			
 			
   		}
-	 	println("testWaiterPosition BYE  ")  
+	 	println("BYE")  
 	}
 }

@@ -43,6 +43,18 @@ class TestMaxStayTimeGeneral {
 			assertTrue( maxstaytime!!.geResourceRep().contains("$x"))
 		}  
 	}
+	fun check1(x: String){		
+		if( maxstaytime1 != null ){
+			println(" --- check--- ${maxstaytime1!!.geResourceRep()}")
+			assertTrue( maxstaytime1!!.geResourceRep().contains("$x"))
+		}  
+	}
+	fun check2(x: String){		
+		if( maxstaytime2 != null ){
+			println(" --- check--- ${maxstaytime2!!.geResourceRep()}")
+			assertTrue( maxstaytime2!!.geResourceRep().contains("$x"))
+		}  
+	}
 	
 @Test
 	fun testMaxStayTime(){
@@ -65,7 +77,7 @@ class TestMaxStayTimeGeneral {
 			
 			delay(5000)
 			//println(maxstaytime1!!.geResourceRep())
-			check("waitCmd1")
+			check1("waitCmd1")
 			MsgUtil.sendMsg(MsgUtil.buildDispatch("maxstaytime","startTimer","startTimer(1)","maxstaytime"),maxstaytime!!)
 			//
 			MsgUtil.sendMsg(MsgUtil.buildDispatch("maxstaytime","startTimer","startTimer(2)","maxstaytime"),maxstaytime!!)
@@ -73,57 +85,60 @@ class TestMaxStayTimeGeneral {
  			delay(2000)
 			//println(maxstaytime1!!.geResourceRep())
 			//println(maxstaytime2!!.geResourceRep())
-			check("StartTimerCount1")
-			check("StartTimerCount2")
+			check1("StartTimerCount1")
+			check2("StartTimerCount2")
 			MsgUtil.sendMsg(MsgUtil.buildDispatch("maxstaytime","stopTimer","stopTimer(1)","maxstaytime"),maxstaytime!!)
  			delay(2000)
 			//println(maxstaytime1!!.geResourceRep())
-			check("Stop1")
+			check1("Stop1")
 			MsgUtil.sendMsg(MsgUtil.buildRequest("maxstaytime","askMaxStayTimeLeftReq","askMaxStayTimeLeftReq(1)","maxstaytime"),maxstaytime!!)
 			delay(2000)
 			//println(maxstaytime1!!.geResourceRep())
-			check("Return1")
+			check1("Return1")
 			MsgUtil.sendMsg(MsgUtil.buildDispatch("maxstaytime","resumeTimer","resumeTimer(1)","maxstaytime"),maxstaytime!!)
 			delay(2000)
 			//println(maxstaytime1!!.geResourceRep())
-			check("Resume1")
+			check1("Resume1")
 			MsgUtil.sendMsg(MsgUtil.buildRequest("maxstaytime","askMaxStayTimeLeftReq","askMaxStayTimeLeftReq(1)","maxstaytime"),maxstaytime!!)
 			delay(2000)
 			//println(maxstaytime1!!.geResourceRep())
-			check("Resume1")
+			check1("Resume1")
 			
 			
 			//println(maxstaytime2!!.geResourceRep())
-			check("StartTimerCount2")
+			check2("StartTimerCount2")
 			MsgUtil.sendMsg(MsgUtil.buildDispatch("maxstaytime","stopTimer","stopTimer(2)","maxstaytime"),maxstaytime!!)
  			delay(2000)
 			//println(maxstaytime2!!.geResourceRep())
-			check("Stop2")
+			check2("Stop2")
 			MsgUtil.sendMsg(MsgUtil.buildRequest("maxstaytime","askMaxStayTimeLeftReq","askMaxStayTimeLeftReq(2)","maxstaytime"),maxstaytime!!)
 			delay(2000)
 			//println(maxstaytime2!!.geResourceRep())
-			check("Return2")
+			check2("Return2")
 			MsgUtil.sendMsg(MsgUtil.buildDispatch("maxstaytime","resumeTimer","resumeTimer(2)","maxstaytime"),maxstaytime!!)
 			delay(2000)
 			//println(maxstaytime2!!.geResourceRep())
-			check("Resume2")
+			check2("Resume2")
 			MsgUtil.sendMsg(MsgUtil.buildRequest("maxstaytime","askMaxStayTimeLeftReq","askMaxStayTimeLeftReq(2)","maxstaytime"),maxstaytime!!)
 			delay(2000)
 			//println(maxstaytime2!!.geResourceRep())
-			check("Resume2")
+			check2("Resume2")
 			
 			
 			
 			//TIMER MESSI A 90, non più a 40
-			delay(40000)
+			delay(90000)
 			println(maxstaytime!!.geResourceRep())
+			check("Expired")
 			delay(2000)
-			println(maxstaytime1!!.geResourceRep())
-			println(maxstaytime2!!.geResourceRep())
+			//println(maxstaytime1!!.geResourceRep())
+			//println(maxstaytime2!!.geResourceRep())
+			check1("waitCmd1")
+			check2("waitCmd2")
 			MsgUtil.sendMsg(MsgUtil.buildRequest("maxstaytime","askMaxStayTimeLeftReq","askMaxStayTimeLeftReq(1)","maxstaytime"),maxstaytime!!)
 			MsgUtil.sendMsg(MsgUtil.buildRequest("maxstaytime","askMaxStayTimeLeftReq","askMaxStayTimeLeftReq(2)","maxstaytime"),maxstaytime!!)
 			delay(2000)
   		}
-	 	println("testWaiterPosition BYE")  
+	 	println("BYE")  
 	}
 }

@@ -17,7 +17,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		 
-				val Temp_max = 37.5
+				val Temp_max = 40
 				var ID_client = 1 
 				var ClientTemp :Double = 0.0
 		return { //this:ActionBasciFsm
@@ -59,10 +59,12 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("checkWaiterReply") { //this:State
 					action { //it:State
-						forward("addClientAccepted", "addClientAccepted(P)" ,"tearoomglobalstate" ) 
 						if( checkMsgContent( Term.createTerm("smartbellEntryReply(ENTRATA,ID)"), Term.createTerm("smartbellEntryReply(ENTRATA,ID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								println("smartbell 		|| ricevuta reply : ${ payloadArg(0) }")
+								if(  payloadArg(0) == "accept" 
+								 ){forward("addClientAccepted", "addClientAccepted(P)" ,"tearoomglobalstate" ) 
+								}
 								answer("clientRingEntryRequest", "clientRingEntryReply", "clientRingEntryReply(${payloadArg(0)},${payloadArg(1)})"   )  
 						}
 					}
