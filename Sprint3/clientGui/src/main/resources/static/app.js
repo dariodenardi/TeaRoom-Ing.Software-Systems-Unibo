@@ -92,7 +92,7 @@ function showMsg(message) {
 
 function load() {
 
-	if(message.toString().includes("welcome") || message.toString().includes("ci dispiace")){
+	if(sessionStorage.getItem('message').includes("welcome") || sessionStorage.getItem('message').includes("ci dispiace")){
     	
     	document.getElementById("message").innerHTML = sessionStorage.getItem('message');
     	
