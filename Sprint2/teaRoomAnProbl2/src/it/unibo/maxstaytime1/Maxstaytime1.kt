@@ -37,10 +37,10 @@ class Maxstaytime1 ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						updateResourceRep( "waitCmd1"  
 						)
 					}
-					 transition(edgeName="t094",targetState="newTimer",cond=whenDispatch("startTimer"))
-					transition(edgeName="t095",targetState="waitCmd",cond=whenDispatch("stopTimer"))
-					transition(edgeName="t096",targetState="resume",cond=whenDispatch("resumeTimer"))
-					transition(edgeName="t097",targetState="returnTimerDone",cond=whenRequest("getMaxStayTimeLeftReq"))
+					 transition(edgeName="t093",targetState="newTimer",cond=whenDispatch("startTimer"))
+					transition(edgeName="t094",targetState="waitCmd",cond=whenDispatch("stopTimer"))
+					transition(edgeName="t095",targetState="resume",cond=whenDispatch("resumeTimer"))
+					transition(edgeName="t096",targetState="returnTimerDone",cond=whenRequest("getMaxStayTimeLeftReq"))
 				}	 
 				state("newTimer") { //this:State
 					action { //it:State
@@ -51,10 +51,10 @@ class Maxstaytime1 ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						stateTimer = TimerActor("timer_newTimer", 
 							scope, context!!, "local_tout_maxstaytime1_newTimer", TimeMaxStay )
 					}
-					 transition(edgeName="t198",targetState="timerExpired",cond=whenTimeout("local_tout_maxstaytime1_newTimer"))   
-					transition(edgeName="t199",targetState="stop",cond=whenDispatch("stopTimer"))
-					transition(edgeName="t1100",targetState="newTimer",cond=whenDispatch("startTimer"))
-					transition(edgeName="t1101",targetState="returnTimerDone",cond=whenRequest("getMaxStayTimeLeftReq"))
+					 transition(edgeName="t197",targetState="timerExpired",cond=whenTimeout("local_tout_maxstaytime1_newTimer"))   
+					transition(edgeName="t198",targetState="stop",cond=whenDispatch("stopTimer"))
+					transition(edgeName="t199",targetState="newTimer",cond=whenDispatch("startTimer"))
+					transition(edgeName="t1100",targetState="returnTimerDone",cond=whenRequest("getMaxStayTimeLeftReq"))
 				}	 
 				state("returnTimerDone") { //this:State
 					action { //it:State
@@ -75,9 +75,9 @@ class Maxstaytime1 ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						updateResourceRep( "Stop1 $TimerGlobalDone "  
 						)
 					}
-					 transition(edgeName="t2102",targetState="resume",cond=whenDispatch("resumeTimer"))
-					transition(edgeName="t2103",targetState="newTimer",cond=whenDispatch("startTimer"))
-					transition(edgeName="t2104",targetState="returnTimerDoneStop",cond=whenRequest("getMaxStayTimeLeftReq"))
+					 transition(edgeName="t2101",targetState="resume",cond=whenDispatch("resumeTimer"))
+					transition(edgeName="t2102",targetState="newTimer",cond=whenDispatch("startTimer"))
+					transition(edgeName="t2103",targetState="returnTimerDoneStop",cond=whenRequest("getMaxStayTimeLeftReq"))
 				}	 
 				state("returnTimerDoneStop") { //this:State
 					action { //it:State
@@ -87,9 +87,9 @@ class Maxstaytime1 ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						)
 						answer("getMaxStayTimeLeftReq", "getMaxStayTimeLeftReply", "getMaxStayTimeLeftReply($TimerToReturn)"   )  
 					}
-					 transition(edgeName="t2105",targetState="resume",cond=whenDispatch("resumeTimer"))
-					transition(edgeName="t2106",targetState="newTimer",cond=whenDispatch("startTimer"))
-					transition(edgeName="t2107",targetState="returnTimerDoneStop",cond=whenRequest("getMaxStayTimeLeftReq"))
+					 transition(edgeName="t2104",targetState="resume",cond=whenDispatch("resumeTimer"))
+					transition(edgeName="t2105",targetState="newTimer",cond=whenDispatch("startTimer"))
+					transition(edgeName="t2106",targetState="returnTimerDoneStop",cond=whenRequest("getMaxStayTimeLeftReq"))
 				}	 
 				state("resume") { //this:State
 					action { //it:State
@@ -100,10 +100,10 @@ class Maxstaytime1 ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						stateTimer = TimerActor("timer_resume", 
 							scope, context!!, "local_tout_maxstaytime1_resume", TimeAfterResume )
 					}
-					 transition(edgeName="t3108",targetState="timerExpired",cond=whenTimeout("local_tout_maxstaytime1_resume"))   
-					transition(edgeName="t3109",targetState="stop",cond=whenDispatch("stopTimer"))
-					transition(edgeName="t3110",targetState="newTimer",cond=whenDispatch("startTimer"))
-					transition(edgeName="t3111",targetState="returnTimerDone",cond=whenRequest("getMaxStayTimeLeftReq"))
+					 transition(edgeName="t3107",targetState="timerExpired",cond=whenTimeout("local_tout_maxstaytime1_resume"))   
+					transition(edgeName="t3108",targetState="stop",cond=whenDispatch("stopTimer"))
+					transition(edgeName="t3109",targetState="newTimer",cond=whenDispatch("startTimer"))
+					transition(edgeName="t3110",targetState="returnTimerDone",cond=whenRequest("getMaxStayTimeLeftReq"))
 				}	 
 				state("timerExpired") { //this:State
 					action { //it:State

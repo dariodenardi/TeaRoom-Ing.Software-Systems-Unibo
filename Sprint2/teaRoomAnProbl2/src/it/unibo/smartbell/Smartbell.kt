@@ -17,15 +17,13 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		 
-				val Temp_max = 40
+				val Temp_max = 37.5
 				var ID_client = 1 
 				var ClientTemp :Double = 0.0
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("smartbell 		|| START")
-						updateResourceRep( "START"  
-						)
 					}
 					 transition( edgeName="goto",targetState="waitRing", cond=doswitch() )
 				}	 
@@ -33,35 +31,40 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("smartbell 		|| waitRing")
 					}
-					 transition(edgeName="t069",targetState="checkTempClient",cond=whenRequest("clientRingEntryRequest"))
-					transition(edgeName="t070",targetState="endState",cond=whenDispatch("end"))
+					 transition(edgeName="t068",targetState="checkTempClient",cond=whenRequest("clientRingEntryRequest"))
+					transition(edgeName="t069",targetState="endState",cond=whenDispatch("end"))
 				}	 
 				state("checkTempClient") { //this:State
 					action { //it:State
 						 ClientTemp = kotlin.math.round(  (Math.random()*5+35)*10 )/10  
 						println("smartbell 		|| checkTempClient")
-						updateResourceRep( "welcome checkTempClient"  
-						)
 						if(  ClientTemp < Temp_max  
 						 ){println("smartbell 		|| clienteAccettatoDaSmartBell || temperatura = $ClientTemp || id_client = $ID_client")
 						request("smartbellEntryRequest", "smartbellEntryRequest($ID_client)" ,"waitermind" )  
-						 ID_client++  
 						}
 						else
 						 {println("smartbell 		|| clienteRifiutatoDaSmartBell || temperatura = $ClientTemp")
 						 forward("smartbellClientRejected", "smartbellClientRejected($ClientTemp)" ,"smartbell" ) 
 						 }
 					}
-					 transition(edgeName="t171",targetState="checkWaiterReply",cond=whenReply("smartbellEntryReply"))
-					transition(edgeName="t172",targetState="clientRejected",cond=whenDispatch("smartbellClientRejected"))
+					 transition(edgeName="t170",targetState="checkWaiterReply",cond=whenReply("smartbellEntryReply"))
+					transition(edgeName="t171",targetState="clientRejected",cond=whenDispatch("smartbellClientRejected"))
 				}	 
 				state("checkWaiterReply") { //this:State
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("smartbellEntryReply(ENTRATA,ID)"), Term.createTerm("smartbellEntryReply(ENTRATA,ID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								println("smartbell 		|| ricevuta reply : ${ payloadArg(0) }")
-								updateResourceRep( "welcome ${payloadArg(0)}  ${payloadArg(1)}"  
+								if( payloadArg(0) == "accept" 
+								 ){updateResourceRep( "welcome, sei stato Accettato, il tuo ID: ${payloadArg(1)}"  
 								)
+								 ID_client++  
+								}
+								if( payloadArg(0) == "inform" 
+								 ){ var Tempo = payloadArg(1).toInt() /1000  
+								updateResourceRep( "ci dispiace, non abbiamo posto, torna tra: $Tempo s"  
+								)
+								}
 								if(  payloadArg(0) == "accept" 
 								 ){forward("addClientAccepted", "addClientAccepted(P)" ,"tearoomglobalstate" ) 
 								}
@@ -76,6 +79,8 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						if( checkMsgContent( Term.createTerm("smartbellClientRejected(TEMP)"), Term.createTerm("smartbellClientRejected(TEMP)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								answer("clientRingEntryRequest", "clientRingEntryReply", "clientRingEntryReply(rifiutato,${payloadArg(0)})"   )  
+								updateResourceRep( "ci dispiace, sei stato rifiutato, la tua temp: ${payloadArg(0)}"  
+								)
 						}
 					}
 					 transition( edgeName="goto",targetState="waitRing", cond=doswitch() )

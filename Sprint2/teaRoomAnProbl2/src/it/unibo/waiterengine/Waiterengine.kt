@@ -46,9 +46,9 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						updateResourceRep( "waitCmd"  
 						)
 					}
-					 transition(edgeName="t073",targetState="planPath",cond=whenDispatch("moveTo"))
-					transition(edgeName="t074",targetState="cleanTable",cond=whenDispatch("clean"))
-					transition(edgeName="t075",targetState="waitCmd",cond=whenDispatch("stopEngineMove"))
+					 transition(edgeName="t072",targetState="planPath",cond=whenDispatch("moveTo"))
+					transition(edgeName="t073",targetState="cleanTable",cond=whenDispatch("clean"))
+					transition(edgeName="t074",targetState="waitCmd",cond=whenDispatch("stopEngineMove"))
 				}	 
 				state("planPath") { //this:State
 					action { //it:State
@@ -79,8 +79,8 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						stateTimer = TimerActor("timer_checkStopEngine", 
 							scope, context!!, "local_tout_waiterengine_checkStopEngine", 100.toLong() )
 					}
-					 transition(edgeName="t076",targetState="readStep",cond=whenTimeout("local_tout_waiterengine_checkStopEngine"))   
-					transition(edgeName="t077",targetState="stopEngine",cond=whenDispatch("stopEngineMove"))
+					 transition(edgeName="t075",targetState="readStep",cond=whenTimeout("local_tout_waiterengine_checkStopEngine"))   
+					transition(edgeName="t076",targetState="stopEngine",cond=whenDispatch("stopEngineMove"))
 				}	 
 				state("stopEngine") { //this:State
 					action { //it:State
@@ -109,8 +109,8 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						request("step", "step($StepTime)" ,"basicrobot" )  
 					}
-					 transition(edgeName="t178",targetState="updateMap",cond=whenReply("stepdone"))
-					transition(edgeName="t179",targetState="errorHandler",cond=whenReply("stepfail"))
+					 transition(edgeName="t177",targetState="updateMap",cond=whenReply("stepdone"))
+					transition(edgeName="t178",targetState="errorHandler",cond=whenReply("stepfail"))
 				}	 
 				state("updateMap") { //this:State
 					action { //it:State
@@ -159,8 +159,8 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 								}
 						}
 					}
-					 transition(edgeName="t080",targetState="informStateAboutEndCleaning",cond=whenDispatch("timerFinishedCorrectly"))
-					transition(edgeName="t081",targetState="stopTimer",cond=whenDispatch("stopCleaningEngine"))
+					 transition(edgeName="t079",targetState="informStateAboutEndCleaning",cond=whenDispatch("timerFinishedCorrectly"))
+					transition(edgeName="t080",targetState="stopTimer",cond=whenDispatch("stopCleaningEngine"))
 				}	 
 				state("informStateAboutEndCleaning") { //this:State
 					action { //it:State
@@ -184,7 +184,7 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						}
 						request("stopTimerCleaningReq", "stopTimerCleaningReq(P)" ,"timercleaning" )  
 					}
-					 transition(edgeName="t082",targetState="informStateAboutEndCleaning",cond=whenReply("stopTimerCleaningReply"))
+					 transition(edgeName="t081",targetState="informStateAboutEndCleaning",cond=whenReply("stopTimerCleaningReply"))
 				}	 
 			}
 		}

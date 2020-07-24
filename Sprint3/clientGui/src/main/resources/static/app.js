@@ -58,13 +58,85 @@ var curMsg = ""
 function showMsg(message) {
 	if(curMsg === message)
 		return;
-	console.log(message );
+	//console.log(message );
+	
+	sessionStorage.setItem('message', message);
 	
     if(message.toString().includes("welcome")){
-    	window.alert(message)
+    	
+    	if (sessionStorage.getItem('button1') == "true") {
+    		sessionStorage.setItem('client1', '1');
+    		sessionStorage.setItem('button1', 'false');
+    	} else if (sessionStorage.getItem('button2') == "true") {
+    		sessionStorage.setItem('client2', '1');
+    		sessionStorage.setItem('button2', 'false');
+    	}  else if (sessionStorage.getItem('button3') == "true") {
+    		sessionStorage.setItem('client3', '1');
+    		sessionStorage.setItem('button3', 'false');
+    	}
+    	
     }
     else if(message.toString().includes("ci dispiace")){
-    	window.alert(message)
+    
+    	if (sessionStorage.getItem('button1') == "true") {
+    		sessionStorage.setItem('button1', 'false');
+    	} else if (sessionStorage.getItem('button2') == "true") {
+    		sessionStorage.setItem('button2', 'false');
+    	}  else if (sessionStorage.getItem('button3') == "true") {
+    		sessionStorage.setItem('button3', 'false');
+    	}
+    	
     }
     curMsg = message;
+}
+
+function load() {
+
+	if(message.toString().includes("welcome") || message.toString().includes("ci dispiace")){
+    	
+    	document.getElementById("message").innerHTML = sessionStorage.getItem('message');
+    	
+    }
+    
+    var c1 = sessionStorage.getItem('client1');
+    if (c1 == 1) {
+        document.getElementById("request1").setAttribute("disabled", "disabled");
+    }
+    else if (c1 == 2) {
+        document.getElementById("ready1").setAttribute("disabled", "disabled");
+    }
+    else if (c1 == 3) {
+        document.getElementById("order1").setAttribute("disabled", "disabled");
+    }
+    else if (c1 == 4) {
+        document.getElementById("payment1").setAttribute("disabled", "disabled");
+    }
+    
+    var c2 = sessionStorage.getItem('client2');
+    if (c2 == 1) {
+        document.getElementById("request2").setAttribute("disabled", "disabled");
+    }
+    else if (c2 == 2) {
+        document.getElementById("ready2").setAttribute("disabled", "disabled");
+    }
+    else if (c2 == 3) {
+        document.getElementById("order2").setAttribute("disabled", "disabled");
+    }
+    else if (c2 == 4) {
+        document.getElementById("payment2").setAttribute("disabled", "disabled");
+    }
+    
+    var c3 = sessionStorage.getItem('client3');
+    if (c3 == 1) {
+        document.getElementById("request3").setAttribute("disabled", "disabled");
+    }
+    else if (c3 == 2) {
+        document.getElementById("ready3").setAttribute("disabled", "disabled");
+    }
+    else if (c3 == 3) {
+        document.getElementById("order3").setAttribute("disabled", "disabled");
+    }
+    else if (c3 == 4) {
+        document.getElementById("payment3").setAttribute("disabled", "disabled");
+    }
 }

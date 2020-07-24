@@ -27,11 +27,11 @@ class Maxstaytime ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 					action { //it:State
 						println("maxstaytime	|| WaitCmd")
 					}
-					 transition(edgeName="t088",targetState="newTimer",cond=whenDispatch("startTimer"))
-					transition(edgeName="t089",targetState="resume",cond=whenDispatch("resumeTimer"))
-					transition(edgeName="t090",targetState="stop",cond=whenDispatch("stopTimer"))
-					transition(edgeName="t091",targetState="timerExpired",cond=whenDispatch("maxStayTimerExpired"))
-					transition(edgeName="t092",targetState="getTimeLeft",cond=whenRequest("askMaxStayTimeLeftReq"))
+					 transition(edgeName="t087",targetState="newTimer",cond=whenDispatch("startTimer"))
+					transition(edgeName="t088",targetState="resume",cond=whenDispatch("resumeTimer"))
+					transition(edgeName="t089",targetState="stop",cond=whenDispatch("stopTimer"))
+					transition(edgeName="t090",targetState="timerExpired",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t091",targetState="getTimeLeft",cond=whenRequest("askMaxStayTimeLeftReq"))
 				}	 
 				state("newTimer") { //this:State
 					action { //it:State
@@ -107,7 +107,7 @@ class Maxstaytime ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name
 								}
 						}
 					}
-					 transition(edgeName="t093",targetState="analizeReplyAndForward",cond=whenReply("getMaxStayTimeLeftReply"))
+					 transition(edgeName="t092",targetState="analizeReplyAndForward",cond=whenReply("getMaxStayTimeLeftReply"))
 				}	 
 				state("analizeReplyAndForward") { //this:State
 					action { //it:State

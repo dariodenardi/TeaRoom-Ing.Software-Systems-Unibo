@@ -36,35 +36,39 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 						 var StateRoom = ""  
 						solve("statetearoom(waiter(SW),barman(SB),stateTable(1,ST1,T1),stateTable(2,ST2,T2),clientiAccettati(NA),clientiRifiutati(NR))","") //set resVar	
 						if( currentSolution.isSuccess() ) {
-										StateRoom = 
-										"Waiter: " + getCurSol("SW").toString() +"\n"+
-										"Barman: " + getCurSol("SB").toString() +"\n"+
-										"TABLE 1: " + getCurSol("ST1").toString() +", timerDone: "+ getCurSol("T1").toString()+"\n"+
-										"TABLE 2: " + getCurSol("ST2").toString() +", timerDone: "+ getCurSol("T2").toString()+"\n"+
-										"Client Accepted: " + getCurSol("NA").toString() +"\n"+
-										"Client Rejected: " + getCurSol("NR").toString()
+						                StateRoom =
+						                "{\"Waiter\":"        +"\""+       getCurSol("SW").toString()   +"\","  +
+						                "\"Barman\":"        +"\""+        getCurSol("SB").toString()   +"\","  +
+						                "\"TABLE1\":"        +"\""+        getCurSol("ST1").toString()   +"\","  +
+						                "\"timerDone1\":"     +"\""+        getCurSol("T1").toString()   +"\","  +
+						                "\"TABLE2\":"         +"\""+        getCurSol("ST2").toString()   +"\"," +
+						                "\"timerDone2\":"     +"\""+        getCurSol("T2").toString()   +"\","  +
+						                "\"ClientAccepted\":"    +"\""+    getCurSol("NA").toString()   +"\","  +
+						                "\"ClientRejected\":"    +"\""+    getCurSol("NR").toString()   +"\""  +"}"
 						}
 						else
 						{}
+						updateResourceRep( "$StateRoom"  
+						)
 						println("***********************")
 						println(StateRoom)
 						println("***********************")
 					}
-					 transition(edgeName="t0130",targetState="waiterState",cond=whenDispatch("setWaiterState"))
-					transition(edgeName="t0131",targetState="barmanState",cond=whenDispatch("setBarmanState"))
-					transition(edgeName="t0132",targetState="orderReady",cond=whenDispatch("addOrderReady"))
-					transition(edgeName="t0133",targetState="orderTaken",cond=whenDispatch("removeOrderReady"))
-					transition(edgeName="t0134",targetState="clientAccepted",cond=whenDispatch("addClientAccepted"))
-					transition(edgeName="t0135",targetState="clientRejected",cond=whenDispatch("addClientRejected"))
-					transition(edgeName="t0136",targetState="stateTable",cond=whenDispatch("setStateTable"))
-					transition(edgeName="t0137",targetState="occupyTableState",cond=whenDispatch("occupyTable"))
-					transition(edgeName="t0138",targetState="timerStoppedTable",cond=whenDispatch("setTimerTableStopped"))
-					transition(edgeName="t0139",targetState="returnTable1State",cond=whenRequest("getTable1StateReq"))
-					transition(edgeName="t0140",targetState="returnTable2State",cond=whenRequest("getTable2StateReq"))
-					transition(edgeName="t0141",targetState="returnTableToClean",cond=whenRequest("getTableToCleanReq"))
-					transition(edgeName="t0142",targetState="returnFreeTable",cond=whenRequest("getFreeCleanTableReq"))
-					transition(edgeName="t0143",targetState="returnTableFromId",cond=whenRequest("getTableFromIdReq"))
-					transition(edgeName="t0144",targetState="returnTimeInform",cond=whenRequest("getTimerForInformReq"))
+					 transition(edgeName="t0129",targetState="waiterState",cond=whenDispatch("setWaiterState"))
+					transition(edgeName="t0130",targetState="barmanState",cond=whenDispatch("setBarmanState"))
+					transition(edgeName="t0131",targetState="orderReady",cond=whenDispatch("addOrderReady"))
+					transition(edgeName="t0132",targetState="orderTaken",cond=whenDispatch("removeOrderReady"))
+					transition(edgeName="t0133",targetState="clientAccepted",cond=whenDispatch("addClientAccepted"))
+					transition(edgeName="t0134",targetState="clientRejected",cond=whenDispatch("addClientRejected"))
+					transition(edgeName="t0135",targetState="stateTable",cond=whenDispatch("setStateTable"))
+					transition(edgeName="t0136",targetState="occupyTableState",cond=whenDispatch("occupyTable"))
+					transition(edgeName="t0137",targetState="timerStoppedTable",cond=whenDispatch("setTimerTableStopped"))
+					transition(edgeName="t0138",targetState="returnTable1State",cond=whenRequest("getTable1StateReq"))
+					transition(edgeName="t0139",targetState="returnTable2State",cond=whenRequest("getTable2StateReq"))
+					transition(edgeName="t0140",targetState="returnTableToClean",cond=whenRequest("getTableToCleanReq"))
+					transition(edgeName="t0141",targetState="returnFreeTable",cond=whenRequest("getFreeCleanTableReq"))
+					transition(edgeName="t0142",targetState="returnTableFromId",cond=whenRequest("getTableFromIdReq"))
+					transition(edgeName="t0143",targetState="returnTimeInform",cond=whenRequest("getTimerForInformReq"))
 				}	 
 				state("waiterState") { //this:State
 					action { //it:State
@@ -192,7 +196,7 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 					action { //it:State
 						request("askMaxStayTimeLeftReq", "askMaxStayTimeLeftReq(1)" ,"maxstaytime" )  
 					}
-					 transition(edgeName="t0145",targetState="askTimeLeft2",cond=whenReply("askMaxStayTimeLeftReply"))
+					 transition(edgeName="t0144",targetState="askTimeLeft2",cond=whenReply("askMaxStayTimeLeftReply"))
 				}	 
 				state("askTimeLeft2") { //this:State
 					action { //it:State
@@ -202,7 +206,7 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 						}
 						request("askMaxStayTimeLeftReq", "askMaxStayTimeLeftReq(2)" ,"maxstaytime" )  
 					}
-					 transition(edgeName="t0146",targetState="respondForInform",cond=whenReply("askMaxStayTimeLeftReply"))
+					 transition(edgeName="t0145",targetState="respondForInform",cond=whenReply("askMaxStayTimeLeftReply"))
 				}	 
 				state("respondForInform") { //this:State
 					action { //it:State

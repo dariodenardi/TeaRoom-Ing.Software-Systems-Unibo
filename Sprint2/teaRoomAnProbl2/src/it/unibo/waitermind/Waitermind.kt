@@ -45,6 +45,8 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				
 				var TableForCollect = ""
 				
+				var OrderOfRightClient = false
+				
 				var TimerTable1 = 0 
 				var TimerTable2 = 0
 				
@@ -215,7 +217,6 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
 						println("waitermind 		|| wait Enter - pos-> EntranceDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
-						 readLine()  
 						println("waitermind 		|| convoyTable")
 						updateResourceRep( "convoyTable" 
 						)
@@ -297,7 +298,6 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
 						println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
-						 readLine()  
 						println("waitermind 		|| waitOrderClient")
 						updateResourceRep( "waitOrderClient"  
 						)
@@ -307,6 +307,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("trasmit") { //this:State
 					action { //it:State
+						OrderOfRightClient = false 
 						println("waitermind 		|| trasmit")
 						updateResourceRep( "trasmit" 
 						)
@@ -314,17 +315,23 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								println("waitermind 		|| ricevuto ordine ID,ORDER: ${payloadArg(0)},${payloadArg(1)} ")
 								if(  IdForOrder == payloadArg(0).toInt()  
-								 ){forward("waiterOrderForward", "waiterOrderForward(${payloadArg(0)},${payloadArg(1)})" ,"barman" ) 
+								 ){ OrderOfRightClient = true  
+								forward("waiterOrderForward", "waiterOrderForward(${payloadArg(0)},${payloadArg(1)})" ,"barman" ) 
 								
 													IdForOrder = 0
 													TableForOrder = "0"	
 								}
 						}
-						stateTimer = TimerActor("timer_trasmit", 
-							scope, context!!, "local_tout_waitermind_trasmit", 100.toLong() )
 					}
-					 transition(edgeName="t027",targetState="checkQueue",cond=whenTimeout("local_tout_waitermind_trasmit"))   
-					transition(edgeName="t028",targetState="trasmit",cond=whenDispatch("clientOrder"))
+					 transition( edgeName="goto",targetState="checkQueue", cond=doswitchGuarded({ OrderOfRightClient == true  
+					}) )
+					transition( edgeName="goto",targetState="trasmitCheck", cond=doswitchGuarded({! ( OrderOfRightClient == true  
+					) }) )
+				}	 
+				state("trasmitCheck") { //this:State
+					action { //it:State
+					}
+					 transition(edgeName="t027",targetState="trasmit",cond=whenDispatch("clientOrder"))
 				}	 
 				state("reachBar") { //this:State
 					action { //it:State
@@ -354,14 +361,13 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						else
 						{}
 					}
-					 transition(edgeName="t629",targetState="getDrink",cond=whenDispatch("done"))
+					 transition(edgeName="t628",targetState="getDrink",cond=whenDispatch("done"))
 				}	 
 				state("getDrink") { //this:State
 					action { //it:State
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
 						println("waitermind 		|| wait Enter - pos-> BARMAN || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
-						 readLine()  
 						println("waitermind 		|| getDrink")
 						updateResourceRep( "getDrink" 
 						)
@@ -370,7 +376,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						request("getTableFromIdReq", "getTableFromIdReq($IdForOrder)" ,"tearoomglobalstate" )  
 						delay(DelayTakeDrink)
 					}
-					 transition(edgeName="t730",targetState="checkClientPresentInRoomServe",cond=whenReply("getTableFromIdReply"))
+					 transition(edgeName="t729",targetState="checkClientPresentInRoomServe",cond=whenReply("getTableFromIdReply"))
 				}	 
 				state("checkClientPresentInRoomServe") { //this:State
 					action { //it:State
@@ -400,7 +406,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						else
 						{}
 					}
-					 transition(edgeName="t031",targetState="serveDrinkTable",cond=whenDispatch("done"))
+					 transition(edgeName="t030",targetState="serveDrinkTable",cond=whenDispatch("done"))
 				}	 
 				state("serveDrinkTable") { //this:State
 					action { //it:State
@@ -431,7 +437,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 								request("getTableFromIdReq", "getTableFromIdReq(${payloadArg(0)})" ,"tearoomglobalstate" )  
 						}
 					}
-					 transition(edgeName="t832",targetState="checkReachTableCollectID",cond=whenReply("getTableFromIdReply"))
+					 transition(edgeName="t831",targetState="checkReachTableCollectID",cond=whenReply("getTableFromIdReply"))
 				}	 
 				state("checkReachTableCollectID") { //this:State
 					action { //it:State
@@ -461,14 +467,13 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						else
 						{}
 					}
-					 transition(edgeName="t033",targetState="collect",cond=whenDispatch("done"))
+					 transition(edgeName="t032",targetState="collect",cond=whenDispatch("done"))
 				}	 
 				state("collect") { //this:State
 					action { //it:State
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
 						println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
-						 readLine()  
 						println("waitermind 		|| collect")
 						updateResourceRep( "collect" 
 						)
@@ -493,14 +498,13 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						else
 						{}
 					}
-					 transition(edgeName="t934",targetState="checkQueue",cond=whenDispatch("done"))
+					 transition(edgeName="t933",targetState="checkQueue",cond=whenDispatch("done"))
 				}	 
 				state("reachTableClean") { //this:State
 					action { //it:State
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
 						println("waitermind 		|| wait Enter, vado a pulire - pos-> || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
-						 readLine()  
 						println("waitermind 	|| reachTableClean")
 						updateResourceRep( "reachTableClean" 
 						)
@@ -515,12 +519,12 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						else
 						{}
 					}
-					 transition(edgeName="t1035",targetState="whichCleanState",cond=whenDispatch("done"))
-					transition(edgeName="t1036",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
-					transition(edgeName="t1037",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
-					transition(edgeName="t1038",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
-					transition(edgeName="t1039",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
-					transition(edgeName="t1040",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
+					 transition(edgeName="t1034",targetState="whichCleanState",cond=whenDispatch("done"))
+					transition(edgeName="t1035",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t1036",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t1037",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t1038",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t1039",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
 				}	 
 				state("whichCleanState") { //this:State
 					action { //it:State
@@ -534,9 +538,9 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						 ){forward("goToCleaning", "goToCleaning(P)" ,"waitermind" ) 
 						}
 					}
-					 transition(edgeName="t041",targetState="tableClearing",cond=whenDispatch("goToClearing"))
-					transition(edgeName="t042",targetState="tableSanitizing",cond=whenDispatch("goToSanitizing"))
-					transition(edgeName="t043",targetState="tableCleaning",cond=whenDispatch("goToCleaning"))
+					 transition(edgeName="t040",targetState="tableClearing",cond=whenDispatch("goToClearing"))
+					transition(edgeName="t041",targetState="tableSanitizing",cond=whenDispatch("goToSanitizing"))
+					transition(edgeName="t042",targetState="tableCleaning",cond=whenDispatch("goToCleaning"))
 				}	 
 				state("tableClearing") { //this:State
 					action { //it:State
@@ -552,12 +556,12 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						
 									TableTimerDone = 0
 					}
-					 transition(edgeName="t1144",targetState="tableSanitizing",cond=whenDispatch("doneCleanRun"))
-					transition(edgeName="t1145",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
-					transition(edgeName="t1146",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
-					transition(edgeName="t1147",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
-					transition(edgeName="t1148",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
-					transition(edgeName="t1149",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
+					 transition(edgeName="t1143",targetState="tableSanitizing",cond=whenDispatch("doneCleanRun"))
+					transition(edgeName="t1144",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t1145",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t1146",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t1147",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t1148",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
 				}	 
 				state("tableSanitizing") { //this:State
 					action { //it:State
@@ -573,12 +577,12 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						
 									TableTimerDone = 0
 					}
-					 transition(edgeName="t1250",targetState="tableCleaning",cond=whenDispatch("doneCleanRun"))
-					transition(edgeName="t1251",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
-					transition(edgeName="t1252",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
-					transition(edgeName="t1253",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
-					transition(edgeName="t1254",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
-					transition(edgeName="t1255",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
+					 transition(edgeName="t1249",targetState="tableCleaning",cond=whenDispatch("doneCleanRun"))
+					transition(edgeName="t1250",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t1251",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t1252",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t1253",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t1254",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
 				}	 
 				state("tableCleaning") { //this:State
 					action { //it:State
@@ -594,12 +598,12 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						
 									TableTimerDone = 0
 					}
-					 transition(edgeName="t1256",targetState="updateTableCleaned",cond=whenDispatch("doneCleanRun"))
-					transition(edgeName="t1257",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
-					transition(edgeName="t1258",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
-					transition(edgeName="t1259",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
-					transition(edgeName="t1260",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
-					transition(edgeName="t1261",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
+					 transition(edgeName="t1255",targetState="updateTableCleaned",cond=whenDispatch("doneCleanRun"))
+					transition(edgeName="t1256",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t1257",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t1258",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t1259",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t1260",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
 				}	 
 				state("reachTableKick") { //this:State
 					action { //it:State
@@ -625,7 +629,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 								{}
 						}
 					}
-					 transition(edgeName="t062",targetState="collect",cond=whenDispatch("done"))
+					 transition(edgeName="t061",targetState="collect",cond=whenDispatch("done"))
 				}	 
 				state("updateTableCleaned") { //this:State
 					action { //it:State
@@ -639,12 +643,12 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						stateTimer = TimerActor("timer_updateTableCleaned", 
 							scope, context!!, "local_tout_waitermind_updateTableCleaned", 100.toLong() )
 					}
-					 transition(edgeName="t1263",targetState="checkTableToClean",cond=whenTimeout("local_tout_waitermind_updateTableCleaned"))   
-					transition(edgeName="t1264",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
-					transition(edgeName="t1265",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
-					transition(edgeName="t1266",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
-					transition(edgeName="t1267",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
-					transition(edgeName="t1268",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
+					 transition(edgeName="t1262",targetState="checkTableToClean",cond=whenTimeout("local_tout_waitermind_updateTableCleaned"))   
+					transition(edgeName="t1263",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t1264",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t1265",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t1266",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t1267",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
 				}	 
 				state("endState") { //this:State
 					action { //it:State

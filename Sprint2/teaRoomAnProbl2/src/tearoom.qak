@@ -3,8 +3,7 @@ System tearoom
 //Messages **********************************************************************
 //DIVISI PER CHI INVIA 
  
-//**********CLIENT 
-mqttBroker "localhost" : 1883 eventTopic "event/topic" 
+//**********CLIENT
 
 Request clientRingEntryRequest : clientEntryRequest(PAYLOAD)
 Reply clientRingEntryReply : clientRingEntryReply(ENTRATA, ID) //invia smartbell in realtà
@@ -144,6 +143,8 @@ QActor waitermind context ctxtearoom{
 		var IdForOrder = 0
 		
 		var TableForCollect = ""
+		
+		var OrderOfRightClient = false
 		
 		var TimerTable1 = 0 
 		var TimerTable2 = 0
@@ -322,7 +323,7 @@ QActor waitermind context ctxtearoom{
 		//TEST
 		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
 		println("waitermind 		|| wait Enter - pos-> EntranceDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-		[# readLine() #]
+//		[# readLine() #]
 		//TEST
 		
 		println("waitermind 		|| convoyTable")
@@ -426,7 +427,7 @@ QActor waitermind context ctxtearoom{
 		//TEST
 		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
 		println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-		[# readLine() #]
+	//	[# readLine() #]
 		//TEST
 		
 		println("waitermind 		|| waitOrderClient")
@@ -439,11 +440,13 @@ QActor waitermind context ctxtearoom{
 	
 	State trasmit {
 		//[# readLine() #]
+		[#OrderOfRightClient = false#]
 		println("waitermind 		|| trasmit")
 		updateResource [# "trasmit"#]	
 		onMsg(clientOrder : clientOrder(ID, ORDER)){
 			println("waitermind 		|| ricevuto ordine ID,ORDER: ${payloadArg(0)},${payloadArg(1)} ")
 			if [# IdForOrder == payloadArg(0).toInt() #]{
+				[# OrderOfRightClient = true #]
 				forward barman -m waiterOrderForward : waiterOrderForward($payloadArg(0), $payloadArg(1))
 				[#
 					IdForOrder = 0
@@ -453,8 +456,12 @@ QActor waitermind context ctxtearoom{
 		}
 		
 	}// end trasmit
-	Transition	t0 	whenTime 100 -> checkQueue
-					whenMsg clientOrder -> trasmit
+	Goto checkQueue if [# OrderOfRightClient == true #] else trasmitCheck
+	
+	State trasmitCheck{
+		
+	}
+	Transition	t0 	whenMsg clientOrder -> trasmit
 	
 	State reachBar{
 		//[# readLine() #]
@@ -494,7 +501,7 @@ QActor waitermind context ctxtearoom{
 		//TEST
 		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
 		println("waitermind 		|| wait Enter - pos-> BARMAN || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-		[# readLine() #]
+//		[# readLine() #]
 		//TEST
 		println("waitermind 		|| getDrink")
 		updateResource [# "getDrink"#]	
@@ -608,7 +615,7 @@ QActor waitermind context ctxtearoom{
 		//TEST
 		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
 		println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-		[# readLine() #]
+//		[# readLine() #]
 		//TEST
 		
 		println("waitermind 		|| collect")
@@ -647,7 +654,7 @@ QActor waitermind context ctxtearoom{
 		//TEST
 		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
 		println("waitermind 		|| wait Enter, vado a pulire - pos-> || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-		[# readLine() #]
+//		[# readLine() #]
 		//TEST
 		
 		println("waitermind 	|| reachTableClean")
@@ -844,14 +851,14 @@ QActor waitermind context ctxtearoom{
  
 QActor smartbell context ctxtearoom{
 	[# 
-		val Temp_max = 40
+		val Temp_max = 37.5
 		var ID_client = 1 
 		var ClientTemp :Double = 0.0
 	#] 
 
 	State s0 initial{
 		println("smartbell 		|| START")
-		updateResource [# "START" #]
+		//updateResource [# "START" #]
 	} 
 	Goto waitRing
 	 
@@ -866,12 +873,11 @@ QActor smartbell context ctxtearoom{
 		//[#  var ClientTemp = Math.random()*6+35#] //random temperature
 		[# ClientTemp = kotlin.math.round(  (Math.random()*5+35)*10 )/10 #] 
 		println("smartbell 		|| checkTempClient")
-		updateResource [# "welcome checkTempClient" #]	
+		//updateResource [# "welcome checkTempClient" #]	
 		if [# ClientTemp < Temp_max #]  
 		{
 			println("smartbell 		|| clienteAccettatoDaSmartBell || temperatura = $ClientTemp || id_client = $ID_client")
 			request waitermind -m smartbellEntryRequest : smartbellEntryRequest($ID_client)  
-			[# ID_client++ #]
 		}
 		else
 		{
@@ -887,7 +893,15 @@ QActor smartbell context ctxtearoom{
 		
 		onMsg(smartbellEntryReply : smartbellEntryReply(ENTRATA, ID)){
 			println("smartbell 		|| ricevuta reply : ${ payloadArg(0) }")
-			updateResource [# "welcome ${payloadArg(0)}  ${payloadArg(1)}" #]	
+			if [#payloadArg(0) == "accept"#]{	
+				updateResource [# "welcome, sei stato Accettato, il tuo ID: ${payloadArg(1)}" #]	
+				[# ID_client++ #]
+			}
+			if [#payloadArg(0) == "inform"#]{
+				[# var Tempo = payloadArg(1).toInt() /1000 #]
+				updateResource [# "ci dispiace, non abbiamo posto, torna tra: $Tempo s" #]	
+			}
+		
 			if [# payloadArg(0) == "accept"#]
 			{
 					forward tearoomglobalstate -m addClientAccepted : addClientAccepted(P)
@@ -903,6 +917,7 @@ QActor smartbell context ctxtearoom{
 		
 		onMsg(smartbellClientRejected : smartbellClientRejected(TEMP)){ //rispondo con temperatura (maggior del normale)
 			replyTo clientRingEntryRequest with clientRingEntryReply : clientRingEntryReply(rifiutato, $payloadArg(0)) 
+			updateResource [# "ci dispiace, sei stato rifiutato, la tua temp: ${payloadArg(0)}" #]	
 		}
 	}
 	Goto waitRing
@@ -1462,16 +1477,19 @@ QActor tearoomglobalstate context ctxtearoom{
 		ifSolved
 		{
 			[#
-				StateRoom = 
-				"Waiter: " + getCurSol("SW").toString() +"\n"+
-				"Barman: " + getCurSol("SB").toString() +"\n"+
-				"TABLE 1: " + getCurSol("ST1").toString() +", timerDone: "+ getCurSol("T1").toString()+"\n"+
-				"TABLE 2: " + getCurSol("ST2").toString() +", timerDone: "+ getCurSol("T2").toString()+"\n"+
-				"Client Accepted: " + getCurSol("NA").toString() +"\n"+
-				"Client Rejected: " + getCurSol("NR").toString()
-			#]
+                StateRoom =
+                "{\"Waiter\":"        +"\""+       getCurSol("SW").toString()   +"\","  +
+                "\"Barman\":"        +"\""+        getCurSol("SB").toString()   +"\","  +
+                "\"TABLE1\":"        +"\""+        getCurSol("ST1").toString()   +"\","  +
+                "\"timerDone1\":"     +"\""+        getCurSol("T1").toString()   +"\","  +
+                "\"TABLE2\":"         +"\""+        getCurSol("ST2").toString()   +"\"," +
+                "\"timerDone2\":"     +"\""+        getCurSol("T2").toString()   +"\","  +
+                "\"ClientAccepted\":"    +"\""+    getCurSol("NA").toString()   +"\","  +
+                "\"ClientRejected\":"    +"\""+    getCurSol("NR").toString()   +"\""  +"}"
+            #]
 			
 		}
+		updateResource[# "$StateRoom" #]
 		println("***********************") 
 		println(StateRoom)
 		println("***********************")

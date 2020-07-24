@@ -31,7 +31,7 @@ class Timercleaning ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						println("timercleaning		|| waitCmd")
 					}
-					 transition(edgeName="t085",targetState="startTimer",cond=whenDispatch("startTimerCleaning"))
+					 transition(edgeName="t084",targetState="startTimer",cond=whenDispatch("startTimerCleaning"))
 				}	 
 				state("startTimer") { //this:State
 					action { //it:State
@@ -45,8 +45,8 @@ class Timercleaning ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						stateTimer = TimerActor("timer_startTimer", 
 							scope, context!!, "local_tout_timercleaning_startTimer", TimerTime )
 					}
-					 transition(edgeName="t186",targetState="timeFinished",cond=whenTimeout("local_tout_timercleaning_startTimer"))   
-					transition(edgeName="t187",targetState="stopTimer",cond=whenRequest("stopTimerCleaningReq"))
+					 transition(edgeName="t185",targetState="timeFinished",cond=whenTimeout("local_tout_timercleaning_startTimer"))   
+					transition(edgeName="t186",targetState="stopTimer",cond=whenRequest("stopTimerCleaningReq"))
 				}	 
 				state("timeFinished") { //this:State
 					action { //it:State

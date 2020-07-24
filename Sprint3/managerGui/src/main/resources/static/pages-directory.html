@@ -23,8 +23,8 @@
                 <!-- LOGO -->
                 <div class="topbar-left">
                     <div class="text-center">
-                        <a href="index.html" class="logo"><span>Tea</span>Room</a>
-                        <a href="index.html" class="logo-sm"><span>TR</span></a>
+                        <a href="manager.html" class="logo"><span>Tea</span>Room</a>
+                        <a href="manager.html" class="logo-sm"><span>TR</span></a>
                         <!--<a href="index.html" class="logo"><img src="assets/images/logo_white_2.png" height="28"></a>-->
                         <!--<a href="index.html" class="logo-sm"><img src="assets/images/logo_sm.png" height="36"></a>-->
                     </div>
@@ -39,12 +39,6 @@
                                 </button>
                                 <span class="clearfix"></span>
                             </div>
-                            <form class="navbar-form pull-left" role="search">
-                                <div class="form-group">
-                                    <input type="text" class="form-control search-bar" placeholder="Search...">
-                                </div>
-                                <button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button>
-                            </form>
 
                             <ul class="nav navbar-nav navbar-right pull-right">
                                 <li class="hidden-xs">
@@ -59,10 +53,10 @@
                                         </span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="javascript:void(0)"> Profile</a></li>
-                                        <li><a href="javascript:void(0)"><span class="badge badge-success pull-right">5</span> Settings </a></li>
+                                        <li><a href="profile.html"> Profile</a></li>
+                                        <li><a href="settings.html"><span class="badge badge-success pull-right">5</span> Settings </a></li>
                                         <li class="divider"></li>
-                                        <li><a href="pages-login.html"> Logout</a></li>
+                                        <li><a href=""> Logout</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -87,10 +81,10 @@
                             <div class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Mario Rossi</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="javascript:void(0)"> Profile</a></li>
-                                    <li><a href="javascript:void(0)"> Settings</a></li>
+                                    <li><a href="profile.html"> Profile</a></li>
+                                    <li><a href="settings.html"> Settings</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="pages-login.html"> Logout</a></li>
+                                    <li><a href=""> Logout</a></li>
                                 </ul>
                             </div>
 
@@ -101,12 +95,9 @@
 
 
                     <div id="sidebar-menu">
-                        <ul>
-                            <li class="has_sub">
-                                <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-home"></i> <span> Tearoom </span> <span class="pull-right"><i class="mdi mdi-plus"></i></span></a>
-                                <ul class="list-unstyled">
-                                    <li><a href="index.html">State</a></li>
-                                </ul>
+                        <ul>							
+							<li>
+                                <a href="manager.html" class="waves-effect"><i class="mdi mdi-home"></i><span> Tearoom </span></a>
                             </li>
 							
 							<li>
@@ -128,24 +119,25 @@
 
                     <div class="">
                         <div class="page-header-title">
-                            <h4 class="page-title">Directory</h4>
+                            <h4 class="page-title">Tearoom</h4>
                         </div>
                     </div>
 
                     <div class="page-content-wrapper ">
 
                         <div class="container">
-                            <div class="row">
+							
+							<div class="row">
                                 <div class="col-sm-4">
                                     <div class="panel">
                                         <div class="panel-body user-card">
                                             <div class="media-main">
                                                 <a class="pull-left" href="#">
-                                                    <img class="thumb-lg img-circle" src="images/users/avatar-2.jpg" alt="">
+                                                    <img class="thumb-lg img-circle" src="images/users/bida.png" alt="">
                                                 </a>
                                                 <div class="info">
-                                                    <h4>Pauline I. Bird</h4>
-                                                    <p class="text-muted">Family Member</p>
+                                                    <h4>Mihail Bida</h4>
+                                                    <p class="text-muted">Developer</p>
                                                 </div>
                                             </div>
                                             <div class="clearfix"></div>
@@ -156,19 +148,7 @@
                                             <hr>
                                             <ul class="social-links list-inline m-b-0">
                                                 <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="Facebook"><i class="fa fa-facebook"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="Twitter"><i class="fa fa-twitter"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="1234567890"><i class="fa fa-phone"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="@skypename"><i class="fa fa-skype"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="email@email.com"><i class="fa fa-envelope-o"></i></a>
+                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="mihail.bida@studio.unibo.it"><i class="fa fa-envelope-o"></i></a>
                                                 </li>
                                             </ul>
                                         </div> <!-- panel-body -->
@@ -180,11 +160,11 @@
                                         <div class="panel-body user-card">
                                             <div class="media-main">
                                                 <a class="pull-left" href="#">
-                                                    <img class="thumb-lg img-circle" src="images/users/avatar-4.jpg" alt="">
+                                                    <img class="thumb-lg img-circle" src="images/users/dario.jpg" alt="">
                                                 </a>
                                                 <div class="info">
-                                                    <h4>Sabrina Weatherford</h4>
-                                                    <p class="text-muted">Support Team</p>
+                                                    <h4>Dario De Nardi</h4>
+                                                    <p class="text-muted">Developer</p>
                                                 </div>
                                             </div>
                                             <div class="clearfix"></div>
@@ -195,19 +175,7 @@
                                             <hr>
                                             <ul class="social-links list-inline m-b-0">
                                                 <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="Facebook"><i class="fa fa-facebook"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="Twitter"><i class="fa fa-twitter"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="1234567890"><i class="fa fa-phone"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="@skypename"><i class="fa fa-skype"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="email@email.com"><i class="fa fa-envelope-o"></i></a>
+                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="dario.denardi@studio.unibo.it"><i class="fa fa-envelope-o"></i></a>
                                                 </li>
                                             </ul>
                                         </div> <!-- panel-body -->
@@ -219,11 +187,11 @@
                                         <div class="panel-body user-card">
                                             <div class="media-main">
                                                 <a class="pull-left" href="#">
-                                                    <img class="thumb-lg img-circle" src="images/users/avatar-3.jpg" alt="">
+                                                    <img class="thumb-lg img-circle" src="images/users/pando.jpg" alt="">
                                                 </a>
                                                 <div class="info">
-                                                    <h4>John M. Wiest</h4>
-                                                    <p class="text-muted">Graphics Designer</p>
+                                                    <h4>Francesco Pandolfi</h4>
+                                                    <p class="text-muted">Developer</p>
                                                 </div>
                                             </div>
                                             <div class="clearfix"></div>
@@ -234,19 +202,7 @@
                                             <hr>
                                             <ul class="social-links list-inline m-b-0">
                                                 <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="Facebook"><i class="fa fa-facebook"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="Twitter"><i class="fa fa-twitter"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="1234567890"><i class="fa fa-phone"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="@skypename"><i class="fa fa-skype"></i></a>
-                                                </li>
-                                                <li>
-                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="email@email.com"><i class="fa fa-envelope-o"></i></a>
+                                                    <a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="francesco.pandolfi@studio.unibo.it"><i class="fa fa-envelope-o"></i></a>
                                                 </li>
                                             </ul>
                                         </div> <!-- panel-body -->
@@ -256,12 +212,13 @@
 
                         </div><!-- container -->
 
+
                     </div> <!-- Page content Wrapper -->
 
                 </div> <!-- content -->
 
                 <footer class="footer">
-                    © 2020 TeaRoom ISS 2020 - All Rights Reserved.
+                     © 2020 TeaRoom ISS 2020 - All Rights Reserved.
                 </footer>
 
             </div>
@@ -285,6 +242,11 @@
         <script src="js/jquery.scrollTo.min.js"></script>
 		
 		<script src="js/init.js"></script>
+		
+		<script src="plugins/webjars/sockjs.min.js"></script>
+		<script src="plugins/webjars/stomp.min.js"></script>
+		<script src="state.js"></script>
+		<script>connect()</script>
 
     </body>
 </html>

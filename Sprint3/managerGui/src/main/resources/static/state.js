@@ -53,11 +53,17 @@ function disconnect() {
     console.log("Disconnected");
 }
 
+function replaceAll(str, cerca, sostituisci) {
+  return str.split(cerca).join(sostituisci);
+}
+
 function showMsg(message) {
 	//if(curMsg === message)
 	//	return;
 	
-	var obj = JSON.parse(message);
+	var str = replaceAll(message, "&quot;", '"');
+	
+	var obj = JSON.parse(str);
 	
 	console.log(obj.Waiter);
 
