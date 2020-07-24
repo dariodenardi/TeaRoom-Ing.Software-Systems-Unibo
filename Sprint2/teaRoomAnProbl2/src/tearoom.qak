@@ -4,7 +4,8 @@ System tearoom
 //DIVISI PER CHI INVIA 
  
 //**********CLIENT 
- 
+mqttBroker "localhost" : 1883 eventTopic "event/topic" 
+
 Request clientRingEntryRequest : clientEntryRequest(PAYLOAD)
 Reply clientRingEntryReply : clientRingEntryReply(ENTRATA, ID) //invia smartbell in realtà
 
@@ -54,7 +55,7 @@ Dispatch goToClearing : goToClearing(P)
 Dispatch goToSanitizing : goToSanitizing (P)
 Dispatch goToCleaning : goToCleaning(P)
 
-//***************************Messaggi 3' SPRINT
+//***************************Messaggi 2.1' SPRINT
 
 Dispatch stopEngineMove : stopEngineMove(P)
 Dispatch setWaiterState : setWaiterState(STATO)
@@ -104,12 +105,13 @@ Reply	 getTimerForInformReply : getTimerForInformReply(TIMER)
 
 //end messages ******************************************************************* 
 //context and QActors 
- 
+  
 Context ctxtearoom ip [host="127.0.0.1" port=8040] 
 Context ctxbasicrobot ip [host="localhost" port=8020] 
 ExternalQActor basicrobot context ctxbasicrobot 
 //ExternalQActor waiterengine context ctxTearoom
 //end context and Qactors 
+
 
 
 QActor waitermind context ctxtearoom{
@@ -644,7 +646,7 @@ QActor waitermind context ctxtearoom{
 	State reachTableClean{
 		//TEST
 		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
-		println("waitermind 		|| wait Enter - pos-> Table || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+		println("waitermind 		|| wait Enter, vado a pulire - pos-> || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
 		[# readLine() #]
 		//TEST
 		
@@ -694,9 +696,9 @@ QActor waitermind context ctxtearoom{
 
 	State tableClearing{
 		//TEST
-		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
-		println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-		[# readLine() #]
+//		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
+//		println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
+//		[# readLine() #]
 		//TEST
 		
 		
@@ -855,7 +857,7 @@ QActor smartbell context ctxtearoom{
 	 
 	State waitRing{
 		println("smartbell 		|| waitRing")
-		updateResource [# "waitRing" #]		
+	//	updateResource [# "waitRing" #]		
 	} 
 	Transition t0 	whenRequest clientRingEntryRequest -> checkTempClient
 					whenMsg end -> endState
@@ -864,7 +866,7 @@ QActor smartbell context ctxtearoom{
 		//[#  var ClientTemp = Math.random()*6+35#] //random temperature
 		[# ClientTemp = kotlin.math.round(  (Math.random()*5+35)*10 )/10 #] 
 		println("smartbell 		|| checkTempClient")
-		updateResource [# "checkTempClient" #]	
+		updateResource [# "welcome checkTempClient" #]	
 		if [# ClientTemp < Temp_max #]  
 		{
 			println("smartbell 		|| clienteAccettatoDaSmartBell || temperatura = $ClientTemp || id_client = $ID_client")
@@ -885,6 +887,7 @@ QActor smartbell context ctxtearoom{
 		
 		onMsg(smartbellEntryReply : smartbellEntryReply(ENTRATA, ID)){
 			println("smartbell 		|| ricevuta reply : ${ payloadArg(0) }")
+			updateResource [# "welcome ${payloadArg(0)}  ${payloadArg(1)}" #]	
 			if [# payloadArg(0) == "accept"#]
 			{
 					forward tearoomglobalstate -m addClientAccepted : addClientAccepted(P)
@@ -1441,7 +1444,7 @@ QActor tearoomglobalstate context ctxtearoom{
 	
 	[#
 		val TimeMaxStay 	= 90000L
-		val TotalCleaning	= 1600L	
+		val TotalCleaning	= 16000L	
 		var TimeLeft1 		= 0L
 		var TimeLeft2 		= 0L
 		var ToReturnTimer 	= 0L

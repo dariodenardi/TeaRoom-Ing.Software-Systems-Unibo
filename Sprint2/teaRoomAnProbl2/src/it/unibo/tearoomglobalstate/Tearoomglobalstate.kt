@@ -18,7 +18,7 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
 				val TimeMaxStay 	= 90000L
-				val TotalCleaning	= 1600L	
+				val TotalCleaning	= 16000L	
 				var TimeLeft1 		= 0L
 				var TimeLeft2 		= 0L
 				var ToReturnTimer 	= 0L

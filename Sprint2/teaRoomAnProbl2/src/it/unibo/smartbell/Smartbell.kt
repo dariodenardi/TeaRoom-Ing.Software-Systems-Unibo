@@ -32,8 +32,6 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				state("waitRing") { //this:State
 					action { //it:State
 						println("smartbell 		|| waitRing")
-						updateResourceRep( "waitRing"  
-						)
 					}
 					 transition(edgeName="t069",targetState="checkTempClient",cond=whenRequest("clientRingEntryRequest"))
 					transition(edgeName="t070",targetState="endState",cond=whenDispatch("end"))
@@ -42,7 +40,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						 ClientTemp = kotlin.math.round(  (Math.random()*5+35)*10 )/10  
 						println("smartbell 		|| checkTempClient")
-						updateResourceRep( "checkTempClient"  
+						updateResourceRep( "welcome checkTempClient"  
 						)
 						if(  ClientTemp < Temp_max  
 						 ){println("smartbell 		|| clienteAccettatoDaSmartBell || temperatura = $ClientTemp || id_client = $ID_client")
@@ -62,6 +60,8 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						if( checkMsgContent( Term.createTerm("smartbellEntryReply(ENTRATA,ID)"), Term.createTerm("smartbellEntryReply(ENTRATA,ID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								println("smartbell 		|| ricevuta reply : ${ payloadArg(0) }")
+								updateResourceRep( "welcome ${payloadArg(0)}  ${payloadArg(1)}"  
+								)
 								if(  payloadArg(0) == "accept" 
 								 ){forward("addClientAccepted", "addClientAccepted(P)" ,"tearoomglobalstate" ) 
 								}

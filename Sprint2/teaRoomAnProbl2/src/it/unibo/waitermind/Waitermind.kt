@@ -499,7 +499,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 					action { //it:State
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
-						println("waitermind 		|| wait Enter - pos-> Table || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						println("waitermind 		|| wait Enter, vado a pulire - pos-> || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
 						 readLine()  
 						println("waitermind 	|| reachTableClean")
 						updateResourceRep( "reachTableClean" 
@@ -540,10 +540,6 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				}	 
 				state("tableClearing") { //this:State
 					action { //it:State
-						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
-						)
-						println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
-						 readLine()  
 						updateResourceRep( "tableClearing" 
 						)
 						forward("setWaiterState", "setWaiterState(tableClearing)" ,"tearoomglobalstate" ) 

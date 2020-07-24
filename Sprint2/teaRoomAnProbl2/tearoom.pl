@@ -1,6 +1,7 @@
 %====================================================================================
 % tearoom description   
 %====================================================================================
+mqttBroker("localhost", "1883", "event/topic").
 context(ctxtearoom, "127.0.0.1",  "TCP", "8040").
 context(ctxbasicrobot, "localhost",  "TCP", "8020").
  qactor( basicrobot, ctxbasicrobot, "external").
