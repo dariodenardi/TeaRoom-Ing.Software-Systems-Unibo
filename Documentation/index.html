@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Progetto Finale ISS 2020</title>
+
+	<!-- Google-Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+
+	<!-- Bootstrap Core CSS -->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" href="css/prettify.css" />
+
+	<!-- Custom CSS -->
+	<link href="css/styles.css" rel="stylesheet">
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+</head>
+
+<body>
+
+	<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+     
+      <a class="navbar-brand" href="#">TeaRoom Project - <small>Documentation</small></a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+
+	<div id="wrapper">
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="right-bar">
+
+							<div id="intro" class="com-container">
+
+								<div id="structure" class="com-container">
+									<h3 class="text-center">Grazie per dedicare un pò di tempo alla lettura di questo progetto!</h3>
+									<div class="p-t-20">
+											<div class="alert alert-success alert-dismissable">
+												<p>Il motto che ci ha accompagnato dall'inizio alla fine del nostro progetto è stato il seguente:</p>
+												<p><b>there is no code without a project, no project without problem analysis and no problem without requirements</b></p>
+											</div>
+									</div>
+								</div>
+
+								<h4 class="page-header">Introduzione</h4>
+
+								<p>
+								<b>TeaRoom</b> è un progetto realizzato come tema finale dato dal prof Antonio Natali dopo aver seguito il corso di <b>Ingegneria dei Sistemi Software M</b>.
+								</p>
+								<p>
+									Il manager di una sala da tè intende regolare l'accesso al servizio tramite un robot ddr (cameriere).
+									La sala da tè è una stanza rettangolare che comprende: un ingresso per entrare nella stanza e un'uscita per uscire da essa;
+									un numero N (N = 2) di tavoli;
+									un'area di servizio che include un tavolo dove lavora un barman;
+									una sala dotata di un rilevatore di un sonar in grado di rilevare la presenza di una persona (o qualche altra entità) al suo interno.
+								</p>
+								
+								<p>Il robot può muoversi liberamente lungo i bordi della sala da tè, poiché non ci sono ostacoli.</p>
+								
+								<p>
+								Come <b>cliente</b> voglio essere informarto quando posso entrare nella sala da tè sicura, sedermi in una tavolo da tè gratuitamente, ordinare un tè, consumarlo (entro un periodo di tempo limitato al massimo), pago il servizio con la mia carta di credito e infine esco dalla stanza.
+								Per una sala da tè sicura, intendo una sala da tè con tavoli da tè puliti posti a una distanza adeguata; nella stanza ci sono clienti la cui temperatura corporea è inferiore a 37,5 gradi.
+								Il campanello posto all'ingresso misurerà automaticamente la mia temperatura corporea e invierà un messaggio di richiesta al cameriere, dandomi un identificativo cliente unico.
+								Se la mia temperatura corporea è ok ma la mia richiesta non può essere soddisfatta immediatamente (poiché la stanza è piena), sarò informato dal cameriere circa il tempo massimo di attesa.
+								</p>
+								
+								<p>Come <b>manager</b> voglio essere in grado di vedere lo stato attuale della sala da tè utilizzando un browser collegato a un web server associato all'applicazione.</p>
+
+								<div id="structure" class="com-container">
+										<h4 class="page-header">Struttura</h4>
+										<p>Per capire come è strutturato il git leggi le due sezioni successive. Nella prima vedi quali sono le cartelle e dove sono stati inseriti i file.
+										Nella seconda vengono spiegati i vari file.</p>
+
+										<div class="row p-t-20">
+											<div class="col-sm-12">
+												<h4>Struttura File &amp; Cartelle</h4>
+												<hr/>
+
+												<pre class="prettyprint">
+ComponentiFunzionamento
+  └── componenti da eseguire per vedere il risultato finale
+it.unibo.virtualRobot2020
+  └── file configurazione stanza
+prove.basicrobot
+  └── All css files.
+resources
+  └── html, css, img che servono per visualizzare il contenuto html
+Sprint1Old
+  └── html dello sprint 1
+Sprint1
+  └── nuovo html dello sprint 1 dopo correzione con il prof
+Sprint2
+  └── html dello sprint 2
+Sprint3
+  └── html dello sprint 3
+Problem analysis.html
+  └── html con tutta l'analisi dei problemi dei vari sprint
+Requirements analysis.html
+  └── html con tutta l'analisi dei requisiti dei vari sprint
+
+</pre>
+											
+										</div>
+
+										<div class="col-sm-12 p-t-30">
+												<h4>Struttura File</h4>
+												<hr/>
+
+                                                <table class="table table-bordered m-0">
+													<thead>
+														<tr>
+															<th style="width: 20%;"><i class="ti-file"></i> File</th>
+															<th>Descrizione</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>
+                                                                <code>jquery.js</code>, <code>bootstrap.js</code>,
+                                                                <code>jquery.nicescroll</code>, <code>jquery.slimscroll</code>, etc.
+                                                                <!-- TODO -->
+
+                                                            </td>
+                                                            <td>
+                                                                These files are used at core of the theme.
+                                                            </td>
+														</tr>
+                                                        <tr>
+															<td>
+                                                                <code>app.js</code>
+                                                            </td>
+                                                            <td>
+                                                                This is a main js file. It contains the custom JS code needed for features including
+                                                                layout, sidebar, etc.
+                                                                Also it contains the definition of some of the key components (e.g. notifications, portlet, etc) and code (for self-initialization) related to some of the controls (e.g. modal, range-slider, switchery, multiselect, etc).
+                                                            </td>
+														</tr>
+
+                                                        <tr>
+															<td>
+                                                                <code>pages/*.js</code>
+                                                            </td>
+                                                            <td>
+                                                                These are the files containing pages specific code. They are mainly used for demo purpose.
+                                                            </td>
+														</tr>
+
+                                                        <tr>
+															<td>
+                                                                <code>plugins/**.js</code>
+                                                            </td>
+                                                            <td>
+                                                                All supported and integrated third-party plugins are included in here.
+                                                            </td>
+														</tr>
+                                                    </tbody>
+                                                </table>
+											</div>
+
+									</div>
+										
+
+
+										<div id="credits" class="com-container">
+											<h4 class="page-header">Installazione TeaRoom su Virtual Robot</h4>
+											<p>Per un corretto funzionamento si consiglia di usare tutti i componenti che si trovano nella cartella <b>ComponentiFunzionamento</b>.
+											Alcuni sono stati visti a lezione ma hanno subito una leggera modifica.
+											</p>
+											
+											<p>Si consiglia di usare <b>Google Chrome</b> per far funzionare correttamente la Web App. Altri browser potrebbero avere di default impostazioni
+											che non permettono una corretta esecuzione della Web App.
+											</p>
+											
+											<p>Si consiglia di collegare a una <b>presa elettrica</b> il computer se è un portatile perchè il clock della CPU potrebbe abbassarsi e non
+											far funzionare correttamente il virtual robot.
+											</p>
+
+											<ol class="">
+								                <li>Mettere la configurazione della stanza che si trova in <b>it.unibo.virtualRobot2020</b> nella tua cartella ed eseguire il virtual robot seguendo le istruzioni viste a lezioni.</li>
+								                <li>Estrarre il contenuto di <b>ComponentiFunzionamento\virtual</b></li>
+												<li>Aprire il terminale ed eseguire il file bash</b></li>
+								            </ol>
+										</div>
+
+										<div id="changelog" class="com-container">
+											<h4 class="page-header">Change Log</h4>
+
+											<p style="text-decoration: underline; font-weight: 900; padding-top:30px;"><strong>Version 1.0 <small>- Luglio 2020</small></strong></p>
+											
+											<ul>
+												<li>
+													Prima Versione
+												</li>
+											</ul>
+
+										</div>
+
+									</div>
+
+									
+							</div>
+						</div>
+					</div>
+					<!-- /#page-content-wrapper -->
+
+					<div class="text-center">
+						<p class="copy">© 2020 TeaRoom ISS 2020 - All Rights Reserved.</p>
+					</div>
+				</div>
+				<!-- /#wrapper -->
+
+				<!-- jQuery -->
+				<script src="js/jquery.js"></script>
+
+				<!-- Bootstrap Core JavaScript -->
+				<script src="js/bootstrap.min.js"></script>
+
+				<script src="js/jquery.easing.min.js"></script>
+
+				<script type="text/javascript" src="js/prettify.js"></script>
+
+	</body>
+
+</html>
