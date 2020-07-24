@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Progetto Finale ISS 2020</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="css/icons.css" rel="stylesheet" type="text/css">
+        <link href="css/style.css" rel="stylesheet" type="text/css">
+
+    </head>
+
+
+    <body class="fixed-left" onLoad="load();">
+
+        <!-- Begin page -->
+        <div id="wrapper">
+
+            <!-- Top Bar Start -->
+            <div class="topbar">
+                <!-- LOGO -->
+                <div class="topbar-left">
+                    <div class="text-center">
+                        <a href="manager.html" class="logo"><span>Tea</span>Room</a>
+                        <a href="manager.html" class="logo-sm"><span>TR</span></a>
+                        <!--<a href="index.html" class="logo"><img src="assets/images/logo_white_2.png" height="28"></a>-->
+                        <!--<a href="index.html" class="logo-sm"><img src="assets/images/logo_sm.png" height="36"></a>-->
+                    </div>
+                </div>
+                <!-- Button mobile view to collapse sidebar menu -->
+                <div class="navbar navbar-default" role="navigation">
+                    <div class="container">
+                        <div class="">
+                            <div class="pull-left">
+                                <button type="button" class="button-menu-mobile open-left waves-effect waves-light">
+                                    <i class="ion-navicon"></i>
+                                </button>
+                                <span class="clearfix"></span>
+                            </div>
+                            <form class="navbar-form pull-left" role="search">
+                                <div class="form-group">
+                                    <input type="text" class="form-control search-bar" placeholder="Search...">
+                                </div>
+                                <button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button>
+                            </form>
+
+                            <ul class="nav navbar-nav navbar-right pull-right">
+                                <li class="hidden-xs">
+                                    <a href="#" id="btn-fullscreen" class="waves-effect waves-light notification-icon-box"><i class="mdi mdi-fullscreen"></i></a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="" class="dropdown-toggle profile waves-effect waves-light" data-toggle="dropdown" aria-expanded="true">
+                                        <img src="images/users/avatar-1.jpg" alt="user-img" class="img-circle">
+                                        <span class="profile-username">
+                                            Mario Rossi <br/>
+                                            <small>Manager</small>
+                                        </span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="javascript:void(0)"> Profile</a></li>
+                                        <li><a href="javascript:void(0)"><span class="badge badge-success pull-right">5</span> Settings </a></li>
+                                        <li class="divider"></li>
+                                        <li><a href=""> Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <!--/.nav-collapse -->
+                    </div>
+                </div>
+            </div>
+            <!-- Top Bar End -->
+
+
+            <!-- ========== Left Sidebar Start ========== -->
+
+            <div class="left side-menu">
+                <div class="sidebar-inner slimscrollleft">
+
+                    <div class="user-details">
+                        <div class="text-center">
+                            <img src="images/users/avatar-1.jpg" alt="" class="img-circle">
+                        </div>
+                        <div class="user-info">
+                            <div class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Mario Rossi</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:void(0)"> Profile</a></li>
+                                    <li><a href="javascript:void(0)"> Settings</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href=""> Logout</a></li>
+                                </ul>
+                            </div>
+
+                            <p class="text-muted m-0"><i class="fa fa-dot-circle-o text-success"></i> Online</p>
+                        </div>
+                    </div>
+                    <!--- Divider -->
+
+
+                    <div id="sidebar-menu">
+                        <ul>
+                            <li class="has_sub">
+                                <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-home"></i> <span> Tearoom </span> <span class="pull-right"><i class="mdi mdi-plus"></i></span></a>
+                                <ul class="list-unstyled">
+                                    <li><a href="index.html">State</a></li>
+                                </ul>
+                            </li>
+							
+							<li>
+                                <a href="pages-directory.html" class="waves-effect"><i class="mdi mdi-account "></i><span> Contact </span></a>
+                            </li>
+							
+                        </ul>
+                    </div>
+                    <div class="clearfix"></div>
+                </div> <!-- end sidebarinner -->
+            </div>
+            <!-- Left Sidebar End -->
+
+            <!-- Start right Content here -->
+
+            <div class="content-page">
+                <!-- Start content -->
+                <div class="content">
+
+                    <div class="">
+                        <div class="page-header-title">
+                            <h4 class="page-title">Tearoom</h4>
+                        </div>
+                    </div>
+
+                    <div class="page-content-wrapper ">
+
+                        <div class="container">
+							
+							<div class="row">
+                                <div class="col-md-12">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-body">
+											<h4 class="m-b-30 m-t-0">State</h4>
+											
+                                            <div class="">
+                                                <div class="row text-center">
+                                                    
+													<div class="col-lg-6">
+														<div class="panel panel-color panel-primary">
+															<div class="panel-heading">
+																<h3 class="panel-title">Waiter State</h3>
+															</div>
+															<div class="panel-body">
+																<p id="waiterstate">waiting</p>
+															</div>
+														</div>
+													</div>
+													
+													<div class="col-lg-6">
+														<div class="panel panel-color panel-primary">
+															<div class="panel-heading">
+																<h3 class="panel-title">Barman State</h3>
+															</div>
+															<div class="panel-body">
+																<p id="barman">waiting</p>
+															</div>
+														</div>
+													</div>
+													
+													<div class="col-lg-6">
+														<div class="panel panel-color panel-primary">
+															<div class="panel-heading">
+																<h3 class="panel-title">Table1 State</h3>
+															</div>
+															<div class="panel-body">
+																<p id="table1">clean</p>
+															</div>
+														</div>
+													</div>
+													
+													<div class="col-lg-6">
+														<div class="panel panel-color panel-primary">
+															<div class="panel-heading">
+																<h3 class="panel-title">Table2 State</h3>
+															</div>
+															<div class="panel-body">
+																<p id="table2">clean</p>
+															</div>
+														</div>
+													</div>
+													
+													<div class="col-lg-6">
+														<div class="panel panel-color panel-primary">
+															<div class="panel-heading">
+																<h3 class="panel-title">Accepted Client</h3>
+															</div>
+															<div class="panel-body">
+																<p>0</p>
+															</div>
+														</div>
+													</div>
+													
+													<div class="col-lg-6">
+														<div class="panel panel-color panel-primary">
+															<div class="panel-heading">
+																<h3 class="panel-title">Rejected Client</h3>
+															</div>
+															<div class="panel-body">
+																<p>0</p>
+															</div>
+														</div>
+													</div>
+													
+                                                </div> <!-- end row -->
+                                            </div>
+											<textarea id="applmsgs" name="w3review" rows="6" cols="70" style="font-size: 20px; resize: none; visibility: hidden;" 
+													  onChange="loadstate();" onInput="loadstate();"th:text="${state}">
+											</textarea>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end row -->
+
+                        </div><!-- container -->
+
+
+                    </div> <!-- Page content Wrapper -->
+
+                </div> <!-- content -->
+
+                <footer class="footer">
+                     © 2020 TeaRoom ISS 2020 - All Rights Reserved.
+                </footer>
+
+            </div>
+            <!-- End Right content here -->
+
+        </div>
+        <!-- END wrapper -->
+
+
+        <!-- jQuery  -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/modernizr.min.js"></script>
+        <script src="js/detect.js"></script>
+        <script src="js/fastclick.js"></script>
+        <script src="js/jquery.slimscroll.js"></script>
+        <script src="js/jquery.blockUI.js"></script>
+        <script src="js/waves.js"></script>
+        <script src="js/wow.min.js"></script>
+        <script src="js/jquery.nicescroll.js"></script>
+        <script src="js/jquery.scrollTo.min.js"></script>
+		
+		<script src="js/init.js"></script>
+		
+		<script src="plugins/webjars/sockjs.min.js"></script>
+		<script src="plugins/webjars/stomp.min.js"></script>
+		<script src="app.js"></script>
+		<script src="state.js"></script>
+		<script>connect()</script>
+
+    </body>
+</html>
