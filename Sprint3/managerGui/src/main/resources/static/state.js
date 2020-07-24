@@ -1,32 +1,72 @@
-var state = ""
-var waiter = ""
-var tableState1 = ""
-var tableState2 = ""
-var barman = ""
+var stompClient = null;
+var hostAddr = "http://localhost:7050/move";
 
-function loadstate(trigger){
-state = document.getElementById("applmsgs").value
-localStorage.setItem("state",state)
-let rows = state.split("\n")
-waiter =rows[0].substring(7,rows[0].length-1)
-var tableStates = rows[1].substring(17).split(",")
-var table1 = tableStates[0].replace("[teatable1(","")
-tableState1 = table1.substring(0,table1.length-1)
-tableState2 = tableStates[1].replace("teatable2(","").replace(")])","")
-barman = rows[2].substring(7,rows[2].length-1)
-
-load()
+//SIMULA UNA FORM che invia comandi POST
+function sendRequestData( params, method) {
+    method = method || "post"; // il metodo POST � usato di default
+    //console.log(" sendRequestData  params=" + params + " method=" + method);
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", hostAddr);
+    var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", "move");
+        hiddenField.setAttribute("value", params);
+     	//console.log(" sendRequestData " + hiddenField.getAttribute("name") + " " + hiddenField.getAttribute("value"));
+        form.appendChild(hiddenField);
+    document.body.appendChild(form);
+    console.log("body children num= "+document.body.children.length );
+    form.submit();
+    document.body.removeChild(form);
+    console.log("body children num= "+document.body.children.length );
 }
 
-function load(){
-if(localStorage.getItem("state")){
-	document.getElementById("applmsgs").value  = localStorage.getItem("state");
+function setConnected(connected) {
+    $("#connect").prop("disabled", connected);
+    $("#disconnect").prop("disabled", !connected);
+    if (connected) {
+        $("#conversation").show();
+    }
+    else {
+        $("#conversation").hide();
+    }
+    $("#greetings").html("");
 }
 
-document.getElementById("waiterstate").value = waiter
-document.getElementById("barman").value = tableState1
-document.getElementById("table1").value = tableState2
-document.getElementById("table2").value = barman
-document.getElementById("applmsgs").value = state
+function connect() {
+    var socket = new SockJS('/it-unibo-iss');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        //setConnected(true);
+        stompClient.subscribe('/topic/display', function (msg) {
+             showMsg(JSON.parse(msg.body).content);
+             
+        });
+    });
 }
 
+function disconnect() {
+    if (stompClient !== null) {
+        stompClient.disconnect();
+    }
+    setConnected(false);
+    console.log("Disconnected");
+}
+
+function showMsg(message) {
+	//if(curMsg === message)
+	//	return;
+	
+	var obj = JSON.parse(message);
+	
+	console.log(obj.Waiter);
+
+	console.log(obj.Barman);
+
+	document.getElementById("waiterstate").innerHTML = obj.Waiter;
+	document.getElementById("barman").innerHTML = obj.Barman;
+    document.getElementById("table1").innerHTML = obj.TABLE1;
+	document.getElementById("table2").innerHTML = obj.TABLE2;
+	document.getElementById("accepted").innerHTML = obj.ClientAccepted;
+	document.getElementById("rejected").innerHTML = obj.ClientRejected;
+}

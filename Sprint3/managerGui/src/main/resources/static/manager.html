@@ -195,7 +195,7 @@
 																<h3 class="panel-title">Accepted Client</h3>
 															</div>
 															<div class="panel-body">
-																<p>0</p>
+																<p id="accepted">0</p>
 															</div>
 														</div>
 													</div>
@@ -206,16 +206,13 @@
 																<h3 class="panel-title">Rejected Client</h3>
 															</div>
 															<div class="panel-body">
-																<p>0</p>
+																<p id="rejected">0</p>
 															</div>
 														</div>
 													</div>
 													
                                                 </div> <!-- end row -->
                                             </div>
-											<textarea id="applmsgs" name="w3review" rows="6" cols="70" style="font-size: 20px; resize: none; visibility: hidden;" 
-													  onChange="loadstate();" onInput="loadstate();"th:text="${state}">
-											</textarea>
 
                                         </div>
                                     </div>
@@ -258,7 +255,6 @@
 		
 		<script src="plugins/webjars/sockjs.min.js"></script>
 		<script src="plugins/webjars/stomp.min.js"></script>
-		<script src="app.js"></script>
 		<script src="state.js"></script>
 		<script>connect()</script>
 

@@ -39,14 +39,14 @@ import it.unibo.kactor.MsgUtil;
 
 @Controller 
 public class RobotController { 
-    String appName      = "ClientGUI";
+    String appName      = "ManagerGUI";
     String viewModelRep = "startup";
     String robotHost = ""; //ConnConfig.hostAddr;		
     String robotPort = ""; //ConnConfig.port;
      
     //String htmlPage  = "robotGuiPost"; 
     //String htmlPage  = "robotGuiSocket";
-    String htmlPage = "client";
+    String htmlPage = "manager";
     //String htmlPage  = "robotGuiPostBoundary"; 
     
     Set<String> robotMoves = new HashSet<String>(); 
@@ -107,7 +107,7 @@ public class RobotController {
 	private void peparePageUpdating() {
 		CoapClient client = new CoapClient( );
 		String url =  "coap://" + configurator.getHostAddr() + ":" + configurator.getPort() + 
-				"/" + configurator.getCtxqadest() + "/smartbell";
+				"/" + configurator.getCtxqadest() + "/tearoomglobalstate";
 		System.out.println("CoapObserver | url=" + "url.toString()");
 	    client.setURI(url.toString());
 		client.setTimeout( 1000L );
@@ -137,57 +137,11 @@ public class RobotController {
 	protected void doBusinessJob( String moveName, Model viewmodel) {
 		try {
 			// messaggi che vengono inviati
-			// cliente 1
-			if( moveName.equalsIgnoreCase("request1")) {
-				ApplMessage msg = MsgUtil.buildRequest("web", "clientRingEntryRequest", "clientRingEntryRequest(1)", "smartbell" );
-				connQakSupport.forwardEnter(msg);		
-			}
-			else if (moveName.equalsIgnoreCase("clientready1")){
-				ApplMessage msg = MsgUtil.buildDispatch("web", "clientOrderReady", "clientOrderReady(1)", configurator.getQakdest() );
-				connQakSupport.forward( msg );
-			}
-			else if (moveName.equalsIgnoreCase("order1")) {
-				ApplMessage msg = MsgUtil.buildDispatch("web", "clientOrder", "clientOrder(1,teapesca)", configurator.getQakdest() );
-				connQakSupport.forward( msg );
-			}
-			else if (moveName.equalsIgnoreCase("payment1")){
-				ApplMessage msg = MsgUtil.buildDispatch("web", "clientPaymentReady", "clientPaymentReady(1)", configurator.getQakdest() );
-				connQakSupport.forward( msg );
-			}
-			// cliente 2
-			else if( moveName.equalsIgnoreCase("request2")) {
-				ApplMessage msg = MsgUtil.buildRequest("web", "clientRingEntryRequest", "clientRingEntryRequest(2)", "smartbell" );
-				connQakSupport.forwardEnter(msg);
-			}
-			else if (moveName.equalsIgnoreCase("clientready2")){
-				ApplMessage msg = MsgUtil.buildDispatch("web", "clientOrderReady", "clientOrderReady(2)", configurator.getQakdest() );
-				connQakSupport.forward( msg );
-			}
-			else if (moveName.equalsIgnoreCase("order2")) {
-				ApplMessage msg = MsgUtil.buildDispatch("web", "clientOrder", "clientOrder(2,tealimone)", configurator.getQakdest() );
-				connQakSupport.forward( msg );
-			}
-			else if (moveName.equalsIgnoreCase("payment2")) {
-				ApplMessage msg = MsgUtil.buildDispatch("web", "clientPaymentReady", "clientPaymentReady(2)", configurator.getQakdest() );
-				connQakSupport.forward( msg );
-			}
-			// cliente 3
-			else if( moveName.equalsIgnoreCase("request3")) {
-				ApplMessage msg = MsgUtil.buildRequest("web", "clientRingEntryRequest", "clientRingEntryRequest(3)", "smartbell" );
-				connQakSupport.forwardEnter(msg);		
-			}
-			else if (moveName.equalsIgnoreCase("clientready3")){
-				ApplMessage msg = MsgUtil.buildDispatch("web", "clientOrderReady", "clientOrderReady(3)", configurator.getQakdest() );
-				connQakSupport.forward( msg );
-			}
-			else if (moveName.equalsIgnoreCase("order3")) {
-				ApplMessage msg = MsgUtil.buildDispatch("web", "clientOrder", "clientOrder(3,teadario)", configurator.getQakdest() );
-				connQakSupport.forward( msg );
-			}
-			else if (moveName.equalsIgnoreCase("payment3")) {
-				ApplMessage msg = MsgUtil.buildDispatch("web", "clientPaymentReady", "clientPaymentReady(3)", configurator.getQakdest() );
-				connQakSupport.forward( msg );
-			}
+//			//if( moveName.equalsIgnoreCase("request1")) {
+//				ApplMessage msg = MsgUtil.buildRequest("web", "clientRingEntryRequest", "clientRingEntryRequest(1)", "smartbell" );
+//				connQakSupport.forwardEnter(msg);		
+//			}
+			
 			//WAIT for command completion ...
 			Thread.sleep(400);  //QUITE A LONG TIME ...
 			if( viewmodel != null ) {
