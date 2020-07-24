@@ -21,36 +21,6 @@ function sendRequestData( params, method) {
     console.log("body children num= "+document.body.children.length );
 }
 
-
-function postJQuery(params){
-	var form = new FormData();
-	form.append("name",  "move");
-	form.append("value", params);
-	
-	//let myForm = document.getElementById('myForm');
-	//let formData = new FormData(myForm);
-	
-	
-	var settings = {
-	  "url": "http://localhost:8080/move",
-	  "method": "POST",
-	  "timeout": 0,
-	  "headers": {
-	       "Content-Type": "text/plain"
-	   },
-	  "processData": false,
-	  "mimeType": "multipart/form-data",
-	  "contentType": false,
-	  "data": form
-	};
-	
-	$.ajax(settings).done(function (response) {
-	  //console.log("AJAX: " + response);  //The web page
-	  console.log("done move:" + themove );
-	});
-
-}
-
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
     $("#disconnect").prop("disabled", !connected);
@@ -67,9 +37,10 @@ function connect() {
     var socket = new SockJS('/it-unibo-iss');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
-        setConnected(true);
+        //setConnected(true);
         stompClient.subscribe('/topic/display', function (msg) {
              showMsg(JSON.parse(msg.body).content);
+             
         });
     });
 }
@@ -82,22 +53,6 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-/*
-function sendMove() {
-    stompClient.send("/app/move", {}, JSON.stringify({'name': $("#name").val()}));
-}
-*/
-
-function sendTheMove(move){
-	console.log("sendTheMove " + move);
-    stompClient.send("/app/move", {}, JSON.stringify({'name': move }));
-}
-
-function sendUpdateRequest(){
-	console.log(" sendUpdateRequest "  );
-    stompClient.send("/app/update", {}, JSON.stringify({'name': 'update' }));
-}
-
 var curMsg = ""
 
 function showMsg(message) {
@@ -105,55 +60,11 @@ function showMsg(message) {
 		return;
 	console.log(message );
 	
-    if(message.toString().includes("welcome") || message.toString().includes("wait")){
-    	window.alert(message);
+    if(message.toString().includes("welcome")){
+    	window.alert(message)
     }
-    else if (message.toString().includes("home")){
-    	window.alert("INFORM: " + message)
+    else if(message.toString().includes("ci dispiace")){
+    	window.alert(message)
     }
     curMsg = message;
 }
-
-$(function () {
-     $("form").on('submit', function (e) {
-         e.preventDefault();
-    });
-    $( "#connect" ).click(function() { connect(); });
-    $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
-
-	//USED BY SOCKET.IO-BASED GUI  
-
-    $( "#h" ).click(function() {  sendTheMove("h") });
-    $( "#w" ).click(function() {  sendTheMove("w") });
-    $( "#s" ).click(function() {  sendTheMove("s") });
-    $( "#r" ).click(function() {  sendTheMove("r") });
-    $( "#l" ).click(function() {  sendTheMove("l") });
-    $( "#x" ).click(function() {  sendTheMove("x") });
-    $( "#z" ).click(function() {  sendTheMove("z") });
-    $( "#p" ).click(function() {  sendTheMove("p") });
-
-    //$( "#rr" ).click(function() { console.log("submit rr"); redirectPost("r") });
-    //$( "#rrjo" ).click(function() { console.log("submit rr"); jqueryPost("r") });
-
-	//USED BY POST-BASED GUI   
-    
-    $( "#ww" ).click(function() { sendRequestData( "w") });
-    $( "#ss" ).click(function() { sendRequestData( "s") });
-    $( "#rr" ).click(function() { sendRequestData( "r") });
-    $( "#ll" ).click(function() { sendRequestData( "l") });
-    $( "#zz" ).click(function() { sendRequestData( "z") });
-    $( "#xx" ).click(function() { sendRequestData( "x") });
-    $( "#pp" ).click(function() { sendRequestData( "p") });
-    $( "#hh" ).click(function() { sendRequestData( "h") });
-    
-	//USED BY POST-BASED BOUNDARY
-	
-    $( "#start" ).click(function() { sendRequestData( "w") });
-    $( "#stop" ).click(function()  { sendRequestData( "h") });
-
-	$( "#update" ).click(function() { sendUpdateRequest(  ) });
-});
-
-
-

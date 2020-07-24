@@ -110,7 +110,7 @@ public class RobotController {
 				"/" + configurator.getCtxqadest() + "/smartbell";
 		System.out.println("CoapObserver | url=" + "url.toString()");
 	    client.setURI(url.toString());
-		client.setTimeout( 2000L );
+		client.setTimeout( 1000L );
 	    CoapResponse respGet  = client.get( ); //CoapResponse
 		if( respGet != null )
 			System.out.println("CoapObserver | createConnection doing  get | CODE=  ${respGet.code} content=${respGet.getResponseText()}");
@@ -140,7 +140,7 @@ public class RobotController {
 			// cliente 1
 			if( moveName.equalsIgnoreCase("request1")) {
 				ApplMessage msg = MsgUtil.buildRequest("web", "clientRingEntryRequest", "clientRingEntryRequest(1)", "smartbell" );
-				connQakSupport.forwardEnter(msg);			
+				connQakSupport.forwardEnter(msg);		
 			}
 			else if (moveName.equalsIgnoreCase("clientready1")){
 				ApplMessage msg = MsgUtil.buildDispatch("web", "clientOrderReady", "clientOrderReady(1)", configurator.getQakdest() );
@@ -157,7 +157,7 @@ public class RobotController {
 			// cliente 2
 			else if( moveName.equalsIgnoreCase("request2")) {
 				ApplMessage msg = MsgUtil.buildRequest("web", "clientRingEntryRequest", "clientRingEntryRequest(2)", "smartbell" );
-				connQakSupport.forwardEnter(msg);		
+				connQakSupport.forwardEnter(msg);
 			}
 			else if (moveName.equalsIgnoreCase("clientready2")){
 				ApplMessage msg = MsgUtil.buildDispatch("web", "clientOrderReady", "clientOrderReady(2)", configurator.getQakdest() );
