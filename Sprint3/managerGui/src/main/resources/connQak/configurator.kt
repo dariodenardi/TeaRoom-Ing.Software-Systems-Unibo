@@ -21,6 +21,12 @@ object configurator{
 	@JvmStatic var qakdest	     	= "waitermind";
 	@JvmStatic var ctxqadest 		= "ctxtearoom";
 	
+	// Domains application
+	@JvmStatic var hostAddrBasiRobot   	    = "localhost";  //"192.168.1.5";		
+	@JvmStatic var portBasiRobot    		= "8020";
+	@JvmStatic var qakdestBasiRobot	     	= "basicrobot";
+	@JvmStatic var ctxqadestBasiRobot 		= "ctxbasicrobot";
+	
 	@JvmStatic	//to be used by Java
 	fun configure(){
 		try{
@@ -33,6 +39,11 @@ object configurator{
 			port    		=  jsonObject.getString("port")
 			qakdest         =  jsonObject.getString("qakdest")
 			ctxqadest		=  jsonObject.getString("ctxqadest")
+			
+			hostAddrBasiRobot   	= jsonObject.getString("hostAddrBasiRobot");
+			portBasiRobot    		= jsonObject.getString("portBasiRobot");
+			qakdestBasiRobot	    = jsonObject.getString("qakdestBasiRobot");
+			ctxqadestBasiRobot 		= jsonObject.getString("ctxqadestBasiRobot");
 		}catch(e:Exception){
 			System.out.println( " &&& SORRY pageConfig.json NOT FOUND ")
 			pageTemplate 	=  "manager"  //jsonObject.getString("page") 
@@ -40,6 +51,11 @@ object configurator{
 			port    		= "8040"             //jsonObject.getString("port")
 			qakdest         = "waitermind"       //jsonObject.getString("qakdest")
 			ctxqadest		= "ctxtearoom"    //jsonObject.getString("ctxqadest")
+			
+			hostAddrBasiRobot   	= "localhost";  //"192.168.1.5";		
+			portBasiRobot    		= "8020";
+			qakdestBasiRobot	    = "basicrobot";
+			ctxqadestBasiRobot 		= "ctxbasicrobot"; 
 		}
 		
 		System.out.println( "configurator 	| pageTemplate=$pageTemplate hostAddr=$hostAddr port=$port" )

@@ -12,7 +12,7 @@ class connQakCoap( )  {
  var client   : CoapClient = CoapClient(  )
 	
 	 fun createConnection(  ){
- 			val url = "coap://${configurator.hostAddr}:${configurator.port}/${configurator.ctxqadest}/${configurator.qakdest}"
+ 			val url = "coap://${configurator.hostAddrBasiRobot}:${configurator.portBasiRobot}/${configurator.ctxqadestBasiRobot}/${configurator.qakdestBasiRobot}"
  			System.out.println("connQakCoap 	| url=${url.toString()}")
  			//uriStr: coap://192.168.1.22:8060/ctxdomains/waiter
 			//client = CoapClient(  )
@@ -33,7 +33,7 @@ class connQakCoap( )  {
 	}
 	
 	fun forwardEnter(msg: ApplMessage){
-		val url = "coap://${configurator.hostAddr}:${configurator.port}/${configurator.ctxqadest}/smartbell"
+		val url = "coap://${configurator.hostAddrBasiRobot}:${configurator.portBasiRobot}/${configurator.ctxqadestBasiRobot}"
 		val enterClient = CoapClient()
 		enterClient.uri = url.toString()
 		enterClient.setTimeout( 1000L )		

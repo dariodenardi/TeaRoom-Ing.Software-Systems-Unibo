@@ -77,7 +77,7 @@ public class RobotController {
   public String entry(Model viewmodel) {
  	 viewmodel.addAttribute("arg", "Entry page loaded. Please use the buttons ");
  	 peparePageUpdating();
- 	 return htmlPage;
+ 	 return "pages-login";
   } 
    
   @GetMapping("/applmodel")
@@ -136,11 +136,10 @@ public class RobotController {
 	 */
 	protected void doBusinessJob( String moveName, Model viewmodel) {
 		try {
+			//System.out.println(moveName + "SONO QUI");
 			// messaggi che vengono inviati
-//			//if( moveName.equalsIgnoreCase("request1")) {
-//				ApplMessage msg = MsgUtil.buildRequest("web", "clientRingEntryRequest", "clientRingEntryRequest(1)", "smartbell" );
-//				connQakSupport.forwardEnter(msg);		
-//			}
+			ApplMessage msg = MsgUtil.buildDispatch("web", "cmd", "cmd("+moveName+")", configurator.getQakdestBasiRobot() );
+			connQakSupport.forward( msg );
 			
 			//WAIT for command completion ...
 			Thread.sleep(400);  //QUITE A LONG TIME ...

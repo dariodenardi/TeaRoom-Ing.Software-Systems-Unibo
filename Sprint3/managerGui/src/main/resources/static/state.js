@@ -1,5 +1,5 @@
 var stompClient = null;
-var hostAddr = "http://localhost:7050/move";
+var hostAddr = "http://localhost:7060/move";
 
 //SIMULA UNA FORM che invia comandi POST
 function sendRequestData( params, method) {
@@ -76,3 +76,18 @@ function showMsg(message) {
 	document.getElementById("accepted").innerHTML = obj.ClientAccepted;
 	document.getElementById("rejected").innerHTML = obj.ClientRejected;
 }
+
+function sendTheMove(move){
+	console.log("sendTheMove " + move);
+    stompClient.send("/app/move", {}, JSON.stringify({'name': move }));
+}
+
+// SOCKET.IO
+
+$( "#hh" ).click(function() {  sendTheMove("h") });
+$( "#ww" ).click(function() {  sendTheMove("w") });
+$( "#ss" ).click(function() {  sendTheMove("s") });
+$( "#rr" ).click(function() {  sendTheMove("r") });
+$( "#ll" ).click(function() {  sendTheMove("l") });
+$( "#xx" ).click(function() {  sendTheMove("x") });
+$( "#zz" ).click(function() {  sendTheMove("z") });

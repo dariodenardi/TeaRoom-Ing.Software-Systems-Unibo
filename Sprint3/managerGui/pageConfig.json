@@ -1,3 +1,5 @@
-{"page":"pages-login", "host":"127.0.0.1", "port":"8040", 
-	"qakdest":"waitermind", "ctxqadest":"ctxtearoom"}
+{"page":"manager", "host":"127.0.0.1", "port":"8040", 
+	"qakdest":"waitermind", "ctxqadest":"ctxtearoom",
+	"hostAddrBasiRobot":"localhost", "portBasiRobot":"8020",
+	"qakdestBasiRobot":"basicrobot", "ctxqadestBasiRobot":"ctxbasicrobot"}
  
