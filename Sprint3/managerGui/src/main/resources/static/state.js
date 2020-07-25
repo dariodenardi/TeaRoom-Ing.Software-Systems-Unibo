@@ -65,14 +65,14 @@ function showMsg(message) {
 	
 	var obj = JSON.parse(str);
 	
-	console.log(obj.Waiter);
+	//console.log(obj.Waiter);
 
-	console.log(obj.Barman);
+	//console.log(obj.Barman);
 
 	document.getElementById("waiterstate").innerHTML = obj.Waiter;
 	document.getElementById("barman").innerHTML = obj.Barman;
-    document.getElementById("table1").innerHTML = obj.TABLE1;
-	document.getElementById("table2").innerHTML = obj.TABLE2;
+    document.getElementById("table1").innerHTML = obj.TABLE1 + " " + obj.timerDone1 + "ms";
+	document.getElementById("table2").innerHTML = obj.TABLE2 + " " + obj.timerDone2 + "ms";
 	document.getElementById("accepted").innerHTML = obj.ClientAccepted;
 	document.getElementById("rejected").innerHTML = obj.ClientRejected;
 }

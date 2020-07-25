@@ -71,6 +71,8 @@ QActor basicrobot context ctxbasicrobot{
   			//activate the motors 
 			run unibo.robot.robotSupport.move( payloadArg(0 ) )
 		}
+		//decommentare in caso di robot fisico
+		//delay 300
 	 }
 	 Goto work  
 
