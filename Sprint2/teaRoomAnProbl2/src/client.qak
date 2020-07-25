@@ -27,7 +27,7 @@ QActor client context ctxclient {
 	} 
 	//Transition t0 	whenMsg initSimulation -> ringBell
 	Goto ringBell 
-	
+	 
 	State ringBell{ 
 		println("client || Ring the bell")
 		updateResource [# "Ring" #]
@@ -35,7 +35,7 @@ QActor client context ctxclient {
 		//TEST 
 		println("client 	|| wait Enter - to Ring the Bell)" )
 		[# readLine() #]
-		//TEST
+		//TEST 
 
 		
 		request smartbell -m clientRingEntryRequest : clientRingEntryRequest(entrare)

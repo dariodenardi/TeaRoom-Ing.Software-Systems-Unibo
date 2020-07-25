@@ -103,12 +103,12 @@ Reply	 getTimerForInformReply : getTimerForInformReply(TIMER)
 //context and QActors 
   
 Context ctxtearoom ip [host="127.0.0.1" port=8040] 
-Context ctxbasicrobot ip [host="192.168.1.14" port=8020] 
+Context ctxbasicrobot ip [host="localhost" port=8020] 
 ExternalQActor basicrobot context ctxbasicrobot 
 //ExternalQActor waiterengine context ctxTearoom
 //end context and Qactors 
 
-
+ 
 
 QActor waitermind context ctxtearoom{
 	//inizializzazione varibili
@@ -194,7 +194,7 @@ QActor waitermind context ctxtearoom{
 		println("waitermind 		|| rest")
 		updateResource [# "rest"#]
 		
-		forward tearoomglobalstate -m setWaiterState : setWaiterState(rest)
+		forward tearoomglobalstate -m setWaiterState : setWaiterState(home)
 	}//end rest
 	Transition t1	whenRequest smartbellEntryRequest -> acceptorinform
 					whenMsg clientOrderReady -> reachTableOrder
@@ -207,7 +207,6 @@ QActor waitermind context ctxtearoom{
 		//[# readLine() #]
 		println("waitermind 		|| reachHome")
 		updateResource [# "reachHome" #]
-		
 		forward tearoomglobalstate -m setWaiterState : setWaiterState(reachHome)
 		
 		solve(pos(home, X, Y))
@@ -896,7 +895,7 @@ QActor smartbell context ctxtearoom{
 			}
 			if [#payloadArg(0) == "inform"#]{
 				[# var Tempo = payloadArg(1).toInt() /1000 #]
-				updateResource [# "welcome, non abbiamo posto, torna tra: $Tempo s" #]	
+				updateResource [# "ci dispiace, non abbiamo posto, torna tra: $Tempo s" #]	
 			}
 		
 			if [# payloadArg(0) == "accept"#]
@@ -914,7 +913,7 @@ QActor smartbell context ctxtearoom{
 		
 		onMsg(smartbellClientRejected : smartbellClientRejected(TEMP)){ //rispondo con temperatura (maggior del normale)
 			replyTo clientRingEntryRequest with clientRingEntryReply : clientRingEntryReply(rifiutato, $payloadArg(0)) 
-			updateResource [# "welcome, sei stato rifiutato, la tua temp: ${payloadArg(0)}" #]	
+			updateResource [# "ci dispiace, sei stato rifiutato, la tua temp: ${payloadArg(0)}" #]	
 		}
 	}
 	Goto waitRing
@@ -1097,7 +1096,7 @@ QActor waiterengine context ctxtearoom{
 
 QActor barman context ctxtearoom{
 	[#
-		val TimePrepareOrder = 2000L
+		val TimePrepareOrder = 4000L
 	#]
 	State s0 initial{
 		println("barman 	|| START")

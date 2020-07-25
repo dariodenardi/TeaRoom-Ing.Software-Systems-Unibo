@@ -17,11 +17,11 @@ class Barman ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
-				val TimePrepareOrder = 2000L
+				val TimePrepareOrder = 4000L
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("barman || START")
+						println("barman 	|| START")
 						updateResourceRep( "START"  
 						)
 					}
@@ -29,30 +29,33 @@ class Barman ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("waitOrder") { //this:State
 					action { //it:State
-						println("barman || waitOrder")
+						println("barman 	|| waitOrder")
 						updateResourceRep( "waitOrder"  
 						)
+						forward("setBarmanState", "setBarmanState(waitOrder)" ,"tearoomglobalstate" ) 
 					}
-					 transition(edgeName="t027",targetState="prepareOrder",cond=whenDispatch("waiterOrderForward"))
-					transition(edgeName="t028",targetState="endState",cond=whenDispatch("end"))
+					 transition(edgeName="t082",targetState="prepareOrder",cond=whenDispatch("waiterOrderForward"))
+					transition(edgeName="t083",targetState="endState",cond=whenDispatch("end"))
 				}	 
 				state("prepareOrder") { //this:State
 					action { //it:State
-						println("barman || prepareOrder")
+						println("barman 	|| prepareOrder")
 						updateResourceRep( "prepareOrder"  
 						)
-						delay(TimePrepareOrder)
 						if( checkMsgContent( Term.createTerm("waiterOrderForward(ID,ORDER)"), Term.createTerm("waiterOrderForward(ID,ORDER)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("Order:  ${payloadArg(1)}")
-								forward("barmanOrderReady", "barmanOrderReady(payloadArg(0))" ,"waitermind" ) 
+								println("barman 	|| Order:  ${payloadArg(1)}")
+								forward("setBarmanState", "setBarmanState(prepareOrder(${payloadArg(0)},${payloadArg(1)}))" ,"tearoomglobalstate" ) 
+								delay(TimePrepareOrder)
+								forward("addOrderReady", "addOrderReady(${payloadArg(0)})" ,"tearoomglobalstate" ) 
+								forward("barmanOrderReady", "barmanOrderReady(${payloadArg(0)})" ,"waitermind" ) 
 						}
 					}
 					 transition( edgeName="goto",targetState="waitOrder", cond=doswitch() )
 				}	 
 				state("endState") { //this:State
 					action { //it:State
-						println("barman || END")
+						println("barman 	|| END")
 						terminate(0)
 					}
 				}	 

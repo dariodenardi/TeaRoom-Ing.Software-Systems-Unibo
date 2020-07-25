@@ -17,11 +17,12 @@ class Client ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
-				var ID = ""
+				var ID_client = ""
 				val Order = "pesca"
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
+						discardMessages = false
 						println("client || START")
 						updateResourceRep( "START"  
 						)
@@ -33,35 +34,45 @@ class Client ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("client || Ring the bell")
 						updateResourceRep( "Ring"  
 						)
+						println("client 	|| wait Enter - to Ring the Bell)")
+						 readLine()  
 						request("clientRingEntryRequest", "clientRingEntryRequest(entrare)" ,"smartbell" )  
 					}
 					 transition(edgeName="t10",targetState="simulate",cond=whenReply("clientRingEntryReply"))
 				}	 
 				state("simulate") { //this:State
 					action { //it:State
+						if( checkMsgContent( Term.createTerm("clientRingEntryReply(ENTRATA,ID)"), Term.createTerm("clientRingEntryReply(ENTRATA,ID)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("client 	||  ${payloadArg(0)}  ${payloadArg(1)}")
+								ID_client = payloadArg(1).toString() 
+						}
+						println("client 	|| wait Enter - to Ask for Order)")
+						 readLine()  
 						println("client || Ready to order")
 						updateResourceRep( "OrderReady"  
 						)
-						if( checkMsgContent( Term.createTerm("clientEntryReply(ID)"), Term.createTerm("clientRingEntryReply"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								ID = payloadArg(0) 
-								println("Il mio ID= $ID")
-						}
-						forward("clientOrderReady", "clientOrderReady($ID)" ,"waitermind" ) 
+						forward("clientOrderReady", "clientOrderReady($ID_client)" ,"waitermind" ) 
+						println("client 	|| wait Enter - to Order)")
 						 readLine()  
 						println("client || Sending the order")
 						updateResourceRep( "Ordering"  
 						)
-						forward("clientOrder", "clientOrder($ID,$Order)" ,"waitermind" ) 
+						forward("clientOrder", "clientOrder($ID_client,$Order)" ,"waitermind" ) 
+						println("client 	|| wait Enter - to Ask to pay)")
+						 readLine()  
 						println("client || I want to pay")
 						updateResourceRep( "Paying"  
 						)
-						forward("clientPaymentReady", "clientPaymentReady($ID)" ,"waitermind" ) 
+						forward("clientPaymentReady", "clientPaymentReady($ID_client)" ,"waitermind" ) 
 					}
 					 transition( edgeName="goto",targetState="end", cond=doswitch() )
 				}	 
 				state("end") { //this:State
 					action { //it:State
+						println("client 	|| wait Enter - to Ring the Bell)")
+						 readLine()  
+						request("clientRingEntryRequest", "clientRingEntryRequest(entrare)" ,"smartbell" )  
 						println("client || END")
 						terminate(0)
 					}

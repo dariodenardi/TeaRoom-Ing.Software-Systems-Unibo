@@ -21,252 +21,638 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				val DoSanitize = 2
 				val DoClean = 3
 				
+				val ClearTime = 6000L
+				val SanitizeTime = 5000L
+				val CleanTime = 5000L
+				
 				val CollectTime = 4000L
+				val DelayTakeDrink = 2000L
+				val DelayServeDrink = 2000L
+				val DelayTakeClient = 2000L
 						 
-				val X_home = "0"
-				val Y_home = "0"
+		
+				var CleaningON = false
 				
-				val X_bar = "6"
-				val Y_bar = "0"
+				var TableToClean = 0
+				var TableStateToClean = ""
+				var TableTimerDone = 0L
 				
-				val X_entrance = "0"
-				val Y_entrance = "4"
+				var TableToOccupy = 0
+				var IdClientOccupy = 0
 				
-				val X_exit = "6"
-				val Y_exit = "4"
+				var TableForOrder = ""
+				var IdForOrder = 0
 				
-				val X_table_1 = "2"
-				val Y_table_1 = "2"
+				var TableForCollect = ""
 				
-				val X_table_2 = "0"
-				val Y_table_2 = "0"
+				var OrderOfRightClient = false
 				
-				data class Table(var state: String ="tableClean") { }
-				val table1 = Table()
-				val table2 = Table()
-				var stateTable1 = "tableClean"
-				var stateTable2 = "tableClean"
+				var TimerTable1 = 0 
+				var TimerTable2 = 0
 				
-				
+				var MoveX = 0
+				var MoveY = 0
+		
 		return { //this:ActionBasciFsm
 				state("startState") { //this:State
 					action { //it:State
-						println("waitermind || START")
+						println("waitermind 		|| START")
 						updateResourceRep( "startState"  
 						)
+						solve("consult('tearoomstate.pl')","") //set resVar	
 					}
-					 transition(edgeName="t00",targetState="rest",cond=whenDispatch("engineReady"))
+					 transition(edgeName="t00",targetState="checkTableToClean",cond=whenDispatch("engineReady"))
+				}	 
+				state("checkQueue") { //this:State
+					action { //it:State
+						println("waitermind		|| checkingQueue")
+						stateTimer = TimerActor("timer_checkQueue", 
+							scope, context!!, "local_tout_waitermind_checkQueue", 100.toLong() )
+					}
+					 transition(edgeName="t121",targetState="checkTableToClean",cond=whenTimeout("local_tout_waitermind_checkQueue"))   
+					transition(edgeName="t122",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t123",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t124",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t125",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t126",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
+				}	 
+				state("checkTableToClean") { //this:State
+					action { //it:State
+						println("waitermind		|| checkTableToClean")
+						request("getTableToCleanReq", "getTableToCleanReq(P)" ,"tearoomglobalstate" )  
+					}
+					 transition(edgeName="t17",targetState="analizeReplyTableToClean",cond=whenReply("getTableToCleanReply"))
+				}	 
+				state("analizeReplyTableToClean") { //this:State
+					action { //it:State
+						println("waitermind		|| analizeReplyTableToClean")
+						if( checkMsgContent( Term.createTerm("getTableToCleanReply(N,STATO,TIMERDONE)"), Term.createTerm("getTableToCleanReply(N,STATO,TIMERDONE)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 
+												TableToClean =  payloadArg(0).toInt()
+												TableStateToClean = payloadArg(1)
+												TableTimerDone = payloadArg(2).toLong()
+											
+						}
+					}
+					 transition( edgeName="goto",targetState="reachHome", cond=doswitchGuarded({ TableToClean == 0  
+					}) )
+					transition( edgeName="goto",targetState="reachTableClean", cond=doswitchGuarded({! ( TableToClean == 0  
+					) }) )
 				}	 
 				state("rest") { //this:State
 					action { //it:State
-						println("waitermind || rest")
+						println("waitermind 		|| rest")
 						updateResourceRep( "rest" 
 						)
+						forward("setWaiterState", "setWaiterState(home)" ,"tearoomglobalstate" ) 
 					}
-					 transition(edgeName="t11",targetState="accept",cond=whenRequest("smartbellEntryRequest"))
-					transition(edgeName="t12",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
-					transition(edgeName="t13",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
-					transition(edgeName="t14",targetState="endState",cond=whenDispatch("end"))
-					transition(edgeName="t15",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					 transition(edgeName="t18",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
+					transition(edgeName="t19",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t110",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t111",targetState="endState",cond=whenDispatch("end"))
+					transition(edgeName="t112",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t113",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
 				}	 
 				state("reachHome") { //this:State
 					action { //it:State
-						println("waitermind || reachHome")
+						println("waitermind 		|| reachHome")
 						updateResourceRep( "reachHome"  
 						)
-						request("moveTo", "moveTo($X_home,$Y_home)" ,"waiterengine" )  
+						forward("setWaiterState", "setWaiterState(reachHome)" ,"tearoomglobalstate" ) 
+						solve("pos(home,X,Y)","") //set resVar	
+						if( currentSolution.isSuccess() ) { 
+											MoveX = getCurSol("X").toString().toInt()
+						                	MoveY = getCurSol("Y").toString().toInt()
+						forward("moveTo", "moveTo($MoveX,$MoveY)" ,"waiterengine" ) 
+						}
+						else
+						{}
 					}
-					 transition(edgeName="t26",targetState="rest",cond=whenReply("done"))
+					 transition(edgeName="t214",targetState="rest",cond=whenDispatch("done"))
+					transition(edgeName="t215",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t216",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t217",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t218",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t219",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
+				}	 
+				state("acceptorinform") { //this:State
+					action { //it:State
+						forward("stopEngineMove", "stopEngineMove(P)" ,"waiterengine" ) 
+						if( CleaningON == true  
+						 ){forward("stopCleaningEngine", "stopCleaningEngine($TableToClean)" ,"waiterengine" ) 
+						 
+										CleaningON = false 
+										TableToClean = 0
+						}
+						println("waitermind 		|| accept or inform")
+						request("getFreeCleanTableReq", "getFreeCleanTableReq(P)" ,"tearoomglobalstate" )  
+						if( checkMsgContent( Term.createTerm("smartbellEntryRequest(ID)"), Term.createTerm("smartbellEntryRequest(ID)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("waitermind 		|| Ricevuta richiesta da ID: ${ payloadArg(0) }")
+								IdClientOccupy = payloadArg(0).toInt() 
+						}
+					}
+					 transition(edgeName="t120",targetState="analizeacceptorinform",cond=whenReply("getFreeCleanTableReply"))
+				}	 
+				state("analizeacceptorinform") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("getFreeCleanTableReply(N)"), Term.createTerm("getFreeCleanTableReply(N)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								
+												TableToOccupy = payloadArg(0).toInt() 	
+						}
+					}
+					 transition( edgeName="goto",targetState="inform", cond=doswitchGuarded({TableToOccupy == 0 
+					}) )
+					transition( edgeName="goto",targetState="accept", cond=doswitchGuarded({! (TableToOccupy == 0 
+					) }) )
+				}	 
+				state("inform") { //this:State
+					action { //it:State
+						IdClientOccupy = 0 
+						request("getTimerForInformReq", "getTimerForInformReq(P)" ,"tearoomglobalstate" )  
+					}
+					 transition(edgeName="t021",targetState="analizeTimeForInform",cond=whenReply("getTimerForInformReply"))
+				}	 
+				state("analizeTimeForInform") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("getTimerForInformReply(TIMER)"), Term.createTerm("getTimerForInformReply(TIMER)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								answer("smartbellEntryRequest", "smartbellEntryReply", "smartbellEntryReply(inform,${payloadArg(0)})"   )  
+								updateResourceRep("inform ${payloadArg(0)}" 
+								)
+						}
+					}
+					 transition( edgeName="goto",targetState="checkQueue", cond=doswitch() )
 				}	 
 				state("accept") { //this:State
 					action { //it:State
-						println("waitermind || accept")
+						println("waitermind 		|| accept")
 						updateResourceRep( "accept"  
 						)
-						if( checkMsgContent( Term.createTerm("smartbellEntryRequest(ID)"), Term.createTerm("smartbellEntryRequest(ID)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								answer("smartbellEntryRequest", "smartbellEntryReply", "smartbellEntryReply(payloadArg(0))"   )  
-						}
+						answer("smartbellEntryRequest", "smartbellEntryReply", "smartbellEntryReply(accept,$IdClientOccupy)"   )  
 					}
 					 transition( edgeName="goto",targetState="reachDoor", cond=doswitch() )
 				}	 
 				state("reachDoor") { //this:State
 					action { //it:State
-						println("waitermind || reachDoor")
+						println("waitermind 		|| reachDoor")
 						updateResourceRep( "reachDoor"  
 						)
-						println("INVIO IL MOVETO")
-						request("moveTo", "moveTo($X_entrance,$Y_entrance)" ,"waiterengine" )  
-						println("INVIATO IL MOVETO")
+						forward("setWaiterState", "setWaiterState(reachDoor)" ,"tearoomglobalstate" ) 
+						solve("pos(entrance,X,Y)","") //set resVar	
+						if( currentSolution.isSuccess() ) {
+											MoveX = getCurSol("X").toString().toInt()
+						                	MoveY = getCurSol("Y").toString().toInt()
+						forward("moveTo", "moveTo($MoveX,$MoveY)" ,"waiterengine" ) 
+						}
+						else
+						{}
 					}
-					 transition(edgeName="t37",targetState="convoyTable",cond=whenReply("done"))
+					 transition(edgeName="t322",targetState="convoyTable",cond=whenDispatch("done"))
 				}	 
 				state("convoyTable") { //this:State
 					action { //it:State
-						println("premere invio per veriricare posizione dopo reachDoor")
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
-						 readLine()  
-						println("waitermind || convoyTable")
+						println("waitermind 		|| wait Enter - pos-> EntranceDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						println("waitermind 		|| convoyTable")
 						updateResourceRep( "convoyTable" 
 						)
-						delay(500) 
-						request("moveTo", "moveTo($X_table_1,$Y_table_1)" ,"waiterengine" )  
+						forward("setWaiterState", "setWaiterState(convoyTable)" ,"tearoomglobalstate" ) 
+						delay(DelayTakeClient)
+						forward("occupyTable", "occupyTable($TableToOccupy,$IdClientOccupy)" ,"tearoomglobalstate" ) 
+						solve("pos('table$TableToOccupy',X,Y)","") //set resVar	
+						if( currentSolution.isSuccess() ) {
+												MoveX = getCurSol("X").toString().toInt()
+							                	MoveY = getCurSol("Y").toString().toInt()
+						forward("moveTo", "moveTo($MoveX,$MoveY)" ,"waiterengine" ) 
+						}
+						else
+						{}
 					}
-					 transition(edgeName="t48",targetState="reachHome",cond=whenReply("done"))
+					 transition(edgeName="t423",targetState="startTimerTable",cond=whenDispatch("done"))
+				}	 
+				state("startTimerTable") { //this:State
+					action { //it:State
+						forward("startTimer", "startTimer($TableToOccupy)" ,"maxstaytime" ) 
+					}
+					 transition( edgeName="goto",targetState="checkQueue", cond=doswitch() )
 				}	 
 				state("reachTableOrder") { //this:State
 					action { //it:State
-						println("waitermind || reachTableOrder")
+						forward("stopEngineMove", "stopEngineMove(P)" ,"waiterengine" ) 
+						if( CleaningON == true  
+						 ){forward("stopCleaningEngine", "stopCleaningEngine($TableToClean)" ,"waiterengine" ) 
+						
+										CleaningON = false 
+										TableToClean = 0
+						}
+						println("waitermind 		|| reachTableOrder")
 						updateResourceRep( "reachTableOrder" 
 						)
-						request("moveTo", "moveTo($X_table_1,$Y_table_1)" ,"waiterengine" )  
+						forward("setWaiterState", "setWaiterState(reachTableOrder)" ,"tearoomglobalstate" ) 
+						if( checkMsgContent( Term.createTerm("clientOrderReady(ID)"), Term.createTerm("clientOrderReady(ID)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("waitermind 		|| client pronto per ordinare ID : ${payloadArg(0)}")
+								
+												IdForOrder = payloadArg(0).toInt()
+						}
+						request("getTableFromIdReq", "getTableFromIdReq($IdForOrder)" ,"tearoomglobalstate" )  
 					}
-					 transition(edgeName="t59",targetState="waitOrderClient",cond=whenReply("done"))
+					 transition(edgeName="t524",targetState="checkClientPresentInRoomOrder",cond=whenReply("getTableFromIdReply"))
+				}	 
+				state("checkClientPresentInRoomOrder") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("getTableFromIdReply(N)"), Term.createTerm("getTableFromIdReply(N)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								
+												TableForOrder = payloadArg(0)	
+						}
+						if(  TableForOrder == "0" 
+						 ){ IdForOrder = 0  
+						}
+					}
+					 transition( edgeName="goto",targetState="checkQueue", cond=doswitchGuarded({ TableForOrder == "0" 
+					}) )
+					transition( edgeName="goto",targetState="moveReachTableOrder", cond=doswitchGuarded({! ( TableForOrder == "0" 
+					) }) )
+				}	 
+				state("moveReachTableOrder") { //this:State
+					action { //it:State
+						forward("stopTimer", "stopTimer($TableForOrder)" ,"maxstaytime" ) 
+						solve("pos('table$TableForOrder',X,Y)","") //set resVar	
+						if( currentSolution.isSuccess() ) {
+											MoveX = getCurSol("X").toString().toInt()
+						                	MoveY = getCurSol("Y").toString().toInt()
+						forward("moveTo", "moveTo($MoveX,$MoveY)" ,"waiterengine" ) 
+						}
+						else
+						{}
+					}
+					 transition(edgeName="t525",targetState="waitOrderClient",cond=whenDispatch("done"))
 				}	 
 				state("waitOrderClient") { //this:State
 					action { //it:State
-						println("premere invio per veriricare posizione al tavolo per prendere ordine")
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
-						 readLine()  
-						println("waitermind || waitOrderClient")
+						println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						println("waitermind 		|| waitOrderClient")
 						updateResourceRep( "waitOrderClient"  
 						)
+						forward("setWaiterState", "setWaiterState(waitOrderClient)" ,"tearoomglobalstate" ) 
 					}
-					 transition(edgeName="t610",targetState="trasmit",cond=whenDispatch("clientOrder"))
+					 transition(edgeName="t626",targetState="trasmit",cond=whenDispatch("clientOrder"))
 				}	 
 				state("trasmit") { //this:State
 					action { //it:State
-						println("waitermind || trasmit")
+						OrderOfRightClient = false 
+						println("waitermind 		|| trasmit")
 						updateResourceRep( "trasmit" 
 						)
-						println("Messaggio per il barman")
 						if( checkMsgContent( Term.createTerm("clientOrder(ID,ORDER)"), Term.createTerm("clientOrder(ID,ORDER)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("Invio messaggio barman")
-								forward("waiterOrderForward", "waiterOrderForward(payloadArg(0),payloadArg(1))" ,"barman" ) 
-								println("Inviato")
+								println("waitermind 		|| ricevuto ordine ID,ORDER: ${payloadArg(0)},${payloadArg(1)} ")
+								if(  IdForOrder == payloadArg(0).toInt()  
+								 ){ OrderOfRightClient = true  
+								forward("waiterOrderForward", "waiterOrderForward(${payloadArg(0)},${payloadArg(1)})" ,"barman" ) 
+								
+													IdForOrder = 0
+													TableForOrder = "0"	
+								}
 						}
-						println("Messaggio inviato al barman?")
 					}
-					 transition( edgeName="goto",targetState="reachHome", cond=doswitch() )
+					 transition( edgeName="goto",targetState="checkQueue", cond=doswitchGuarded({ OrderOfRightClient == true  
+					}) )
+					transition( edgeName="goto",targetState="trasmitCheck", cond=doswitchGuarded({! ( OrderOfRightClient == true  
+					) }) )
+				}	 
+				state("trasmitCheck") { //this:State
+					action { //it:State
+					}
+					 transition(edgeName="t027",targetState="trasmit",cond=whenDispatch("clientOrder"))
 				}	 
 				state("reachBar") { //this:State
 					action { //it:State
-						println("waitermind || reachBar")
+						forward("stopEngineMove", "stopEngineMove(P)" ,"waiterengine" ) 
+						if( CleaningON == true  
+						 ){forward("stopCleaningEngine", "stopCleaningEngine($TableToClean)" ,"waiterengine" ) 
+						
+										CleaningON = false 
+										TableToClean = 0
+						}
+						println("waitermind 		|| reachBar")
 						updateResourceRep( "reachBar" 
 						)
-						request("moveTo", "moveTo($X_bar,$Y_bar)" ,"waiterengine" )  
+						forward("setWaiterState", "setWaiterState(reachBar)" ,"tearoomglobalstate" ) 
+						if( checkMsgContent( Term.createTerm("barmanOrderReady(ID)"), Term.createTerm("barmanOrderReady(ID)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("waitermind 		|| order ready client ID: ${payloadArg(0)}")
+								
+												IdForOrder = payloadArg(0).toInt()
+						}
+						solve("pos(bar,X,Y)","") //set resVar	
+						if( currentSolution.isSuccess() ) {
+											MoveX = getCurSol("X").toString().toInt()
+						                	MoveY = getCurSol("Y").toString().toInt()
+						forward("moveTo", "moveTo($MoveX,$MoveY)" ,"waiterengine" ) 
+						}
+						else
+						{}
 					}
-					 transition(edgeName="t611",targetState="serveTable",cond=whenReply("done"))
+					 transition(edgeName="t628",targetState="getDrink",cond=whenDispatch("done"))
 				}	 
-				state("serveTable") { //this:State
+				state("getDrink") { //this:State
 					action { //it:State
-						println("premere invio per veriricare posizione dal barman")
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
-						 readLine()  
-						println("waitermind || serveTable")
-						updateResourceRep( "serveTable" 
+						println("waitermind 		|| wait Enter - pos-> BARMAN || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						println("waitermind 		|| getDrink")
+						updateResourceRep( "getDrink" 
 						)
-						delay(1000) 
-						request("moveTo", "moveTo($X_table_1,$Y_table_1)" ,"waiterengine" )  
-						 table1.state = "tableDirty"  
+						forward("setWaiterState", "setWaiterState(getDrink)" ,"tearoomglobalstate" ) 
+						forward("removeOrderReady", "removeOrderReady($IdForOrder)" ,"tearoomglobalstate" ) 
+						request("getTableFromIdReq", "getTableFromIdReq($IdForOrder)" ,"tearoomglobalstate" )  
+						delay(DelayTakeDrink)
 					}
-					 transition(edgeName="t712",targetState="reachHome",cond=whenReply("done"))
+					 transition(edgeName="t729",targetState="checkClientPresentInRoomServe",cond=whenReply("getTableFromIdReply"))
+				}	 
+				state("checkClientPresentInRoomServe") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("getTableFromIdReply(N)"), Term.createTerm("getTableFromIdReply(N)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								
+												TableForOrder = payloadArg(0)	
+						}
+						if(  TableForOrder == "0" 
+						 ){ IdForOrder = 0  
+						}
+					}
+					 transition( edgeName="goto",targetState="checkQueue", cond=doswitchGuarded({ TableForOrder == "0" 
+					}) )
+					transition( edgeName="goto",targetState="reachTableServe", cond=doswitchGuarded({! ( TableForOrder == "0" 
+					) }) )
+				}	 
+				state("reachTableServe") { //this:State
+					action { //it:State
+						println("waitermind 		|| reachTableServe")
+						solve("pos('table$TableForOrder',X,Y)","") //set resVar	
+						if( currentSolution.isSuccess() ) {
+											MoveX = getCurSol("X").toString().toInt()
+						                	MoveY = getCurSol("Y").toString().toInt()
+						forward("moveTo", "moveTo($MoveX,$MoveY)" ,"waiterengine" ) 
+						}
+						else
+						{}
+					}
+					 transition(edgeName="t030",targetState="serveDrinkTable",cond=whenDispatch("done"))
+				}	 
+				state("serveDrinkTable") { //this:State
+					action { //it:State
+						delay(DelayServeDrink)
+						forward("resumeTimer", "resumeTimer($TableForOrder)" ,"maxstaytime" ) 
+						
+									IdForOrder = 0
+									TableForOrder = "0"	
+					}
+					 transition( edgeName="goto",targetState="checkQueue", cond=doswitch() )
 				}	 
 				state("reachTableCollect") { //this:State
 					action { //it:State
-						println("waitermind || reachTableCollect")
+						forward("stopEngineMove", "stopEngineMove(P)" ,"waiterengine" ) 
+						if( CleaningON == true  
+						 ){forward("stopCleaningEngine", "stopCleaningEngine($TableToClean)" ,"waiterengine" ) 
+						
+										CleaningON = false 
+										TableToClean = 0
+						}
+						println("waitermind 		|| reachTableCollect")
 						updateResourceRep( "reachTableCollect" 
 						)
-						request("moveTo", "moveTo($X_table_1,$Y_table_1)" ,"waiterengine" )  
+						forward("setWaiterState", "setWaiterState(reachTableCollect)" ,"tearoomglobalstate" ) 
+						if( checkMsgContent( Term.createTerm("clientPaymentReady(ID)"), Term.createTerm("clientPaymentReady(ID)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("waitermind 		|| client wants to pay ID : ${payloadArg(0)}")
+								request("getTableFromIdReq", "getTableFromIdReq(${payloadArg(0)})" ,"tearoomglobalstate" )  
+						}
 					}
-					 transition(edgeName="t813",targetState="collect",cond=whenReply("done"))
+					 transition(edgeName="t831",targetState="checkReachTableCollectID",cond=whenReply("getTableFromIdReply"))
+				}	 
+				state("checkReachTableCollectID") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("getTableFromIdReply(N)"), Term.createTerm("getTableFromIdReply(N)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								
+												TableForCollect = payloadArg(0)
+						}
+						if(  TableForCollect != "0" 
+						 ){forward("stopTimer", "stopTimer($TableForCollect)" ,"maxstaytime" ) 
+						}
+					}
+					 transition( edgeName="goto",targetState="checkQueue", cond=doswitchGuarded({ TableForCollect == "0" 
+					}) )
+					transition( edgeName="goto",targetState="moveReachTableCollect", cond=doswitchGuarded({! ( TableForCollect == "0" 
+					) }) )
+				}	 
+				state("moveReachTableCollect") { //this:State
+					action { //it:State
+						forward("setWaiterState", "setWaiterState(moveReachTableCollect)" ,"tearoomglobalstate" ) 
+						solve("pos('table$TableForCollect',X,Y)","") //set resVar	
+						if( currentSolution.isSuccess() ) {
+										MoveX = getCurSol("X").toString().toInt()
+						                MoveY = getCurSol("Y").toString().toInt()
+						forward("moveTo", "moveTo($MoveX,$MoveY)" ,"waiterengine" ) 
+						}
+						else
+						{}
+					}
+					 transition(edgeName="t032",targetState="collect",cond=whenDispatch("done"))
 				}	 
 				state("collect") { //this:State
 					action { //it:State
-						println("premere invio per veriricare posizione per collect")
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
-						 readLine()  
-						println("waitermind || collect")
+						println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						println("waitermind 		|| collect")
 						updateResourceRep( "collect" 
 						)
+						forward("setWaiterState", "setWaiterState(collect)" ,"tearoomglobalstate" ) 
 						delay(CollectTime)
 					}
 					 transition( edgeName="goto",targetState="convoyExit", cond=doswitch() )
 				}	 
 				state("convoyExit") { //this:State
 					action { //it:State
-						println("waitermind || convoyExit")
+						println("waitermind 	|| convoyExit")
 						updateResourceRep( "convoyExit" 
 						)
-						request("moveTo", "moveTo($X_exit,$Y_exit)" ,"waiterengine" )  
+						forward("setWaiterState", "setWaiterState(convoyExit)" ,"tearoomglobalstate" ) 
+						forward("setStateTable", "setStateTable($TableForCollect,tableDirty,0)" ,"tearoomglobalstate" ) 
+						solve("pos(exit,X,Y)","") //set resVar	
+						if( currentSolution.isSuccess() ) {
+											MoveX = getCurSol("X").toString().toInt()
+						                	MoveY = getCurSol("Y").toString().toInt()
+						forward("moveTo", "moveTo($MoveX,$MoveY)" ,"waiterengine" ) 
+						}
+						else
+						{}
 					}
-					 transition(edgeName="t914",targetState="reachTableClean",cond=whenReply("done"))
+					 transition(edgeName="t933",targetState="checkQueue",cond=whenDispatch("done"))
 				}	 
 				state("reachTableClean") { //this:State
 					action { //it:State
-						println("premere invio per veriricare posizione exit")
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
-						 readLine()  
-						println("waitermind || reachTableClean")
+						println("waitermind 		|| wait Enter, vado a pulire - pos-> || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						println("waitermind 	|| reachTableClean")
 						updateResourceRep( "reachTableClean" 
 						)
+						forward("setWaiterState", "setWaiterState(reachTableClean)" ,"tearoomglobalstate" ) 
 						delay(1000) 
-						request("moveTo", "moveTo($X_table_1,$Y_table_1)" ,"waiterengine" )  
+						solve("pos('table$TableToClean',X,Y)","") //set resVar	
+						if( currentSolution.isSuccess() ) {
+										MoveX = getCurSol("X").toString().toInt()
+						               	MoveY = getCurSol("Y").toString().toInt()
+						forward("moveTo", "moveTo($MoveX,$MoveY)" ,"waiterengine" ) 
+						}
+						else
+						{}
 					}
-					 transition(edgeName="t1015",targetState="tableClearing",cond=whenReply("done"))
+					 transition(edgeName="t1034",targetState="whichCleanState",cond=whenDispatch("done"))
+					transition(edgeName="t1035",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t1036",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t1037",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t1038",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t1039",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
+				}	 
+				state("whichCleanState") { //this:State
+					action { //it:State
+						if(  TableStateToClean == "tableClearing" || TableStateToClean == "tableDirty"  
+						 ){forward("goToClearing", "goToClearing(P)" ,"waitermind" ) 
+						}
+						if(  TableStateToClean == "tableSanitizing"  
+						 ){forward("goToSanitizing", "goToSanitizing(P)" ,"waitermind" ) 
+						}
+						if(  TableStateToClean == "tableCleaning"  
+						 ){forward("goToCleaning", "goToCleaning(P)" ,"waitermind" ) 
+						}
+					}
+					 transition(edgeName="t040",targetState="tableClearing",cond=whenDispatch("goToClearing"))
+					transition(edgeName="t041",targetState="tableSanitizing",cond=whenDispatch("goToSanitizing"))
+					transition(edgeName="t042",targetState="tableCleaning",cond=whenDispatch("goToCleaning"))
 				}	 
 				state("tableClearing") { //this:State
 					action { //it:State
-						println("premere invio per veriricare posizione tavolo che sto pulendo")
-						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
-						)
-						 readLine()  
-						println("waitermind || tableClearing")
 						updateResourceRep( "tableClearing" 
 						)
-						 table1.state = "tableClearing"  
-						forward("clean", "clean($DoClear)" ,"waiterengine" ) 
+						forward("setWaiterState", "setWaiterState(tableClearing)" ,"tearoomglobalstate" ) 
+						forward("setStateTable", "setStateTable($TableToClean,tableClearing,$TableTimerDone)" ,"tearoomglobalstate" ) 
+						 
+									CleaningON = true 
+									TableTimerDone = ClearTime-TableTimerDone
+						println("waitermind 	|| tableClearing || $TableTimerDone")
+						forward("clean", "clean($DoClear,$TableTimerDone)" ,"waiterengine" ) 
+						
+									TableTimerDone = 0
 					}
-					 transition(edgeName="t1116",targetState="tableSanitizing",cond=whenDispatch("doneCleanRun"))
+					 transition(edgeName="t1143",targetState="tableSanitizing",cond=whenDispatch("doneCleanRun"))
+					transition(edgeName="t1144",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t1145",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t1146",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t1147",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t1148",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
 				}	 
 				state("tableSanitizing") { //this:State
 					action { //it:State
-						println("waitermind || tableSanitizing")
 						updateResourceRep( "tableSanitizing" 
 						)
-						 table1.state = "tableSanitizing"  
-						forward("clean", "clean($DoSanitize)" ,"waiterengine" ) 
+						forward("setWaiterState", "setWaiterState(tableSanitizing)" ,"tearoomglobalstate" ) 
+						forward("setStateTable", "setStateTable($TableToClean,tableSanitizing,$TableTimerDone)" ,"tearoomglobalstate" ) 
+						 
+									CleaningON = true 
+									TableTimerDone = SanitizeTime-TableTimerDone
+						println("waitermind 	|| tableSanitizing || $TableTimerDone")
+						forward("clean", "clean($DoSanitize,$TableTimerDone)" ,"waiterengine" ) 
+						
+									TableTimerDone = 0
 					}
-					 transition(edgeName="t1217",targetState="tableCleaning",cond=whenDispatch("doneCleanRun"))
+					 transition(edgeName="t1249",targetState="tableCleaning",cond=whenDispatch("doneCleanRun"))
+					transition(edgeName="t1250",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t1251",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t1252",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t1253",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t1254",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
 				}	 
 				state("tableCleaning") { //this:State
 					action { //it:State
-						println("waitermind || tableCleaning")
 						updateResourceRep( "tableCleaning" 
 						)
-						 table1.state = "tableCleaning"  
-						forward("clean", "clean($DoClean)" ,"waiterengine" ) 
+						forward("setWaiterState", "setWaiterState(tableCleaning)" ,"tearoomglobalstate" ) 
+						forward("setStateTable", "setStateTable($TableToClean,tableCleaning,$TableTimerDone)" ,"tearoomglobalstate" ) 
+						 
+									CleaningON = true 
+									TableTimerDone = CleanTime-TableTimerDone
+						println("waitermind 	|| tableCleaning || $TableTimerDone")
+						forward("clean", "clean($DoClean,$TableTimerDone)" ,"waiterengine" ) 
+						
+									TableTimerDone = 0
 					}
-					 transition(edgeName="t1218",targetState="updateTableCleaned",cond=whenDispatch("doneCleanRun"))
+					 transition(edgeName="t1255",targetState="updateTableCleaned",cond=whenDispatch("doneCleanRun"))
+					transition(edgeName="t1256",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t1257",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t1258",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t1259",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t1260",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
+				}	 
+				state("reachTableKick") { //this:State
+					action { //it:State
+						forward("stopEngineMove", "stopEngineMove(P)" ,"waiterengine" ) 
+						if( CleaningON == true  
+						 ){forward("stopCleaningEngine", "stopCleaningEngine($TableToClean)" ,"waiterengine" ) 
+						
+										CleaningON = false 
+										TableToClean = 0
+						}
+						if( checkMsgContent( Term.createTerm("maxStayTimerExpired(N)"), Term.createTerm("maxStayTimerExpired(N)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								
+												TableForCollect = payloadArg(0)
+								println("STO CACCIANDO CLIENTE TAVOLO $TableForCollect")
+								solve("pos('table$TableForCollect',X,Y)","") //set resVar	
+								if( currentSolution.isSuccess() ) {
+													MoveX = getCurSol("X").toString().toInt()
+								                	MoveY = getCurSol("Y").toString().toInt()
+								forward("moveTo", "moveTo($MoveX,$MoveY)" ,"waiterengine" ) 
+								}
+								else
+								{}
+						}
+					}
+					 transition(edgeName="t061",targetState="collect",cond=whenDispatch("done"))
 				}	 
 				state("updateTableCleaned") { //this:State
 					action { //it:State
-						println("waitermind || updateTableCleaned")
+						println("waitermind 	|| updateTableCleaned")
 						updateResourceRep( "updateTableCleaned"  
 						)
-						 table1.state = "tableCleaned"  
+						forward("setStateTable", "setStateTable($TableToClean,tableCleaned,$TableTimerDone)" ,"tearoomglobalstate" ) 
+						 
+									CleaningON = false 	
+									TableToClean =  0		
+						stateTimer = TimerActor("timer_updateTableCleaned", 
+							scope, context!!, "local_tout_waitermind_updateTableCleaned", 100.toLong() )
 					}
-					 transition( edgeName="goto",targetState="reachHome", cond=doswitch() )
+					 transition(edgeName="t1262",targetState="checkTableToClean",cond=whenTimeout("local_tout_waitermind_updateTableCleaned"))   
+					transition(edgeName="t1263",targetState="reachTableOrder",cond=whenDispatch("clientOrderReady"))
+					transition(edgeName="t1264",targetState="reachTableCollect",cond=whenDispatch("clientPaymentReady"))
+					transition(edgeName="t1265",targetState="reachBar",cond=whenDispatch("barmanOrderReady"))
+					transition(edgeName="t1266",targetState="reachTableKick",cond=whenDispatch("maxStayTimerExpired"))
+					transition(edgeName="t1267",targetState="acceptorinform",cond=whenRequest("smartbellEntryRequest"))
 				}	 
 				state("endState") { //this:State
 					action { //it:State
-						println("waitermind || TERMINATES")
+						println("waitermind 	|| TERMINATES")
 						forward("end", "end(V)" ,"waiterengine" ) 
 						terminate(0)
 					}
