@@ -16,20 +16,20 @@
 				<li><b>proattivo:</b> capace di intraprendere task di propria iniziativa;</li>
 				<li><b>reattivo:</b> reagire agli stimoli esterni.</li>
 			</ul>
-			Sempre dall'analisi emerge che il <em>waiter</em> sia sovracaricato da troppi compiti: si decide si usare l'approccio <b>divide et impera</b>.
-			Dunque, lo suddividiamo in due parti:
+			Osservando la tabella dei task si può notare come l'esecuzione di un qualsiasi task è una combinazione di azioni appartenenti a 3 categorie: invio di un messaggio, movimento nella <em>tearoom</em>, interazione con oggetti della <em>tearoom</em> (come prendere il drink o pulire un tavolo, vengono simulate con un delay).</br>
+			Inoltre <em>waiter</em> deve essere in grado di eseguire un task e ascoltare nuovi messaggi contemporaneamente. 
+			Questo bisogno ci spinge a suddividerlo in parti (<b>divide et impera</b>):
 			<ul>
-				<li>una che gestisca il movimento del robot e la pulizia dei <em>table</em>;</li>
-				<li>una che interagisca con le altre entità e comandi la prima parte.</li>
+				<li>una prima parte, a cui pensiamo come un <b>engine</b>, che gestisca il movimento del robot e la pulizia dei <em>table</em></li>
+				<li>una seconda parte, a cui pensiamo come un <b>mind</b>, che comunichi con le altre entità e comandi la prima parte</li>
 			</ul>
-			Pensiamo alla prima parte come un "<b>engine</b>" e alla seconda come un "<b>mind</b>".
-			In questo modo il <em>waiter</em> è in grado di muoversi e di ascoltare nuovi messaggi contemporaneamente.
-			
-			Durante l'esecuzione dei task il <em>waiter</em> deve essere in ascolto di nuovi messaggi.			
+			Quindi sostituiamo l'attore <em>waiter</em> introdotto nell'analisi dei requisiti con due nuovi attori, <em>waitermind</em> e <em>waiterengine</em>. Possiamo dire che <em>waitermind</em> mantenga la logica d'esecuzione di <em>waiter</em> mentre <em>waiterengine</em> compie le azioni che si ripercuotono sulla <em>tearoom</em><br/>
+			/*Inserisci messaggi introdotti per comunicazione waitermind e waiterengine*/
+
 			</br>
 			</br>
-			Emerge anche la necessità di conoscere la posizione delle entità nella <em>tearoom</em> e di avere un sistema di navigazione 
-			che permetta il movimento da un punto A a un punto B.
+			Il problema legato alla pulizia del tavolo è stato discusso nell'analisi del problema dello sprint precedente.
+			Parlando di movimento del <em>waiter</em> emerge la necessità di conoscere la posizione delle entità nella <em>tearoom</em> e di avere un sistema di navigazione che permetta il movimento da un punto A a un punto B.
 			Per fortuna una <b>software house</b> entra in nostro aiuto e ci fornisce un tool pronto all'uso: si veda <a href="" onclick="openInNewTab('https://github.com/anatali/iss2020LabBo/tree/master/it.unibo.planner20');">it.unibo.planner20</a>.
 			<br/>
 			Questo comporta l'introduzione di una <b>mappa</b> che dovrà essere gestita da un componente.
