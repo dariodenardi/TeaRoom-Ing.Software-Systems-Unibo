@@ -2,7 +2,7 @@
 
 # Introduction
 
-The manager of a tearoom intends to regulate the access to the service by means of a ddr robot (waiter).
+The **manager** of a tearoom intends to regulate the access to the service by means of a ddr robot (waiter).
 
 The tearoom is a rectangular room that includes:
 
