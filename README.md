@@ -1,6 +1,6 @@
 # Final Project - Software Systems Engineering M
 
-read the [documentation](https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Documentation/index.html) for more information: installation, git structure
+Read the [documentation](https://github.com/mikeebid/TeaRoom-Ing.Software-Systems-Unibo/blob/master/Documentation/index.html) for more information: installation, git structure
 
 # Introduction
 
@@ -29,7 +29,9 @@ The **waiter** should perform the following tasks:
 - **rest** at my **home** when there is nothing to do.
 
 Since the room could contain **N** clients at the time, the **waiter** should reduce as much as possible the waiting time of the requests coming from each client.
+
 **Optional: one client in the hall**
+
 The **waiter** must open the **exitdoor** only when the hall is free, i.e. it must not open that door if the hall is already engaged by a client waiting to enter at the **entrancedoor**.
 
 ## Non functional requirements
