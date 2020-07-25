@@ -103,12 +103,18 @@ function load() {
         document.getElementById("request1").setAttribute("disabled", "disabled");
     }
     else if (c1 == 2) {
+    	document.getElementById("request1").setAttribute("disabled", "disabled");
         document.getElementById("ready1").setAttribute("disabled", "disabled");
     }
     else if (c1 == 3) {
+    	document.getElementById("request1").setAttribute("disabled", "disabled");
+        document.getElementById("ready1").setAttribute("disabled", "disabled");
         document.getElementById("order1").setAttribute("disabled", "disabled");
     }
     else if (c1 == 4) {
+    	document.getElementById("request1").setAttribute("disabled", "disabled");
+        document.getElementById("ready1").setAttribute("disabled", "disabled");
+        document.getElementById("order1").setAttribute("disabled", "disabled");
         document.getElementById("payment1").setAttribute("disabled", "disabled");
     }
     
@@ -117,12 +123,18 @@ function load() {
         document.getElementById("request2").setAttribute("disabled", "disabled");
     }
     else if (c2 == 2) {
+    	document.getElementById("request2").setAttribute("disabled", "disabled");
         document.getElementById("ready2").setAttribute("disabled", "disabled");
     }
     else if (c2 == 3) {
+    	document.getElementById("request2").setAttribute("disabled", "disabled");
+        document.getElementById("ready2").setAttribute("disabled", "disabled");
         document.getElementById("order2").setAttribute("disabled", "disabled");
     }
     else if (c2 == 4) {
+    	document.getElementById("request2").setAttribute("disabled", "disabled");
+        document.getElementById("ready2").setAttribute("disabled", "disabled");
+        document.getElementById("order2").setAttribute("disabled", "disabled");
         document.getElementById("payment2").setAttribute("disabled", "disabled");
     }
     
@@ -131,12 +143,18 @@ function load() {
         document.getElementById("request3").setAttribute("disabled", "disabled");
     }
     else if (c3 == 2) {
+    	document.getElementById("request3").setAttribute("disabled", "disabled");
         document.getElementById("ready3").setAttribute("disabled", "disabled");
     }
     else if (c3 == 3) {
+    	document.getElementById("request3").setAttribute("disabled", "disabled");
+        document.getElementById("ready3").setAttribute("disabled", "disabled");
         document.getElementById("order3").setAttribute("disabled", "disabled");
     }
     else if (c3 == 4) {
+    	document.getElementById("request3").setAttribute("disabled", "disabled");
+        document.getElementById("ready3").setAttribute("disabled", "disabled");
+        document.getElementById("order3").setAttribute("disabled", "disabled");
         document.getElementById("payment3").setAttribute("disabled", "disabled");
     }
 }
