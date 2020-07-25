@@ -16,78 +16,69 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 
-				val Temp_max = 37.5
-				var ID_client = 1 
-				var ClientTemp :Double = 0.0
+		
+				val Temp_max = 42
+				var ID_client = 1
+				var N_client_rejected = 0
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("smartbell 		|| START")
+						println("smartbell || START")
+						updateResourceRep( "START"  
+						)
 					}
 					 transition( edgeName="goto",targetState="waitRing", cond=doswitch() )
 				}	 
 				state("waitRing") { //this:State
 					action { //it:State
-						println("smartbell 		|| waitRing")
+						println("smartbell || waitRing")
+						updateResourceRep( "waitRing"  
+						)
 					}
-					 transition(edgeName="t068",targetState="checkTempClient",cond=whenRequest("clientRingEntryRequest"))
-					transition(edgeName="t069",targetState="endState",cond=whenDispatch("end"))
+					 transition(edgeName="t019",targetState="checkTempClient",cond=whenRequest("clientRingEntryRequest"))
+					transition(edgeName="t020",targetState="endState",cond=whenDispatch("end"))
 				}	 
 				state("checkTempClient") { //this:State
 					action { //it:State
-						 ClientTemp = kotlin.math.round(  (Math.random()*5+35)*10 )/10  
-						println("smartbell 		|| checkTempClient")
+						  var ClientTemp = Math.random()*6+35 
+						println("smartbell || checkTempClient")
+						updateResourceRep( "checkTempClient"  
+						)
 						if(  ClientTemp < Temp_max  
-						 ){println("smartbell 		|| clienteAccettatoDaSmartBell || temperatura = $ClientTemp || id_client = $ID_client")
+						 ){println("smartbell || clienteAccettatoDaSmartBell || temperatura = $ClientTemp")
 						request("smartbellEntryRequest", "smartbellEntryRequest($ID_client)" ,"waitermind" )  
+						 ID_client++  
 						}
 						else
-						 {println("smartbell 		|| clienteRifiutatoDaSmartBell || temperatura = $ClientTemp")
+						 {println("smartbell || clienteRifiutatoDaSmartBell || temperatura = $ClientTemp")
 						 forward("smartbellClientRejected", "smartbellClientRejected($ClientTemp)" ,"smartbell" ) 
 						 }
 					}
-					 transition(edgeName="t170",targetState="checkWaiterReply",cond=whenReply("smartbellEntryReply"))
-					transition(edgeName="t171",targetState="clientRejected",cond=whenDispatch("smartbellClientRejected"))
+					 transition(edgeName="t121",targetState="checkWaiterReply",cond=whenReply("smartbellEntryReply"))
+					transition(edgeName="t122",targetState="clientRejected",cond=whenDispatch("smartbellClientRejected"))
 				}	 
 				state("checkWaiterReply") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("smartbellEntryReply(ENTRATA,ID)"), Term.createTerm("smartbellEntryReply(ENTRATA,ID)"), 
+						if( checkMsgContent( Term.createTerm("smartbellEntryReply(ID)"), Term.createTerm("smartbellEntryReply(ID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("smartbell 		|| ricevuta reply : ${ payloadArg(0) }")
-								if( payloadArg(0) == "accept" 
-								 ){updateResourceRep( "welcome, sei stato Accettato, il tuo ID: ${payloadArg(1)}"  
-								)
-								 ID_client++  
-								}
-								if( payloadArg(0) == "inform" 
-								 ){ var Tempo = payloadArg(1).toInt() /1000  
-								updateResourceRep( "ci dispiace, non abbiamo posto, torna tra: $Tempo s"  
-								)
-								}
-								if(  payloadArg(0) == "accept" 
-								 ){forward("addClientAccepted", "addClientAccepted(P)" ,"tearoomglobalstate" ) 
-								}
-								answer("clientRingEntryRequest", "clientRingEntryReply", "clientRingEntryReply(${payloadArg(0)},${payloadArg(1)})"   )  
+								answer("clientRingEntryRequest", "clientRingEntryReply", "clientRingEntryReply(payloadArg(0))"   )  
 						}
 					}
 					 transition( edgeName="goto",targetState="waitRing", cond=doswitch() )
 				}	 
 				state("clientRejected") { //this:State
 					action { //it:State
-						forward("addClientRejected", "addClientRejected(P)" ,"tearoomglobalstate" ) 
+						 N_client_rejected++  
 						if( checkMsgContent( Term.createTerm("smartbellClientRejected(TEMP)"), Term.createTerm("smartbellClientRejected(TEMP)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								answer("clientRingEntryRequest", "clientRingEntryReply", "clientRingEntryReply(rifiutato,${payloadArg(0)})"   )  
-								updateResourceRep( "ci dispiace, sei stato rifiutato, la tua temp: ${payloadArg(0)}"  
-								)
+								answer("clientRingEntryRequest", "clientRingEntryReply", "clientRingEntryReply(payloadArg(0))"   )  
 						}
 					}
 					 transition( edgeName="goto",targetState="waitRing", cond=doswitch() )
 				}	 
 				state("endState") { //this:State
 					action { //it:State
-						println("smartbell 		|| END")
+						println("smartbell || END")
 						terminate(0)
 					}
 				}	 

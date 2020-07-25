@@ -17,20 +17,22 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		 
-					var StepTime = 430L
+					var StepTime = 445L
 					val BackTime     = 2 * StepTime / 3
 					
 					val mapRoom  = "teaRoomExplored"
 					var XPoint = "0"
 					var YPoint = "0"
 					
-					var CmdToPerform = ""  
+					val TableClearTime = 4000L
+					val TableSanitizeTime = 2000L
+					val TableCleanTime = 2000L
 					
-					var TableToStop = 0
+					var CmdToPerform = ""  
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("waiterengine 		|| START")
+						println("waiterengine || START")
 						updateResourceRep( "startState"  
 						)
 						itunibo.planner.plannerUtil.initAI(  )
@@ -42,17 +44,16 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				}	 
 				state("waitCmd") { //this:State
 					action { //it:State
-						println("waiterengine 		|| waitCmd")
+						println("waiterengine || waitCmd")
 						updateResourceRep( "waitCmd"  
 						)
 					}
-					 transition(edgeName="t072",targetState="planPath",cond=whenDispatch("moveTo"))
-					transition(edgeName="t073",targetState="cleanTable",cond=whenDispatch("clean"))
-					transition(edgeName="t074",targetState="waitCmd",cond=whenDispatch("stopEngineMove"))
+					 transition(edgeName="t023",targetState="planPath",cond=whenRequest("moveTo"))
+					transition(edgeName="t024",targetState="cleanTable",cond=whenDispatch("clean"))
 				}	 
 				state("planPath") { //this:State
 					action { //it:State
-						println("waiterengine 		|| planPath")
+						println("waiterengine || planPath")
 						updateResourceRep( "planPath"  
 						)
 						if( checkMsgContent( Term.createTerm("moveTo(X,Y)"), Term.createTerm("moveTo(X,Y)"), 
@@ -74,20 +75,6 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					transition( edgeName="goto",targetState="execMove", cond=doswitchGuarded({! ( CmdToPerform == "w" 
 					) }) )
 				}	 
-				state("checkStopEngine") { //this:State
-					action { //it:State
-						stateTimer = TimerActor("timer_checkStopEngine", 
-							scope, context!!, "local_tout_waiterengine_checkStopEngine", 100.toLong() )
-					}
-					 transition(edgeName="t075",targetState="readStep",cond=whenTimeout("local_tout_waiterengine_checkStopEngine"))   
-					transition(edgeName="t076",targetState="stopEngine",cond=whenDispatch("stopEngineMove"))
-				}	 
-				state("stopEngine") { //this:State
-					action { //it:State
-						itunibo.planner.plannerUtil.resetActions(  )
-					}
-					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
-				}	 
 				state("execMove") { //this:State
 					action { //it:State
 						forward("cmd", "cmd($CmdToPerform)" ,"basicrobot" ) 
@@ -97,11 +84,12 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 				}	 
 				state("endPath") { //this:State
 					action { //it:State
-						println("waiterengine 		|| endPath")
+						println("waiterengine || endPath")
 						updateResourceRep( "endPath"  
 						)
 						println("done moveTo($XPoint,$YPoint)")
-						forward("done", "done($XPoint,$YPoint)" ,"waitermind" ) 
+						itunibo.planner.plannerUtil.showCurrentRobotState(  )
+						answer("moveTo", "done", "done($XPoint,$YPoint)"   )  
 					}
 					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
 				}	 
@@ -109,8 +97,8 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						request("step", "step($StepTime)" ,"basicrobot" )  
 					}
-					 transition(edgeName="t177",targetState="updateMap",cond=whenReply("stepdone"))
-					transition(edgeName="t178",targetState="errorHandler",cond=whenReply("stepfail"))
+					 transition(edgeName="t125",targetState="updateMap",cond=whenReply("stepdone"))
+					transition(edgeName="t126",targetState="errorHandler",cond=whenReply("stepfail"))
 				}	 
 				state("updateMap") { //this:State
 					action { //it:State
@@ -118,73 +106,52 @@ class Waiterengine ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 						)
 						itunibo.planner.plannerUtil.updateMap( "$CmdToPerform"  )
 					}
-					 transition( edgeName="goto",targetState="checkStopEngine", cond=doswitchGuarded({ CmdToPerform.length > 0  
+					 transition( edgeName="goto",targetState="readStep", cond=doswitchGuarded({ CmdToPerform.length > 0  
 					}) )
 					transition( edgeName="goto",targetState="endPath", cond=doswitchGuarded({! ( CmdToPerform.length > 0  
 					) }) )
 				}	 
 				state("errorHandler") { //this:State
 					action { //it:State
-						println("waiterengine 		|| errorHandler")
+						println("waiterengine | errorHandler")
 						if( checkMsgContent( Term.createTerm("stepfail(DURATION,CAUSE)"), Term.createTerm("stepfail(DURATION,CAUSE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 
-												val D = payloadArg(0).toLong()  
-												val Dt = Math.abs(StepTime-D)
-												val BackT = D/4 
+								 val D = payloadArg(0).toLong()  ; val Dt = Math.abs(StepTime-D); val BackT = D/2  
+								println("robotmapper stepFail D= $D, BackTime = ${BackTime} BackT=$BackT")
 								if(  D > BackTime  
 								 ){forward("cmd", "cmd(s)" ,"basicrobot" ) 
 								delay(BackT)
 								forward("cmd", "cmd(h)" ,"basicrobot" ) 
 								}
+								itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection(  )
+								itunibo.planner.plannerUtil.showCurrentRobotState(  )
+								updateResourceRep( "stepFail"  
+								)
+								delay(500) 
 						}
 					}
-					 transition( edgeName="goto",targetState="updateMap", cond=doswitch() )
+					 transition( edgeName="goto",targetState="readStep", cond=doswitchGuarded({ CmdToPerform.length > 0  
+					}) )
+					transition( edgeName="goto",targetState="endPath", cond=doswitchGuarded({! ( CmdToPerform.length > 0  
+					) }) )
 				}	 
 				state("cleanTable") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("clean(R,TIMER)"), Term.createTerm("clean(R,TIMER)"), 
+						if( checkMsgContent( Term.createTerm("clean(R)"), Term.createTerm("clean(R)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								if(  payloadArg(0) == "1"  
-								 ){println("waiterengine 		|| clearing")
-								forward("startTimerCleaning", "startTimerCleaning(${payloadArg(1)})" ,"timercleaning" ) 
+								 ){delay(TableClearTime)
 								}
 								if(  payloadArg(0) == "2"  
-								 ){println("waiterengine 		|| sanitizing")
-								forward("startTimerCleaning", "startTimerCleaning(${payloadArg(1)})" ,"timercleaning" ) 
+								 ){delay(TableSanitizeTime)
 								}
 								if(  payloadArg(0) == "3"  
-								 ){println("waiterengine 		|| cleaning")
-								forward("startTimerCleaning", "startTimerCleaning(${payloadArg(1)})" ,"timercleaning" ) 
+								 ){delay(TableCleanTime)
 								}
 						}
-					}
-					 transition(edgeName="t079",targetState="informStateAboutEndCleaning",cond=whenDispatch("timerFinishedCorrectly"))
-					transition(edgeName="t080",targetState="stopTimer",cond=whenDispatch("stopCleaningEngine"))
-				}	 
-				state("informStateAboutEndCleaning") { //this:State
-					action { //it:State
-						if( checkMsgContent( Term.createTerm("stopTimerCleaningReply(TIMERDONE)"), Term.createTerm("stopTimerCleaningReply(TIMERDONE)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								forward("setTimerTableStopped", "setTimerTableStopped($TableToStop,${payloadArg(0)})" ,"tearoomglobalstate" ) 
-								 TableToStop  = 0  
-						}
-						if( checkMsgContent( Term.createTerm("timerFinishedCorrectly(P)"), Term.createTerm("timerFinishedCorrectly(P)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								forward("doneCleanRun", "doneCleanRun(P)" ,"waitermind" ) 
-						}
+						forward("doneCleanRun", "doneCleanRun(P)" ,"waitermind" ) 
 					}
 					 transition( edgeName="goto",targetState="waitCmd", cond=doswitch() )
-				}	 
-				state("stopTimer") { //this:State
-					action { //it:State
-						if( checkMsgContent( Term.createTerm("stopCleaningEngine(TAVOLO)"), Term.createTerm("stopCleaningEngine(TAVOLO)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								 TableToStop = payloadArg(0).toInt()  
-						}
-						request("stopTimerCleaningReq", "stopTimerCleaningReq(P)" ,"timercleaning" )  
-					}
-					 transition(edgeName="t081",targetState="informStateAboutEndCleaning",cond=whenReply("stopTimerCleaningReply"))
 				}	 
 			}
 		}

@@ -3,7 +3,8 @@ System tearoom
 //Messages **********************************************************************
 //DIVISI PER CHI INVIA 
  
-//**********CLIENT
+//**********CLIENT 
+//mqttBroker "localhost" : 1883 eventTopic "event/topic" 
 
 Request clientRingEntryRequest : clientEntryRequest(PAYLOAD)
 Reply clientRingEntryReply : clientRingEntryReply(ENTRATA, ID) //invia smartbell in realtà
@@ -77,10 +78,6 @@ Request getFreeCleanTableReq : getFreeCleanTableReq(P)
 Reply 	getFreeCleanTableReply : getFreeCleanTableReply(N)
 
 
-Request getTable1StateReq : getTable1StateReq(N)
-Request getTable2StateReq : getTable2StateReq(N)
-Reply	getTableNStateReply : getTableNStateRep(N, STATO, TIMERDONE)
-
 Request getTableFromIdReq : getTableFromIdReq(ID)
 Reply 	getTableFromIdReply : getTableFromIdReply(N)
 
@@ -106,7 +103,7 @@ Reply	 getTimerForInformReply : getTimerForInformReply(TIMER)
 //context and QActors 
   
 Context ctxtearoom ip [host="127.0.0.1" port=8040] 
-Context ctxbasicrobot ip [host="localhost" port=8020] 
+Context ctxbasicrobot ip [host="192.168.1.14" port=8020] 
 ExternalQActor basicrobot context ctxbasicrobot 
 //ExternalQActor waiterengine context ctxTearoom
 //end context and Qactors 
@@ -851,14 +848,14 @@ QActor waitermind context ctxtearoom{
  
 QActor smartbell context ctxtearoom{
 	[# 
-		val Temp_max = 37.5
+		val Temp_max = 38
 		var ID_client = 1 
 		var ClientTemp :Double = 0.0
 	#] 
 
 	State s0 initial{
 		println("smartbell 		|| START")
-		//updateResource [# "START" #]
+		updateResource [# "START" #]
 	} 
 	Goto waitRing
 	 
@@ -899,7 +896,7 @@ QActor smartbell context ctxtearoom{
 			}
 			if [#payloadArg(0) == "inform"#]{
 				[# var Tempo = payloadArg(1).toInt() /1000 #]
-				updateResource [# "ci dispiace, non abbiamo posto, torna tra: $Tempo s" #]	
+				updateResource [# "welcome, non abbiamo posto, torna tra: $Tempo s" #]	
 			}
 		
 			if [# payloadArg(0) == "accept"#]
@@ -917,7 +914,7 @@ QActor smartbell context ctxtearoom{
 		
 		onMsg(smartbellClientRejected : smartbellClientRejected(TEMP)){ //rispondo con temperatura (maggior del normale)
 			replyTo clientRingEntryRequest with clientRingEntryReply : clientRingEntryReply(rifiutato, $payloadArg(0)) 
-			updateResource [# "ci dispiace, sei stato rifiutato, la tua temp: ${payloadArg(0)}" #]	
+			updateResource [# "welcome, sei stato rifiutato, la tua temp: ${payloadArg(0)}" #]	
 		}
 	}
 	Goto waitRing
@@ -1477,19 +1474,19 @@ QActor tearoomglobalstate context ctxtearoom{
 		ifSolved
 		{
 			[#
-                StateRoom =
-                "{\"Waiter\":"        +"\""+       getCurSol("SW").toString()   +"\","  +
-                "\"Barman\":"        +"\""+        getCurSol("SB").toString()   +"\","  +
-                "\"TABLE1\":"        +"\""+        getCurSol("ST1").toString()   +"\","  +
-                "\"timerDone1\":"     +"\""+        getCurSol("T1").toString()   +"\","  +
-                "\"TABLE2\":"         +"\""+        getCurSol("ST2").toString()   +"\"," +
-                "\"timerDone2\":"     +"\""+        getCurSol("T2").toString()   +"\","  +
-                "\"ClientAccepted\":"    +"\""+    getCurSol("NA").toString()   +"\","  +
-                "\"ClientRejected\":"    +"\""+    getCurSol("NR").toString()   +"\""  +"}"
-            #]
+				StateRoom = 
+				"{\"Waiter\":"		+"\""+   	getCurSol("SW").toString()   +"\"," +
+				"\"Barman\":"		+"\""+    	getCurSol("SB").toString()   +"\","  +
+				"\"TABLE1\":"		+"\""+    	getCurSol("ST1").toString()   +"\","+
+				"\"timerDone1\":" 	+"\""+		getCurSol("T1").toString()   +"\","  +
+				"\"TABLE2\":" 		+"\""+		getCurSol("ST2").toString()   +"\"," +
+				"\"timerDone2\":" 	+"\""+		getCurSol("T2").toString()   +"\","  +
+				"\"ClientAccepted\":"	+"\""+	getCurSol("NA").toString()   +"\"," +
+				"\"ClientRejected\":"	+"\""+	getCurSol("NR").toString()   +"\""  +"}"
+			#]
 			
 		}
-		updateResource[# "$StateRoom" #]
+		updateResource[#"$StateRoom"#]
 		println("***********************") 
 		println(StateRoom)
 		println("***********************")
@@ -1504,8 +1501,6 @@ QActor tearoomglobalstate context ctxtearoom{
 					whenMsg setStateTable 	-> stateTable
 					whenMsg occupyTable 		-> occupyTableState
 					whenMsg setTimerTableStopped -> timerStoppedTable
-					whenRequest getTable1StateReq	-> returnTable1State
-					whenRequest getTable2StateReq -> returnTable2State
 					whenRequest	getTableToCleanReq -> returnTableToClean
 					whenRequest	getFreeCleanTableReq -> returnFreeTable
 					whenRequest getTableFromIdReq -> returnTableFromId
@@ -1576,16 +1571,6 @@ QActor tearoomglobalstate context ctxtearoom{
 				}	
 		}	
 
-	}
-	Goto wait
-	
-	State returnTable1State{
-		
-	}
-	Goto wait
-	
-	State returnTable2State{
-		
 	}
 	Goto wait
 	

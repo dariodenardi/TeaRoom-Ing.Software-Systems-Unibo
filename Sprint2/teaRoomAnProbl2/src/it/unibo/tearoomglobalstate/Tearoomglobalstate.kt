@@ -36,19 +36,19 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 						 var StateRoom = ""  
 						solve("statetearoom(waiter(SW),barman(SB),stateTable(1,ST1,T1),stateTable(2,ST2,T2),clientiAccettati(NA),clientiRifiutati(NR))","") //set resVar	
 						if( currentSolution.isSuccess() ) {
-						                StateRoom =
-						                "{\"Waiter\":"        +"\""+       getCurSol("SW").toString()   +"\","  +
-						                "\"Barman\":"        +"\""+        getCurSol("SB").toString()   +"\","  +
-						                "\"TABLE1\":"        +"\""+        getCurSol("ST1").toString()   +"\","  +
-						                "\"timerDone1\":"     +"\""+        getCurSol("T1").toString()   +"\","  +
-						                "\"TABLE2\":"         +"\""+        getCurSol("ST2").toString()   +"\"," +
-						                "\"timerDone2\":"     +"\""+        getCurSol("T2").toString()   +"\","  +
-						                "\"ClientAccepted\":"    +"\""+    getCurSol("NA").toString()   +"\","  +
-						                "\"ClientRejected\":"    +"\""+    getCurSol("NR").toString()   +"\""  +"}"
+										StateRoom = 
+										"{\"Waiter\":"		+"\""+   	getCurSol("SW").toString()   +"\"," +
+										"\"Barman\":"		+"\""+    	getCurSol("SB").toString()   +"\","  +
+										"\"TABLE1\":"		+"\""+    	getCurSol("ST1").toString()   +"\","+
+										"\"timerDone1\":" 	+"\""+		getCurSol("T1").toString()   +"\","  +
+										"\"TABLE2\":" 		+"\""+		getCurSol("ST2").toString()   +"\"," +
+										"\"timerDone2\":" 	+"\""+		getCurSol("T2").toString()   +"\","  +
+										"\"ClientAccepted\":"	+"\""+	getCurSol("NA").toString()   +"\"," +
+										"\"ClientRejected\":"	+"\""+	getCurSol("NR").toString()   +"\""  +"}"
 						}
 						else
 						{}
-						updateResourceRep( "$StateRoom"  
+						updateResourceRep("$StateRoom" 
 						)
 						println("***********************")
 						println(StateRoom)
@@ -63,12 +63,10 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 					transition(edgeName="t0135",targetState="stateTable",cond=whenDispatch("setStateTable"))
 					transition(edgeName="t0136",targetState="occupyTableState",cond=whenDispatch("occupyTable"))
 					transition(edgeName="t0137",targetState="timerStoppedTable",cond=whenDispatch("setTimerTableStopped"))
-					transition(edgeName="t0138",targetState="returnTable1State",cond=whenRequest("getTable1StateReq"))
-					transition(edgeName="t0139",targetState="returnTable2State",cond=whenRequest("getTable2StateReq"))
-					transition(edgeName="t0140",targetState="returnTableToClean",cond=whenRequest("getTableToCleanReq"))
-					transition(edgeName="t0141",targetState="returnFreeTable",cond=whenRequest("getFreeCleanTableReq"))
-					transition(edgeName="t0142",targetState="returnTableFromId",cond=whenRequest("getTableFromIdReq"))
-					transition(edgeName="t0143",targetState="returnTimeInform",cond=whenRequest("getTimerForInformReq"))
+					transition(edgeName="t0138",targetState="returnTableToClean",cond=whenRequest("getTableToCleanReq"))
+					transition(edgeName="t0139",targetState="returnFreeTable",cond=whenRequest("getFreeCleanTableReq"))
+					transition(edgeName="t0140",targetState="returnTableFromId",cond=whenRequest("getTableFromIdReq"))
+					transition(edgeName="t0141",targetState="returnTimeInform",cond=whenRequest("getTimerForInformReq"))
 				}	 
 				state("waiterState") { //this:State
 					action { //it:State
@@ -152,16 +150,6 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
-				state("returnTable1State") { //this:State
-					action { //it:State
-					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
-				}	 
-				state("returnTable2State") { //this:State
-					action { //it:State
-					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
-				}	 
 				state("returnTimeInform") { //this:State
 					action { //it:State
 						 ToReturnTimer = 0L  
@@ -196,7 +184,7 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 					action { //it:State
 						request("askMaxStayTimeLeftReq", "askMaxStayTimeLeftReq(1)" ,"maxstaytime" )  
 					}
-					 transition(edgeName="t0144",targetState="askTimeLeft2",cond=whenReply("askMaxStayTimeLeftReply"))
+					 transition(edgeName="t0142",targetState="askTimeLeft2",cond=whenReply("askMaxStayTimeLeftReply"))
 				}	 
 				state("askTimeLeft2") { //this:State
 					action { //it:State
@@ -206,7 +194,7 @@ class Tearoomglobalstate ( name: String, scope: CoroutineScope  ) : ActorBasicFs
 						}
 						request("askMaxStayTimeLeftReq", "askMaxStayTimeLeftReq(2)" ,"maxstaytime" )  
 					}
-					 transition(edgeName="t0145",targetState="respondForInform",cond=whenReply("askMaxStayTimeLeftReply"))
+					 transition(edgeName="t0143",targetState="respondForInform",cond=whenReply("askMaxStayTimeLeftReply"))
 				}	 
 				state("respondForInform") { //this:State
 					action { //it:State
