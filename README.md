@@ -1,4 +1,4 @@
-# Progetto Finale di Ingegneria dei Sistemi Software M
+# Final Project - Software Systems Engineering M
 
 # Introduction
 
