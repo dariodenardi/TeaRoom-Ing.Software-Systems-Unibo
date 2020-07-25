@@ -94,7 +94,7 @@ test {
 	useJUnitPlatform()
 }
 
-mainClassName = 'it.unibo.robotWeb2020.RobotWeb2020Application'
+mainClassName = 'it.unibo.robotWeb2020.ManagerApplication'
 
 jar {
     println("executing jar")
