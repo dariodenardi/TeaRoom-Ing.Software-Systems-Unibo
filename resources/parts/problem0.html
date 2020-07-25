@@ -4,42 +4,43 @@
 	</head>
 	<body>
 		<div class="body">
-			Dato che il committente ha chiesto di ridurre al minimo il tempo di attesa dei <em>client</em>, si intuisce che alcuni 
-			task sono più prioritari di altri.
-			Questo implica che durante l'esecuzione di un task non prioritario si possa scegliere di interrompere il task 
-			(e riprendelo successivamente) in favore di un altro che riduce l'attesa di un <em>client</em>.
-			
-			Inoltre, il <em>waiter</em> può decidere all'arrivo di un messaggio di interrompere il proprio task corrente in favore di un altro che riduca il tempo di attesa dei <em>client</em> come chiesto
-			dal committente.
-			Serve quindi vedere quali task sono interrompibili:
-			</br>
-			</br>
+			Iniziamo questa prima analisi concentrandoci sul problema di ridurre al minimo il tempo di attesa dei <em>client</em>.<br/><br/>
+			Il <em>waiter</em> non può sapere a priori quando arriverà la richiesta di un <em>client</em>, quindi è verosimile che all'arrivo della richiesta il <em>waiter</em> sia occupato ad eseguire un task. <br/>
+			Il fatto che si debba essere in grado di minimizzare il tempo di attesa fa intuire che alcuni task sono più prioritari di altri.
+			Questo implica che durante l'esecuzione di un task non prioritario si possa scegliere di interrompere il task in favore di un altro che riduce l'attesa di un <em>client</em>, per poi riprendere il task interrotto. <br/>
+			Quindi un task prioritario non è interrompibile e viceversa.
+			<br/>
+			<br/>
+			Definiamo i task <b>prioritari</b> e i task <b>interrompibili</b>.<br/>
+			Nella tabella sono segnati come <b>interrompibili</b> i task che potrebbe avere senso interrompere e come <b>opportunamente interrompibili</b> i task interrompibili concordati con il committente.<br/></br>
+			I task <b>prioritari</b> sono i non <b>opportunamente interrompibili</b>
+			</br><br/>
 			<table>
 			<thead>
 			  <tr>
 			    <th class="tg-0lax"></th>
-			    <th class="tg-0lax">è interrompibile?</th>
-			    <th class="tg-0lax">è opportuno?</th>
-			    <th class="tg-0lax">priorità</th>
+			    <th class="tg-0lax">interrompibile?</th>
+			    <th class="tg-0lax">opportunamente interrompibile?</th>
+			    <th class="tg-0lax">tasks per i quali si interrompe</th>
 			  </tr>
 			</thead>
 			<tbody>
 			  <tr>
 			    <td class="tg-0lax"><em>accept</em></td>
 			    <td class="tg-0lax">no</td>
-			    <td class="tg-0lax">-</td>
+			    <td class="tg-0lax">no</td>
 			    <td class="tg-0lax">-</td>
 			  </tr>
 			  <tr>
 			    <td class="tg-0lax"><em>inform</em></td>
 			    <td class="tg-0lax">no<br></td>
-			    <td class="tg-0lax">-</td>
+			    <td class="tg-0lax">no</td>
 			    <td class="tg-0lax">-</td>
 			  </tr>
 			  <tr>
 			    <td class="tg-0lax"><em>reach</em></td>
 			    <td class="tg-0lax">no</td>
-			    <td class="tg-0lax">-<br></td>
+			    <td class="tg-0lax">no<br></td>
 			    <td class="tg-0lax">-</td>
 			  </tr>
 			  <tr>
@@ -63,60 +64,73 @@
 			  <tr>
 			    <td class="tg-0lax"><em>convoy</em></td>
 			    <td class="tg-0lax">no</td>
-			    <td class="tg-0lax">-</td>
+			    <td class="tg-0lax">no</td>
 			    <td class="tg-0lax">-</td>
 			  </tr>
 			  <tr>
 			    <td class="tg-0lax"><em>clean</em></td>
 			    <td class="tg-0lax">si</td>
 			    <td class="tg-0lax">si</td>
-			    <td class="tg-0lax">
-				<ul>
-					<li><em>client</em> vuole entrare e c'è il <em>table</em> (<em>accept</em>);</li>
-					<li><em>client</em> vuole pagare (<em>collect</em>);</li>
-					<li><em>client</em> vuole ordinare (<em>take</em>);</li>
-					<li>drink da portare al <em>client</em> (<em>serve</em>).</li>
-				</ul>
+			    <td class="tg-0lax">tutti i prioritari</td>
 			  </tr>
 			  <tr>
 			    <td class="tg-0lax"><em>rest</em></td>
 			    <td class="tg-0lax">si</td>
 			    <td class="tg-0lax">si<br></td>
-			    <td class="tg-0lax">per qualsiasi motivo</td>
+			    <td class="tg-0lax">tutti</td>
 			  </tr>
 			</tbody>
-			</table>
+			</table>		
+			<br/>
+			<br/>
 
-			</br>
-			Nella tabella sono segnati come <b>interrompibili</b> i task che potrebbe avere senso interrompere e i task 
-			segnati come <b>opportuni</b> sono i task interrompibili concordati con il committente: <em>clean</em> e <em>rest</em>. 
+			L'interrompibilità del task <em>clean</em> introduce la problematica di come pulire il <em>table</em>. Il committente ci ha detto che il <em>waiter</em> pulisce in fasi.
+			Distinguiamo tre stati di <em>table</em> che riflettono tre punti di sincronizzazione del task <em>clean</em> in modo tale che, in caso di interruzione, il <em>waiter</em> riprenda la pulizia dal punto in cui l'ha lasciata.<br/>
+			Questi stati si aggiungono ai 2 definiti dai requisiti che rappresentano un tavolo libero o occupato.<br/><br/>
+			<table>
+			<thead>
+			  <tr>
+			    <th>nome fase</th>
+			    <th>descrizione</th>
+			  </tr>
+			</thead>
+			<tbody>
+			  <tr>
+			  	<td>tableOccupied</td>
+			  	<td>Il tavolo è occupato da un <em>client</em>. <em>clean</em> non disponibile</td>
+			  </tr>
+			  <tr>
+			  	<td>tableDirty</td>
+			  	<td>Il tavolo è stato lasciato dal <em>client</em>. <em>clean</em> deve sparecchiare.</td>
+			  </tr>
+			  <tr>
+			  	<td>tableCleared</td>
+			  	<td>Il tavolo è stato sparecchiato. <em>clean</em> deve sanificare.</td>
+			  </tr>
+			  <tr>
+			  	<td>tableSanitized</td>
+			  	<td>Il tavolo è stato sanificato. <em>clean</em> deve apparecchiare</td>
+			  </tr>
+			  <tr>
+			  	<td>tableCleaned</td>
+			  	<td>Il tavolo è libero. <em>clean</em> non disponibile</td>
+			  </tr>
+			  </tbody>
+			</table>
+			<br/>
 			
-			<br/>
-			<br/>
-			Analizzando la problematica di come si pulisce il <em>table</em>, il committente ci dice che il <em>waiter</em> lavora in più fasi.
-			Distinguiamo tre punti di sincronizzazione del task <em>clean</em> in modo tale che il <em>waiter</em> riprenda la pulizia da dove l'ha lasciata:
+			Rimane aperta la questione su come il <em>waiter</em> conosce lo stato di <em>table</em>, che può essere generalizzata nel problema di come modellare le entità e gestire le risorse: ad esempio, lo stato del tavolo dove è mantenuto? Chi ha bisogno di accedervi? Come vi accede?<br/>
+			La nostra scelta può ricadere nella costruzione di un sistema:
 			<ul>
-				<li>tableDirty;</li>
-				<li>tableCleared;</li>
-				<li>tableSanitized.</li>
+				<li><b>distribuito:</b> ogni entità conosce solo il proprio stato, se ha bisogno di una risorsa esterna deve richiederla al possessore. Le comunicazioni avvengono tramite trasmissioni, le cui velocità e affidabilità dipendono anche da fattori esterni. Consente grande eterogeneità.</li>
+				<li><b>concentrato:</b> ogni entità conosce gli stati di tutti e può accedere ad ogni risorsa. Tutte le entità devono risiedere sulla stessa macchina ma le comunicazioni sono veloci.</li>
+				<li><b>misto:</b> possono esistere entità che conoscono non solo il proprio stato. Consente di prendere il meglio da entrambi gli altri due approcci.
 			</ul>
-			Il <em>table</em> ha uno "stato" che memorizza il punto di sincronizzazione corrente o questi altri due stati:
-			<ul>
-				<li>tableCleaned;</li>
-				<li>tableOccupied.</li>
-			</ul>
-			Ad una prima analisi si potrebbe pensare di modellare il <em>table</em> come un oggetto al cui interno c'è il suo stato. Questo implica che ogni volta che il <em>waiter</em> voglia sapere lo stato
-			lo debba richiedere al <em>table</em>.
-			Nasce un'altra problematica cioè quella di come si gestiscono le risorse:
-			<ul>
-				<li><b>distribuito:</b> ogni entità conosce solo il proprio stato. E' difficile da realizzare perchè nascono problemi di sincronizzazione tra le varie entità.</li>
-				<li><b>concentrato:</b> l'entità conosce lo stato delle altre. Impossibile comunicare con due macchine diverse.</li>
-				<li><b>misto:</b> esistono <em>waiter</em> e l'entità che contiene tutti gli stati. A questo punto ci si chiede se si deve gestire queste due entità in modo indipendete o no.
-				Se si, ci sarebbe un enorme traffico creando eventuali colli di bottiglia perchè alla fine è il <em>waiter</em> che esegue tutte le operazioni.
-				Per evitare ciò mettiamo nella stessa entità stati e <em>waiter</em>.</li>
-			</ul>
-			Questo discorso lo si può generalizzare non solo al <em>table</em> ma anche per tutte le altre entità.
 			<br/>
+			La realizzazione di un sistema misto è la scelta migliore perché consente di gestire meglio i problemi di sincronizzazione e di prevenire meglio i colli di bottiglia.<br/>
+			Nell'analisi dei requisiti si è visto come l'entità <em>waiter</em> compia particolari azioni in seguito alla ricezione di particolari messaggi. La ricezione di un messaggio produce sempre l'esecuzione della stessa sequenza di azioni quindi <em>waiter</em> può essere modellato come una macchina a stati finiti che compie una transizione di stato quando riceve un messaggio.
+
+			Tutto ciò ci porta a scegliere di modellare <em>waiter</em> attraverso il metamodello dei <a href="" onclick="openInNewTab('https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakIntro2020.html');">QAK</a>	perchè se usassimo un qualsiasi altro linguaggio di modellazione sarebbe più difficile da rappresentare.
 		</div>
 	</body>
 </html>

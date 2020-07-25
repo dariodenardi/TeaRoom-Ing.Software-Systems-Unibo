@@ -36,66 +36,66 @@
 		<table>
 				<thead>
 					<tr>
-						<th class="tg-0lax">nome task</th>
-						<th class="tg-0lax">cosa fa</th>
-						<th class="tg-0lax">tempo qualitativo</th>
-						<th class="tg-0lax">tempo quantitativo</th>
+						<th>nome task</th>
+						<th>cosa fa</th>
+						<th>tempo qualitativo</th>
+						<th>tempo quantitativo</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td class="tg-0lax"><em>accept</em></td>
-						<td class="tg-0lax">conferma la richiesta del <em>client</em> se è presente un <em>table</em> nello stato <em>tableclean</em></td>
-						<td class="tg-0lax">poco</td>
-						<td class="tg-0lax">2s</td>
+						<td><em>accept</em></td>
+						<td>conferma la richiesta del <em>client</em> se è presente un <em>table</em> nello stato <em>tableclean</em></td>
+						<td>poco</td>
+						<td>2s</td>
 					</tr>
 					<tr>
-						<td class="tg-0lax"><em>inform</em></td>
-						<td class="tg-0lax">informa il <em>client</em> sul tempo massimo di attesa <em>maxwaittime</em> nel caso non sia possibile eseguire il task <em>accept</em>  <br></td>
-						<td class="tg-0lax">poco</td>
-						<td class="tg-0lax">2s</td>
+						<td><em>inform</em></td>
+						<td>informa il <em>client</em> sul tempo massimo di attesa <em>maxwaittime</em> nel caso non sia possibile eseguire il task <em>accept</em>  <br></td>
+						<td>poco</td>
+						<td>2s</td>
 					</tr>
 					<tr>
-						<td class="tg-0lax"><em>reach</em></td>
-						<td class="tg-0lax">raggiunge la porta di ingresso e accompagna il <em>client</em> (accettato) al <em>table</em> selezionato</td>
-						<td class="tg-0lax">alto<br></td>
-						<td class="tg-0lax">60s</td>
+						<td><em>reach</em></td>
+						<td>raggiunge la porta di ingresso e accompagna il <em>client</em> (accettato) al <em>table</em> selezionato</td>
+						<td>alto<br></td>
+						<td>60s</td>
 					</tr>
 					<tr>
-						<td class="tg-0lax"><em>take</em></td>
-						<td class="tg-0lax">va al <em>table</em> del <em>client</em>, prende l'ordine e lo trasmette al <em>barman</em></td>
-						<td class="tg-0lax">poco</td>
-						<td class="tg-0lax">8s</td>
+						<td><em>take</em></td>
+						<td>va al <em>table</em> del <em>client</em>, prende l'ordine e lo trasmette al <em>barman</em></td>
+						<td>poco</td>
+						<td>8s</td>
 					</tr>
 					<tr>
-						<td class="tg-0lax"><em>serve</em></td>
-						<td class="tg-0lax">quando il <em>barman</em> dice che la bevanda è pronta va a prenderla e la porta al <em>client</em> che l'aveva richiesta</td>
-						<td class="tg-0lax">medio</td>
-						<td class="tg-0lax">30s</td>
+						<td><em>serve</em></td>
+						<td>quando il <em>barman</em> dice che la bevanda è pronta va a prenderla e la porta al <em>client</em> che l'aveva richiesta</td>
+						<td>medio</td>
+						<td>30s</td>
 					</tr>
 					<tr>
-						<td class="tg-0lax"><em>collect</em></td>
-						<td class="tg-0lax">va al <em>table</em> del <em>client</em> per riscuotere il pagamento</td>
-						<td class="tg-0lax">poco</td>
-						<td class="tg-0lax">8s<br></td>
+						<td><em>collect</em></td>
+						<td>va al <em>table</em> del <em>client</em> per riscuotere il pagamento</td>
+						<td>poco</td>
+						<td>8s<br></td>
 					</tr>
 					<tr>
-						<td class="tg-0lax"><em>convoy</em></td>
-						<td class="tg-0lax">accompagna il <em>client</em> alla porta</td>
-						<td class="tg-0lax">medio</td>
-						<td class="tg-0lax">30s</td>
+						<td><em>convoy</em></td>
+						<td>accompagna il <em>client</em> alla porta</td>
+						<td>medio</td>
+						<td>30s</td>
 					</tr>
 					<tr>
-						<td class="tg-0lax"><em>clean</em></td>
-						<td class="tg-0lax">pulisce il <em>table</em></td>
-						<td class="tg-0lax">medio</td>
-						<td class="tg-0lax">45s</td>
+						<td><em>clean</em></td>
+						<td>pulisce il <em>table</em></td>
+						<td>medio</td>
+						<td>45s</td>
 					</tr>
 					<tr>
-						<td class="tg-0lax"><em>rest</em></td>
-						<td class="tg-0lax">va in home se non c'è niente da fare</td>
-						<td class="tg-0lax">medio/alto<br></td>
-						<td class="tg-0lax">variabile</td>
+						<td><em>rest</em></td>
+						<td>va in home se non c'è niente da fare</td>
+						<td>medio/alto<br></td>
+						<td>variabile</td>
 					</tr>
 				</tbody>
 			</table>
@@ -103,114 +103,139 @@
 		Dalle assunzioni fatte notiamo che il task <em>inform</em> non è da modellare, in quanto essendoci solo un <em>client</em> ed entrambi i <em>table</em> sono puliti si avrà sempre un posto disponibile.
 		</br>
 		</br>
-		Per velocizzare il processo di modellazione adottiamo il metamodello dei 
-		<a href="" onclick="openInNewTab('https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakIntro2020.html');">QAK</a>
-		perchè se usassimo un qualsiasi altro linguaggio di modellazione sarebbero più difficili da rappresentare.
-		</br>
-		</br>
-		Essendo stato introdotto e scelto il modello QAK non parleremo più di messaggi ma di <b>Dispatch</b>, <b>Request</b>-<b>Reply</b> e <b>Event</b>.
+		Essendo stato introdotto e scelto il modello QAK vediamo come possiamo rappresentare le entità<br/><br/>
+		<table>
+			<thead>
+				<tr>
+					<th>entità</th>
+					<th>QAK</th>
+					<th>motivazione/scelta</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><em>client</em></td>
+					<td>attore</td>
+					<td>entità autonoma che interagisce con altre entità e deve essere in grado di ricevere ed elaborare i messaggi</td>
+				</tr>
+				<tr>
+					<td><em>waiter</em></td>
+					<td>attore</td>
+					<td>Per gli stessi motivi di <em>client</em></td>
+				</tr>
+				<tr>
+					<td><em>barman</em></td>
+					<td>attore</td>
+					<td>Per gli stessi motivi di <em>client</em></td>
+				</tr>
+				<tr>
+					<td><em>smartbell</em></td>
+					<td>attore</td>
+					<td>Per gli stessi motivi di <em>client</em></td>
+				</tr>
+				<tr>
+					<td><em>table</em></td>
+					<td>variabile</td>
+					<td>Non scambia messaggi</td>
+				</tr>
+			</tbody>
+		</table>
+		<br/>
+		Inoltre non parleremo più di messaggi ma di <b>Dispatch</b>, <b>Request</b>-<b>Reply</b> e <b>Event</b>.
 		Ridefiniamo i messaggi individuati nello sprint iniziale traducendoli nella <b>semantica</b> del modello QAK:
 		</br>
 		</br>
 		<table>
 			<thead>
 				<tr>
-					<th class="tg-0lax">nome messaggio</th>
-					<th class="tg-0lax">QAK</th>
-					<th class="tg-0lax">motivazione/scelta</th>
+					<th>nome messaggio</th>
+					<th>QAK</th>
+					<th>motivazione/scelta</th>
+					<th>parametri</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td class="tg-0lax"><em>clientRingEntryRequest</em></td>
-					<td class="tg-0lax">Request</td>
-					<td class="tg-0lax">Non usiamo l'Event perchè non vogliamo che altri waiter possano ascoltare il messaggio. Inoltre, dovendo però il <em>client</em> ricevere una risposta, scegliamo di adottare una Request-Reply.</td>
+					<td><em>clientRingEntryRequest</em></td>
+					<td>Request</td>
+					<td>Non usiamo un Event perchè non vogliamo che altri waiter possano ascoltare il messaggio e produrre molteplici risposte. Inoltre, dovendo il <em>client</em> ricevere una risposta, scegliamo di adottare una Request-Reply.</td>
+					<td></td>
 				</tr>
 				<tr>
-					<td class="tg-0lax"><em>clientRingEntryReply</em></td>
-					<td class="tg-0lax">Reply</td>
-					<td class="tg-0lax">Aspettandosi il <em>client</em> una risposta questo fortifica la scelta appena fatta.</td>
+					<td><em>clientRingEntryReply</em></td>
+					<td>Reply</td>
+					<td>vedi sopra.</td>
+					<td></td>
 				</tr>
 				<tr>
-					<td class="tg-0lax"><em>smartbellEntryRequest</em></td>
-					<td class="tg-0lax">Request</td>
-					<td class="tg-0lax">Per gli stessi motivi di <em>clientRingEntryRequest</em></td>
+					<td><em>smartbellEntryRequest</em></td>
+					<td>Request</td>
+					<td>Come <em>clientRingEntryRequest</em></td>
+					<td>ID cliente</td>
 				</tr>
 				<tr>
-					<td class="tg-0lax"><em>smartbellEntryReply</em></td>
-					<td class="tg-0lax">Reply</td>
-					<td class="tg-0lax">Per gli stessi motivi di <em>smartbellEntryReply</em></td>
+					<td><em>smartbellEntryReply</em></td>
+					<td>Reply</td>
+					<td>Come <em>smartbellEntryReply</em></td>
+					<td>ID cliente</td>
 				</tr>
 				<tr>
-					<td class="tg-0lax"><em>clientOrderReady</em></td>
-					<td class="tg-0lax">Dispatch</td>
-					<td class="tg-0lax">No Event per motivo <em>clientEntryRequest</em>. Non si prevede una risposta quindi adottiamo un Dispatch. </td>
+					<td><em>clientOrderReady</em></td>
+					<td>Dispatch</td>
+					<td>Non usiamo un Event per lo stesso motivo di <em>clientEntryRequest</em>. Non si prevede una risposta quindi adottiamo un Dispatch. </td>
+					<td>ID cliente</td>
 				</tr>
 				<tr>
-					<td class="tg-0lax"><em>clientOrder</em></td>
-					<td class="tg-0lax">Dispatch</td>
-					<td class="tg-0lax">Per gli stessi motivi di <em>clientOrderReady</em></td>
+					<td><em>clientOrder</em></td>
+					<td>Dispatch</td>
+					<td>Come <em>clientOrderReady</em></td>
+					<td>ID cliente e drink ordinato</td>
 				</tr>
 				<tr>
-					<td class="tg-0lax"><em>waiterOrderForward</em></td>
-					<td class="tg-0lax">Dispatch</td>
-					<td class="tg-0lax">Per gli stessi motivi di <em>clientOrderReady</em> (c'è un solo <em>barman</em>)</td>
+					<td><em>waiterOrderForward</em></td>
+					<td>Dispatch</td>
+					<td>C'è sempre un solo <em>barman</em> quindi come <em>clientOrderReady</em></td>
+					<td>ID cliente e drink ordinato</td>
 				</tr>
 				<tr>
-					<td class="tg-0lax"><em>barmanOrderReady</em></td>
-					<td class="tg-0lax">Dispatch</td>
-					<td class="tg-0lax">Per gli stessi motivi di <em>clientOrderReady</em></td>
+					<td><em>barmanOrderReady</em></td>
+					<td>Dispatch</td>
+					<td>Come <em>clientOrderReady</em></td>
+					<td>ID cliente</td>
 				</tr>
 				<tr>
-					<td class="tg-0lax"><em>clientPaymentReady</em></td>
-					<td class="tg-0lax">Dispatch</td>
-					<td class="tg-0lax">Per gli stessi motivi di <em>clientOrderReady</em></td>
+					<td><em>clientPaymentReady</em></td>
+					<td>Dispatch</td>
+					<td>Come <em>clientOrderReady</em></td>
+					<td>ID cliente</td>
 				</tr>
 			</tbody>
 		</table>
-		<br/>
-		Invece, le entità sono le seguenti:
-		<br/>
-		<br/>
+		E ne aggiungiamo uno nuovo
 		<table>
 			<thead>
 				<tr>
-					<th class="tg-0lax">entità</th>
-					<th class="tg-0lax">QAK</th>
-					<th class="tg-0lax">motivazione/scelta</th>
+					<th>nome messaggio</th>
+					<th>QAK</th>
+					<th>motivazione/scelta</th>
+					<th>parametri</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td class="tg-0lax"><em>client</em></td>
-					<td class="tg-0lax">attore</td>
-					<td class="tg-0lax">entità autonoma che interagisce con altre entità e deve essere in grado di ricevere ed elaborare i messaggi</td>
-				</tr>
-				<tr>
-					<td class="tg-0lax"><em>waiter</em></td>
-					<td class="tg-0lax">attore</td>
-					<td class="tg-0lax">Per gli stessi motivi di <em>client</em></td>
-				</tr>
-				<tr>
-					<td class="tg-0lax"><em>barman</em></td>
-					<td class="tg-0lax">attore</td>
-					<td class="tg-0lax">Per gli stessi motivi di <em>client</em></td>
-				</tr>
-				<tr>
-					<td class="tg-0lax"><em>smartbell</em></td>
-					<td class="tg-0lax">attore</td>
-					<td class="tg-0lax">Per gli stessi motivi di <em>client</em></td>
+					<td><em>smartbellClientRejected</em></td>
+					<td>Dispatch</td>
+					<td>Messaggio che <em>smartbell</em> manda a se stesso per poter cambiare stato e attendere una nuova richiesta quando il <em>client</em> è rifiutato</td>
+					<td>temperatura cliente</td>
 				</tr>
 			</tbody>
 		</table>
-		</br>
-		Siamo già in grado di mostrare un primo <b>modello</b> al committente:
+		
+		</br></br>
+		Siamo già in grado di mostrare un primo <b>modello</b> al committente. Usiamo due contesti, uno per il <em>client</em>, uno per tutti gli altri attori.
 		</br>
 		</br>
 		<a href="" onclick="openInNewTab('../../Sprint1/teaRoomAnReq1/src/tearoom.qak');">tearoom.qak</a>
-		<br/>
-		<br/>
-		E' stato usato un ulteriore messaggio <em>smartbellClientRejected</em> che serve allo <em>smartbell</em> per cambiare stato e indica che il <em>client</em> è stato rifiutato.
 		<br/>
 		<br/>
 		<a href="" onclick="openInNewTab('../../Sprint1/teaRoomAnReq1/src/client.qak');">client.qak</a>

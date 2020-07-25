@@ -17,209 +17,218 @@
 				Anche l'interazione tra <em>smartbell</em> e <em>client</em> avviene tramite una coppia di messaggi: richiesta da parte del <em>client</em> e risposta da parte dello <em>smartbell</em>.
 				Ogni <em>client</em> ha un identificativo unico nell'arco della giornata dato dallo <em>smartbell</em> se la sua temperatura è inferiore alla soglia.</li>
 				<li>Il <em>table</em> può trovarsi nello stato pulito o sporco.</li>
-			</ul>
+			</ul></li>
 
 			<li><h4><em>inform</em> the client about the maximum waiting time if there is no <em>tableclean</em></h4></li>
 			In assenza di <em>table</em> puliti il task <em>accept</em> non può essere eseguito; il <em>waiter</em> non accoglie il <em>client</em> ma lo informerà riguardo a quanto tempo deve aspettare.
-			<em>maxwaittime</em> dipende dalla situazione attuale della <em>tearoom</em> e consiste nel tempo dopo il quale si prevede che ci sarà un <em>table</em> pulito.
+			<em>maxwaittime</em> dipende dalla situazione attuale della <em>tearoom</em> e consiste nel tempo dopo il quale si prevede che ci sarà un <em>table</em> pulito.</li>
 			
 			<li><h4><em>reach</em> the <em>entrance door</em> and <em>convoy</em> the accepted client to the selected teatable</h4>
 			La prima cosa che si deduce leggendo questo requisito è la necessità di gestire il movimento del <em>waiter</em> e di conoscere la posizione delle entità nella <em>tearoom</em>.
-			Inoltre il <em>waiter</em> deve conoscere lo stato dei <em>table</em> in modo da selezionarne uno pulito.
+			Inoltre il <em>waiter</em> deve conoscere lo stato dei <em>table</em> in modo da selezionarne uno pulito.</li>
 
 			<li><h4><em>take</em> the order of the client and transmit it (using a wifi-device) to the <em>barman</em></h4>
 			Il committente ci ha detto che per prendere l'ordine dal <em>client</em>, il <em>waiter</em> si deve spostare fisicamente (gestione del movimento e posizione degli ostacoli di cui abbiamo parlato nel requisito precedente).
 			Vediamo la necessità di introdurre due messaggi: uno quando il <em>client</em> deve chiamare il <em>waiter</em> e l'altro quando il <em>client</em> comunica l'ordine al <em>waiter</em>
-			Sempre da questo requisito la trasmissione da <em>waiter</em> a <em>barman</em> ci indica l'introduzione di un altro messaggio.
+			Sempre da questo requisito la trasmissione da <em>waiter</em> a <em>barman</em> ci indica l'introduzione di un altro messaggio.</li>
 			
 			<li><h4><em>serve</em> the client when the <em>barman</em> says that the requested drink is ready</h4>
 			Abbiamo chiesto al committente e ci ha detto che il <em>waiter</em> deve portare il drink dal <em>barman</em> al <em>client</em> e questo implica lo spostamento del <em>waiter</em> di cui abbiamo parlato nei punti precedenti.
-			Abbiamo bisogno di un nuovo messaggio tra <em>barman</em>-<em>waiter</em> per comunicare al <em>waiter</em> che il drink è pronto.
+			Abbiamo bisogno di un nuovo messaggio tra <em>barman</em>-<em>waiter</em> per comunicare al <em>waiter</em> che il drink è pronto.</li>
 			
 			<li><h4><em>collect</em> the payment from the client when he/she has finished to consume or when the <em>maxstaytime</em> is expired</h4>
 			Il pagamento, secondo il committente, richiede l'avvicinamento al <em>table</em> da parte del <em>waiter</em>. Affinchè il <em>client</em> possa indicare al <em>waiter</em> quando ha finito il suo drink è necessario un nuovo messaggio.
-			La gestione del <em>maxstaytime</em> è stata spiegata dal committente nel seguente modo: quando il <em>client</em> viene portato al <em>table</em> parte un cronometro che tiene conto solo dell'attesa che può essere attribuita al <em>client</em>. Ad esempio, se il <em>client</em> non fa mai un ordine la responsabilità di questa attesa è sua e non del <em>waiter</em> o del <em>barman</em>, quindi il cronometro resta attivo. Invece, una volta fatto l'ordine, il cronometro viene bloccato per poi ripartire quando il drink arriva al <em>table</em>. 
+			La gestione del <em>maxstaytime</em> è stata spiegata dal committente nel seguente modo: quando il <em>client</em> viene portato al <em>table</em> parte un cronometro che tiene conto solo dell'attesa che può essere attribuita al <em>client</em>. Ad esempio, se il <em>client</em> non fa mai un ordine la responsabilità di questa attesa è sua e non del <em>waiter</em> o del <em>barman</em>, quindi il cronometro resta attivo. Invece, una volta fatto l'ordine, il cronometro viene bloccato per poi ripartire quando il drink arriva al <em>table</em>.</li> 
 
 			<li><h4><em>convoy</em> the client to the <em>exitdoor</em></h4>
-			C'è la necessità che il <em>waiter</em> si sposti come nei requisiti precedenti per cui serve conoscere la posizione del <em>table</em> e di <em>exitdoor</em>.
+			C'è la necessità che il <em>waiter</em> si sposti come nei requisiti precedenti per cui serve conoscere la posizione del <em>table</em> e di <em>exitdoor</em>.</li>
 			
 			<li><h4><em>clean</em> the tea-table just freed by the client</h4>
 			Questo task inizia solo dopo il task <em>convoy</em>. Alla fine lo stato del <em>table</em> cambia.
-			Per pulizia si intende togliere il bicchiere, ed eventualmente altre cose lasciate dal <em>client</em>, e sanificare il <em>table</em>.
+			Per pulizia si intende togliere il bicchiere, ed eventualmente altre cose lasciate dal <em>client</em>, e sanificare il <em>table</em>.</li>
 			
 			<li><h4><em>rest</em> at my <em>home</em> when there is nothing to do</h4>
-			Se il <em>waiter</em> non ha altri compiti da svolgere può andare nella posizione <em>home</em>
+			Se il <em>waiter</em> non ha altri compiti da svolgere può andare nella posizione <em>home</em></li>
 			
-			<li><h4>Nell'introduzione, troviamo anche un altro requisito: il <em>manager</em> vuole vedere lo stato della <em>tearoom</em></h4>
-			Dopo una discussione con il committente, per <em>current state</em> si intende:
-			<ol>
-				<li>Stato pulizia <em>table</em>; </li>
-				<li><em>barman</em> occupato o no;</li>
-				<li><em>table</em> occupati;</li>
-				<li>Il task che il <em>waiter</em> sta eseguendo;</li>
-				<li>Numero di <em>client</em> accettati/rifiutati.</li>
-			</ol>
-			
-			<li><h4>Riassumiamo i task del <em>waiter</em> indicando sia il tempo qualitativo che quello quantitativo e prendiamo come caso di riferimento quello peggiore</h4></li>
-			<table>
-				<thead>
-					<tr>
-						<th class="tg-0lax">nome task</th>
-						<th class="tg-0lax">cosa fa</th>
-						<th class="tg-0lax">tempo qualitativo</th>
-						<th class="tg-0lax">tempo quantitativo</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td class="tg-0lax"><em>accept</em></td>
-						<td class="tg-0lax">conferma la richiesta del <em>client</em> se è presente un <em>table</em> nello stato <em>tableclean</em></td>
-						<td class="tg-0lax">poco</td>
-						<td class="tg-0lax">2s</td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>inform</em></td>
-						<td class="tg-0lax">informa il <em>client</em> sul tempo massimo di attesa <em>maxwaittime</em> nel caso non sia possibile eseguire il task <em>accept</em>  <br></td>
-						<td class="tg-0lax">poco</td>
-						<td class="tg-0lax">2s</td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>reach</em></td>
-						<td class="tg-0lax">raggiunge la porta di ingresso e accompagna il <em>client</em> (accettato) al <em>table</em> selezionato</td>
-						<td class="tg-0lax">alto<br></td>
-						<td class="tg-0lax">60s</td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>take</em></td>
-						<td class="tg-0lax">va al <em>table</em> del <em>client</em>, prende l'ordine e lo trasmette al <em>barman</em></td>
-						<td class="tg-0lax">poco</td>
-						<td class="tg-0lax">8s</td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>serve</em></td>
-						<td class="tg-0lax">quando il <em>barman</em> dice che la bevanda è pronta va a prenderla e la porta al <em>client</em> che l'aveva richiesta</td>
-						<td class="tg-0lax">medio</td>
-						<td class="tg-0lax">30s</td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>collect</em></td>
-						<td class="tg-0lax">va al <em>table</em> del <em>client</em> per riscuotere il pagamento</td>
-						<td class="tg-0lax">poco</td>
-						<td class="tg-0lax">8s<br></td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>convoy</em></td>
-						<td class="tg-0lax">accompagna il <em>client</em> alla porta</td>
-						<td class="tg-0lax">medio</td>
-						<td class="tg-0lax">30s</td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>clean</em></td>
-						<td class="tg-0lax">pulisce il <em>table</em></td>
-						<td class="tg-0lax">medio</td>
-						<td class="tg-0lax">45s</td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>rest</em></td>
-						<td class="tg-0lax">va in home se non c'è niente da fare</td>
-						<td class="tg-0lax">medio/alto<br></td>
-						<td class="tg-0lax">variabile</td>
-					</tr>
-				</tbody>
-			</table>
+			<li><h4>Nell'introduzione, troviamo altri 2 requisiti:</h4>
+			<ul>
+				<li> il <em>manager</em> vuole vedere lo stato della <em>tearoom</em>. Dopo una discussione con il committente, per <em>current state</em> si intende:
+					<ol>
+						<li>Stato pulizia <em>table</em>; </li>
+						<li><em>barman</em> occupato o no;</li>
+						<li><em>table</em> occupati;</li>
+						<li>Il task che il <em>waiter</em> sta eseguendo;</li>
+						<li>Numero di <em>client</em> accettati/rifiutati.</li>
+					</ol>
+				</li>
+				<li>
+					il <em>waiter</em> deve ridurre il più possibile i tempi di attesa delle richieste dei <em>client</em>
+				</li>
+			</ul>
+			</li>
+		</ol>
 
-			<li><h4>Riassumiamo i messaggi che sono emersi dall'analisi dei requisiti</h4></li>
-			<table>
-				<thead>
-					<tr>
-						<th class="tg-0lax">nome messaggio</th>
-						<th class="tg-0lax">descrizione</th>
-						<th class="tg-0lax">mittente-destinatario</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td class="tg-0lax"><em>clientRingEntryRequest</em></td>
-						<td class="tg-0lax">richiesta da parte del <em>client</em> per entrare</td>
-						<td class="tg-0lax"><em>client</em>-<em>smartebell</em></td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>clientRingEntryReply</em></td>
-						<td class="tg-0lax">risposta da parte dello <em>smartbell</em></td>
-						<td class="tg-0lax"><em>smartebell</em>-<em>client</em></td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>smartbellEntryRequest</em></td>
-						<td class="tg-0lax">richiesta da parte dello <em>smartbell</em> per vedere se il <em>client</em> può entrare</td>
-						<td class="tg-0lax"><em>smartbell</em>-<em>waiter</em></td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>smartbellEntryReply</em></td>
-						<td class="tg-0lax">risposta da parte del <em>waiter</em></td>
-						<td class="tg-0lax"><em>waiter</em>-<em>smartbell</em></td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>clientOrderReady</em></td>
-						<td class="tg-0lax">richiesta di ordine del <em>client</em></td>
-						<td class="tg-0lax"><em>client</em>-<em>waiter</em></td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>clientOrder</em></td>
-						<td class="tg-0lax">il <em>client</em> comunica il suo ordine al <em>waiter</em></td>
-						<td class="tg-0lax"><em>client</em>-<em>waiter</em></td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>waiterOrderForward</em></td>
-						<td class="tg-0lax">invio ordine a barman</td>
-						<td class="tg-0lax"><em>waiter</em>-<em>barman</em></td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>barmanOrderReady</em></td>
-						<td class="tg-0lax">ordine pronto</td>
-						<td class="tg-0lax"><em>barman</em>-<em>waiter</em></td>
-					</tr>
-					<tr>
-						<td class="tg-0lax"><em>clientPaymentReady</em></td>
-						<td class="tg-0lax"><em>client</em> desidera pagare</td>
-						<td class="tg-0lax"><em>client</em>-<em>waiter</em></td>
-					</tr>
-				</tbody>
-			</table>
-	
-			<li><h4>Riassumiamo le entità che sono emerse dai requisiti</h4></li>
+			Riassumiamo le entità che sono emerse dai requisiti.
 			<table>
 				<thead>
 					<tr>
 						<th class="tg-0pky">entità</th>
-						<th class="tg-0pky">scopo</th>
+						<th class="tg-0pky">comportamento/descrizione</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td class="tg-0pky"><em>client</em></td>
-						<td class="tg-0pky">entra, ordina, consuma un drink ed esce dalla <em>tearoom</em></td>
+						<td class="tg-0pky">Rappresenta un cliente della <em>tearoom</em>. Possiede iniziativa quando interagisce con le altre entità. Il suo comportamento tipico prevede di entrare, ordinare, consumare un drink ed uscire dalla <em>tearoom</em></td>
 					</tr>
 					<tr>
 						<td class="tg-0pky"><em>table</em></td>
-						<td class="tg-0pky">luogo in cui il <em>client</em> si siede e gli viene portato il drink</td>
+						<td class="tg-0pky">Luogo in cui il <em>client</em> si siede e gli viene portato il drink. Possiede uno stato il cui valore ne riflette la condizione. Diversi valori influiscono in modo diverso sul comportamento delle altre entità</td>
 					</tr>
 					<tr>
 						<td class="tg-0pky"><em>waiter</em></td>
-						<td class="tg-0pky">accoglie il <em>client</em>, prende l'ordine e lo comunica al <em>barman</em>, serve il <em>client</em> e lo riaccompagna alla porta. Pulisce il <em>table</em></td>
+						<td class="tg-0pky">Rappresenta il cameriere della <em>tearoom</em>. Possiede iniziativa quando interagisce con le altre entità. Il suo comportamento tipico prevede di accogliere il <em>client</em>, prendere l'ordine e comunicarlo al <em>barman</em>, servire il <em>client</em> e  riaccompagnarlo alla porta. Infine pulire il <em>table</em> usato</td>
 					</tr>
 					<tr>
 						<td class="tg-0pky"><em>barman</em></td>
-						<td class="tg-0pky">prepara il drink e avvisa il <em>waiter</em> quando è pronto</td>
+						<td class="tg-0pky">Rappresenta colui che prepara i drink e avvisa il <em>waiter</em> quando sono pronti. Non possiede iniziativa</td>
 					</tr>
 					<tr>
 						<td class="tg-0pky"><em>smartbell</em></td>
-						<td class="tg-0pky">segnala la presenza di un <em>client</em> che vuole entrare</td>
+						<td class="tg-0pky">Segnala la presenza di un <em>client</em> che vuole entrare nella <em>tearoom</em></td>
 					</tr>
 				</tbody>
 			</table>
-		<br/>
-		<br/>
-		
+			</br>
+			</br>
+			Riassumiamo i messaggi che emergono dall'analisi dei requisiti indicando perché sono necessari
+			<table>
+				<thead>
+					<tr>
+						<th>nome messaggio</th>
+						<th>scopo</th>
+						<th>mittente-destinatario</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><em>clientRingEntryRequest</em></td>
+						<td>indica che il <em>client</em> vuole entrare nella <em>tearoom</em></td>
+						<td><em>client</em>-<em>smartbell</em></td>
+					</tr>
+					<tr>
+						<td><em>clientRingEntryReply</em></td>
+						<td>trasporta la risposta a una <em>clientRingEntryRequest</em></td>
+						<td><em>smartebell</em>-<em>client</em></td>
+					</tr>
+					<tr>
+						<td><em>smartbellEntryRequest</em></td>
+						<td>indica una richiesta da parte dello <em>smartbell</em> per vedere se il <em>client</em> può entrare</td>
+						<td><em>smartbell</em>-<em>waiter</em></td>
+					</tr>
+					<tr>
+						<td><em>smartbellEntryReply</em></td>
+						<td>trasporta la risposta a una <em>smartbellEntryRequest</em></td>
+						<td><em>waiter</em>-<em>smartbell</em></td>
+					</tr>
+					<tr>
+						<td><em>clientOrderReady</em></td>
+						<td>indica che il <em>client</em> vuole ordinare</td>
+						<td><em>client</em>-<em>waiter</em></td>
+					</tr>
+					<tr>
+						<td><em>clientOrder</em></td>
+						<td>rappresenta l'ordinazione del <em>client</em></td>
+						<td><em>client</em>-<em>waiter</em></td>
+					</tr>
+					<tr>
+						<td><em>waiterOrderForward</em></td>
+						<td>inoltra l'ordinazione del <em>client</em> al <em>barman</em></td>
+						<td><em>waiter</em>-<em>barman</em></td>
+					</tr>
+					<tr>
+						<td><em>barmanOrderReady</em></td>
+						<td>indica che un'ordinazione è pronta</td>
+						<td><em>barman</em>-<em>waiter</em></td>
+					</tr>
+					<tr>
+						<td><em>clientPaymentReady</em></td>
+						<td>indica che il <em>client</em> desidera pagare</td>
+						<td><em>client</em>-<em>waiter</em></td>
+					</tr>
+				</tbody>
+			</table>
+			I messaggi del sistema sono modellati in modo che si abbia sempre un unico destinatario. Non c'è bisogno di multicast/broadcast.
+
+			<br/>
+			<br/>
+			Riassumiamo i task del <em>waiter</em> indicando sia il tempo qualitativo che quello quantitativo (prendendo come riferimento il caso peggiore). Per ogni task indichiamo quale comportamento del <em>waiter</em> è modellato
+			<table>
+				<thead>
+					<tr>
+						<th>nome task</th>
+						<th>cosa fa</th>
+						<th>tempo qualitativo</th>
+						<th>tempo quantitativo</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><em>accept</em></td>
+						<td>conferma la richiesta del <em>client</em> se è presente un <em>table</em> nello stato <em>tableclean</em></td>
+						<td>poco</td>
+						<td>2s</td>
+					</tr>
+					<tr>
+						<td><em>inform</em></td>
+						<td>informa il <em>client</em> sul tempo massimo di attesa <em>maxwaittime</em> nel caso non sia possibile eseguire il task <em>accept</em>  <br></td>
+						<td>poco</td>
+						<td>2s</td>
+					</tr>
+					<tr>
+						<td><em>reach</em></td>
+						<td>raggiunge la porta di ingresso e accompagna il <em>client</em> (accettato) al <em>table</em> selezionato</td>
+						<td>alto<br></td>
+						<td>60s</td>
+					</tr>
+					<tr>
+						<td><em>take</em></td>
+						<td>va al <em>table</em> del <em>client</em>, prende l'ordine e lo trasmette al <em>barman</em></td>
+						<td>poco</td>
+						<td>8s</td>
+					</tr>
+					<tr>
+						<td><em>serve</em></td>
+						<td>quando il <em>barman</em> dice che la bevanda è pronta va a prenderla e la porta al <em>client</em> che l'aveva richiesta</td>
+						<td>medio</td>
+						<td>30s</td>
+					</tr>
+					<tr>
+						<td><em>collect</em></td>
+						<td>va al <em>table</em> del <em>client</em> per riscuotere il pagamento</td>
+						<td>poco</td>
+						<td>8s<br></td>
+					</tr>
+					<tr>
+						<td><em>convoy</em></td>
+						<td>accompagna il <em>client</em> alla porta</td>
+						<td>medio</td>
+						<td>30s</td>
+					</tr>
+					<tr>
+						<td><em>clean</em></td>
+						<td>pulisce il <em>table</em></td>
+						<td>medio</td>
+						<td>45s</td>
+					</tr>
+					<tr>
+						<td><em>rest</em></td>
+						<td>va in home se non c'è niente da fare</td>
+						<td>medio/alto<br></td>
+						<td>variabile</td>
+					</tr>
+				</tbody>
+			</table>		
 	</div>
 </body>
 </html>
