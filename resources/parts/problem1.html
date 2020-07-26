@@ -66,6 +66,7 @@
 				</tr>
 			</tbody>
 			</table>
+			</br>
 			Si noti come clean e doneCleanRun avrebbero potuto essere modellati come Request-Reply, tuttavia se il task clean dovesse essere interrotto dovremmo gestire più di una Reply. Quindi l'uso di due Dispatch semplifica la gestione di questi messaggi. Sebbene le nostre assunzioni escludano interruzioni scegliamo di implementare questi messaggi come Dispatch già da ora.<br/><br/>
 			Il problema legato alla pulizia del tavolo è stato discusso nell'analisi del problema dello sprint precedente.
 			Parlando di movimento del <em>waiter</em> emerge la necessità di conoscere la posizione delle entità nella <em>tearoom</em> e di avere un sistema di navigazione che permetta il movimento da un punto A a un punto B.
