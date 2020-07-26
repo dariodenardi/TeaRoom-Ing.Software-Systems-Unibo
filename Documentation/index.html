@@ -102,6 +102,8 @@
 												<hr/>
 
 												<pre class="prettyprint">
+Arduino
+  └── uniboControl.c
 Distribuzioni
   └── componenti da eseguire per vedere il risultato finale
 it.unibo.virtualRobot2020
@@ -118,6 +120,8 @@ Sprint2
   └── html dello sprint 2
 Sprint3
   └── html dello sprint 3
+ Video
+  └── video del progetto
 Problem analysis.html
   └── html con tutta l'analisi dei problemi dei vari sprint
 Requirements analysis.html
@@ -139,6 +143,15 @@ Requirements analysis.html
 														</tr>
 													</thead>
 													<tbody>
+														<tr>
+															<td>
+                                                                <code>uniboControl.c</code>
+                                                                <!-- TODO -->
+                                                            </td>
+                                                            <td>
+                                                                codice modificato per far muovere l'arduino
+                                                            </td>
+														</tr>
 														<tr>
 															<td>
                                                                 <code>Sprint1\Sprint 0.html</code>, <code>Sprint1\Sprint 1.html</code>,
@@ -218,7 +231,7 @@ Requirements analysis.html
 														<td>Bida</td>
 													</tr>
 													<tr>
-														<td><img src="../resources/img/mbot-denardi.jpeg" width="80%" height="80%" alt="mbot"></td>
+														<td><img src="../resources/img/mbot-denardi.jpg" width="80%" height="80%" alt="mbot"></td>
 														<td><img src="../resources/img/mbot-bida.jpeg" width="80%" height="80%" alt="mbot"></td>
 													</tr>
 												</tbody>
@@ -237,17 +250,16 @@ Requirements analysis.html
 											
 											<ol class="">
 												<li>Accendere l'<b>mbot</b></li>
-												<li>Portare la distribuzione che si trova in <b>Distribuzioni\mbot\prove.basicrobot-1.0.zip</b> su raspberry</li>
+												<li>Portare la distribuzione che si trova in <b>Distribuzioni\mbot\prove.basicrobot-1.0.zip</b> su raspberry ed estrarre il contenuto</li>
 												<li>Aprire il terminale da raspberry ed eseguire il file bash all'interno della cartella</li>
-												<li>Portare la distribuzione che si trova in <b>Distribuzioni\mbot\teaRoomAnProbl2.zip</b> su raspberry</li>
-												<li>Estrarre il contenuto di <b>Distribuzioni\mbot\teaRoom-1.0.zip</b></li>
+												<li>Portare la distribuzione che si trova in <b>Distribuzioni\mbot\teaRoom-1.0.zip</b> su raspberry ed estrarre il contenuto</li>
 												<li>Aprire il terminale da raspberry ed eseguire il file bash all'interno della cartella</li>
 												<li>Estrarre il contenuto di <b>Distribuzioni\clientGui-boot-1.0.zip</b> su pc</li>
-												<li>Modificare il file di configurazione <b>pageConfig.json</b> inserendo al posto dell'indirizzo 127.0.0.1 del campo host, l'indirizzo del raspberry</li>
+												<li>Modificare il file di configurazione <b>pageConfig.json</b> inserendo al posto dell'indirizzo "127.0.0.1" del campo host, l'indirizzo del raspberry</li>
 												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
 												<li>Aprire il browser e digitare <b>localhost:7050</b></li>
 												<li>Estrarre il contenuto di <b>Distribuzioni\managerGui-boot-1.0.zip</b></li>
-												<li>Modificare il file di configurazione <b>pageConfig.json</b> inserendo al posto dell'indirizzo 127.0.0.1 del campo host e al posto di "localhost" di hostAddrBasiRobot, l'indirizzo del raspberry</li>
+												<li>Modificare il file di configurazione <b>pageConfig.json</b> inserendo al posto dell'indirizzo "127.0.0.1" del campo host e al posto di "localhost" del campo hostAddrBasiRobot, l'indirizzo del raspberry</li>
 												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
 												<li>Aprire il browser e digitare <b>localhost:7060</b></li>
 												<li>Inserire username e password che si preferiscono perchè non è collegato un database</b></li>
