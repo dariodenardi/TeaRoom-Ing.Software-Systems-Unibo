@@ -151,6 +151,7 @@
 					<th>nome messaggio</th>
 					<th>QAK</th>
 					<th>motivazione/scelta</th>
+					<th>mittente-destinatario</th>
 					<th>parametri</th>
 				</tr>
 			</thead>
@@ -159,54 +160,63 @@
 					<td><em>clientRingEntryRequest</em></td>
 					<td>Request</td>
 					<td>Non usiamo un Event perchè non vogliamo che altri waiter possano ascoltare il messaggio e produrre molteplici risposte. Inoltre, dovendo il <em>client</em> ricevere una risposta, scegliamo di adottare una Request-Reply.</td>
+					<td><em>client</em>-<em>smartbell</em></td>
 					<td></td>
 				</tr>
 				<tr>
 					<td><em>clientRingEntryReply</em></td>
 					<td>Reply</td>
 					<td>vedi sopra.</td>
+					<td><em>smartbell</em>-<em>client</em></td>
 					<td></td>
 				</tr>
 				<tr>
 					<td><em>smartbellEntryRequest</em></td>
 					<td>Request</td>
 					<td>Come <em>clientRingEntryRequest</em></td>
+					<td><em>smartbell</em>-<em>waiter</em></td>
 					<td>ID cliente</td>
 				</tr>
 				<tr>
 					<td><em>smartbellEntryReply</em></td>
 					<td>Reply</td>
 					<td>Come <em>smartbellEntryReply</em></td>
+					<td><em>waiter</em>-<em>smartbell</em></td>
 					<td>ID cliente</td>
 				</tr>
 				<tr>
 					<td><em>clientOrderReady</em></td>
 					<td>Dispatch</td>
 					<td>Non usiamo un Event per lo stesso motivo di <em>clientEntryRequest</em>. Non si prevede una risposta quindi adottiamo un Dispatch. </td>
+					<td><em>client</em>-<em>waiter</em></td>
 					<td>ID cliente</td>
 				</tr>
 				<tr>
 					<td><em>clientOrder</em></td>
 					<td>Dispatch</td>
 					<td>Come <em>clientOrderReady</em></td>
+					<td><em>client</em>-<em>waiter</em></td>
 					<td>ID cliente e drink ordinato</td>
 				</tr>
 				<tr>
 					<td><em>waiterOrderForward</em></td>
 					<td>Dispatch</td>
 					<td>C'è sempre un solo <em>barman</em> quindi come <em>clientOrderReady</em></td>
+					<td><em>waiter</em>-<em>barman</em></td>
 					<td>ID cliente e drink ordinato</td>
 				</tr>
 				<tr>
 					<td><em>barmanOrderReady</em></td>
 					<td>Dispatch</td>
 					<td>Come <em>clientOrderReady</em></td>
+					<td><em>barman</em>-<em>waiter</em></td>
 					<td>ID cliente</td>
 				</tr>
 				<tr>
 					<td><em>clientPaymentReady</em></td>
 					<td>Dispatch</td>
 					<td>Come <em>clientOrderReady</em></td>
+					<td><em>client</em>-<em>waiter</em></td>
 					<td>ID cliente</td>
 				</tr>
 			</tbody>
@@ -218,6 +228,7 @@
 					<th>nome messaggio</th>
 					<th>QAK</th>
 					<th>motivazione/scelta</th>
+					<th>mittente-destinatario</th>
 					<th>parametri</th>
 				</tr>
 			</thead>
@@ -226,6 +237,7 @@
 					<td><em>smartbellClientRejected</em></td>
 					<td>Dispatch</td>
 					<td>Messaggio che <em>smartbell</em> manda a se stesso per poter cambiare stato e attendere una nuova richiesta quando il <em>client</em> è rifiutato</td>
+					<td><em>smartbell</em>-<em>smartbell</em></td>
 					<td>temperatura cliente</td>
 				</tr>
 			</tbody>
@@ -235,12 +247,16 @@
 		Siamo già in grado di mostrare un primo <b>modello</b> al committente. Usiamo due contesti, uno per il <em>client</em>, uno per tutti gli altri attori.
 		</br>
 		</br>
-		<a href="" onclick="openInNewTab('../../Sprint1/teaRoomAnReq1/src/tearoom.qak');">tearoom.qak</a>
+		<a href="" onclick="openInNewTab('../../Sprint1/teaRoomAnReq1/src/tearoom.qak');">tearoom.qak</a> <a href="" onclick="openInNewTab('../../Sprint1/teaRoomAnReq1/src/client.qak');">client.qak</a>
 		<br/>
 		<br/>
-		<a href="" onclick="openInNewTab('../../Sprint1/teaRoomAnReq1/src/client.qak');">client.qak</a>
-		<br/>
-		<br/>
+		Mostriamo anche un grafo degli stati di <em>waiter</em></br>
+		<div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;_blank&quot;,&quot;xml&quot;:&quot;&lt;mxfile host=\&quot;app.diagrams.net\&quot; modified=\&quot;2020-07-25T14:46:42.035Z\&quot; agent=\&quot;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36\&quot; etag=\&quot;6MVPQfSzT017h9DZ1BIm\&quot; version=\&quot;13.5.3\&quot;&gt;&lt;diagram id=\&quot;cU18ib_VpRdZYBQb-qZ6\&quot; name=\&quot;Page-1\&quot;&gt;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&lt;/diagram&gt;&lt;/mxfile&gt;&quot;}"></div>
+		<script type="text/javascript" src="https://app.diagrams.net/js/viewer-static.min.js"></script>
+		Si osservi come lo stato <b>rest</b> è sia punto di partenza che punto di arrivo di 4 sequenze di transizioni, ognuna delle quali rappresenta un task, o sequenze di task, che il <em>waiter</em> dovrà eseguire in questo scenario semplificato.<br/>
+		Tutti gli stati di <em>waiter</em> che hanno nome con prefisso "reach", "convoy" o "serve" implicano uno spostamento del <em>waiter</em>.
+		Gli stati "reach" rappresentano un movimento in cui il <em>waiter</em> è da solo. Negli stati "convoy" il <em>waiter</em> accompagna il <em>client</em> a destinazione, mentre nello stato "serve" il <em>waiter</em> porta con sé un drink. Si noti anche che ogni stato di movimento specifica il motivo per cui ci si deve spostare verso la destinazione: ad esempio <b>reachTableCollect</b>, <b>reachTableClean</b>, <b>convoyTable</b>, <b>reachTableOrder</b> e <b>serveTable</b> rappresentano tutti movimenti verso il <em>table</em> ma il compito del <em>waiter</em> cambia da stato a stato. </br>
+		
 		
 	</div>
 </body>

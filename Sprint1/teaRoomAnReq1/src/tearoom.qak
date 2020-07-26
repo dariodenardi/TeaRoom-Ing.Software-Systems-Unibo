@@ -48,8 +48,6 @@ QActor waiter context ctxtearoom{
 		data class Table(var state: String ="tableClean") { }
 		val table1 = Table()
 		val table2 = Table()
-		var stateTable1 = "tableClean"
-		var stateTable2 = "tableClean"
 	#]
 	
 	State startState initial{
