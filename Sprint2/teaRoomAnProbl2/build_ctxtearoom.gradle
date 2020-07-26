@@ -56,7 +56,7 @@ dependencies {
     compile name: 'uniboInterfaces'
     compile name: '2p301'
     compile name: 'it.unibo.qakactor-2.4'
-     compile name: 'it.unibo.planner20-1.0'
+    compile name: 'it.unibo.planner20-1.0'
  
     //For p2p two-way connections (TCP, UDP, BTH, Serial ...)
     compile name: 'unibonoawtsupports'

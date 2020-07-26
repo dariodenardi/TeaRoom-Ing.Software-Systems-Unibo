@@ -21,7 +21,7 @@ QActor client context ctxclient {
 	#]
 	
 	State s0 initial{
-		discardMsg Off
+		discardMsg Off 
 		println("client || START")
 		updateResource [# "START" #]
 	} 
