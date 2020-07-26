@@ -193,7 +193,7 @@ Requirements analysis.html
 								                <li>Mettere la configurazione della stanza che si trova in <b>it.unibo.virtualRobot2020</b> nella cartella del tuo <strong><a href="https://github.com/anatali/iss2020LabBo/tree/master/it.unibo.virtualRobot2020">virtual robot</a></strong> e farlo partire seguendo le istruzioni viste a lezione.</li>
 								                <li>Estrarre il contenuto di <b>Distribuzioni\virtual\prove.basicrobot-1.0.zip</b></li>
 												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
-												<li>Estrarre il contenuto di <b>Distribuzioni\teaRoomAnProbl2-1.0.zip</b></li>
+												<li>Estrarre il contenuto di <b>Distribuzioni\virtual\teaRoomAnProbl2-1.0.zip</b></li>
 												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
 												<li>Estrarre il contenuto di <b>Distribuzioni\clientGui-boot-1.0.zip</b></li>
 												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
@@ -236,16 +236,19 @@ Requirements analysis.html
 											</p>
 											
 											<ol class="">
+												<li>Accendere l'<b>mbot</b></li>
 												<li>Portare la distribuzione che si trova in <b>Distribuzioni\mbot\prove.basicrobot-1.0.zip</b> su raspberry</li>
-												<li>Aprire il file di configurazione <b>basicrobotConfig.json</b> e cambiare l'indirizzo associato a hostname con l'indirizzo del pc dato che la distribuzione gira su raspberry</li>
 												<li>Aprire il terminale da raspberry ed eseguire il file bash all'interno della cartella</li>
-												<li>Estrarre il contenuto di <b>Distribuzioni\teaRoomAnProbl2-1.0.zip</b></li>
-												<li>Aprire il terminale su pc ed eseguire il file bash all'interno della cartella</li>
-												<li>Estrarre il contenuto di <b>Distribuzioni\clientGui-boot-1.0.zip</b></li>
-												<li>Aprire il terminale su pc ed eseguire il file bash all'interno della cartella</li>
+												<li>Portare la distribuzione che si trova in <b>Distribuzioni\mbot\teaRoomAnProbl2.zip</b> su raspberry</li>
+												<li>Estrarre il contenuto di <b>Distribuzioni\mbot\teaRoom-1.0.zip</b></li>
+												<li>Aprire il terminale da raspberry ed eseguire il file bash all'interno della cartella</li>
+												<li>Estrarre il contenuto di <b>Distribuzioni\clientGui-boot-1.0.zip</b> su pc</li>
+												<li>Modificare il file di configurazione <b>pageConfig.json</b> inserendo al posto dell'indirizzo 127.0.0.1 del campo host, l'indirizzo del raspberry</li>
+												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
 												<li>Aprire il browser e digitare <b>localhost:7050</b></li>
 												<li>Estrarre il contenuto di <b>Distribuzioni\managerGui-boot-1.0.zip</b></li>
-												<li>Aprire il terminale su pc ed eseguire il file bash all'interno della cartella</li>
+												<li>Modificare il file di configurazione <b>pageConfig.json</b> inserendo al posto dell'indirizzo 127.0.0.1 del campo host e al posto di "localhost" di hostAddrBasiRobot, l'indirizzo del raspberry</li>
+												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
 												<li>Aprire il browser e digitare <b>localhost:7060</b></li>
 												<li>Inserire username e password che si preferiscono perchè non è collegato un database</b></li>
 								            </ol>
