@@ -2,7 +2,7 @@ System tearoom
 
 //Messages **********************************************************************
 //DIVISI PER CHI INVIA 
- 
+
 //**********CLIENT 
 //mqttBroker "localhost" : 1883 eventTopic "event/topic" 
 
@@ -793,7 +793,8 @@ QActor waitermind context ctxtearoom{
 				TableToClean = 0
 			#]
 		}
-			
+			forward tearoomglobalstate -m setWaiterState : setWaiterState(caccioCliente)
+		
 		onMsg ( maxStayTimerExpired : maxStayTimerExpired(N)){
 			[#
 				TableForCollect = payloadArg(0)
@@ -847,7 +848,7 @@ QActor waitermind context ctxtearoom{
  
 QActor smartbell context ctxtearoom{
 	[# 
-		val Temp_max = 38
+		val Temp_max = 37.5
 		var ID_client = 1 
 		var ClientTemp :Double = 0.0
 	#] 

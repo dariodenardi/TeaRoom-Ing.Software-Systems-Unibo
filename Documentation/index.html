@@ -152,30 +152,22 @@ Requirements analysis.html
 														</tr>
                                                         <tr>
 															<td>
-                                                                <code>teaRoomAnProbl1</code>, <code>teaRoomAnReq1</code>, 
+                                                                <code>Sprint1\teaRoomAnProbl1</code>, <code>Sprint1\teaRoomAnReq1</code>, <code>Sprint2\teaRoomAnProbl2</code>,
+																<code>Sprint2\teaRoomAnReq2</code>, <code>Sprint2\clientGui</code>, <code>Sprint2\managerGui</code>
                                                             </td>
                                                             <td>
-                                                                This is a main js file. It contains the custom JS code needed for features including
-                                                                layout, sidebar, etc.
-                                                                Also it contains the definition of some of the key components (e.g. notifications, portlet, etc) and code (for self-initialization) related to some of the controls (e.g. modal, range-slider, switchery, multiselect, etc).
+                                                                Progetti realizzati ad ogni analisi dei requisiti\analisi del problema.
                                                             </td>
 														</tr>
 
                                                         <tr>
 															<td>
-                                                                <code>pages/*.js</code>
+                                                                <code>resources/grafi/*</code>, <code>resources/img/*</code>, <code>resources/parts/*</code>, <code>resources/style/*</code>,
+																<code>ISSM2020Figs.pptx</code>
                                                             </td>
                                                             <td>
-                                                                These are the files containing pages specific code. They are mainly used for demo purpose.
-                                                            </td>
-														</tr>
-
-                                                        <tr>
-															<td>
-                                                                <code>plugins/**.js</code>
-                                                            </td>
-                                                            <td>
-                                                                All supported and integrated third-party plugins are included in here.
+                                                                html, immagini che servono a visualizzare correttamente i file <code>Sprint1\Sprint 0.html</code>, <code>Sprint1\Sprint 1.html</code>,
+                                                                <code>Sprint2\Sprint 2.html</code>, <code>Sprint3\Sprint 3.html</code>
                                                             </td>
 														</tr>
                                                     </tbody>
@@ -186,8 +178,7 @@ Requirements analysis.html
 
 										<div class="com-container">
 											<h4 class="page-header">Installazione TeaRoom su Virtual Robot</h4>
-											<p>Per un corretto funzionamento si consiglia di usare tutti i componenti che si trovano nella cartella <b>ComponentiFunzionamento</b>.
-											Alcuni sono stati visti a lezione ma hanno subito una leggera modifica.
+											<p>Per un corretto funzionamento si consiglia di usare solamente i componenti che si trovano nella cartella <b>Distribuzioni</b>.
 											</p>
 											
 											<p>Si consiglia di usare <b>Google Chrome</b> per far funzionare correttamente la Web App. Altri browser potrebbero avere di default impostazioni
@@ -199,23 +190,23 @@ Requirements analysis.html
 											</p>
 
 											<ol class="">
-								                <li>Mettere la configurazione della stanza che si trova in <b>it.unibo.virtualRobot2020</b> nella cartella del tuo <b>virtual robot</b> e segui le istruzioni viste a lezioni.</li>
-								                <li>Estrarre il contenuto di <b>Distribuzioni\virtual</b></li>
-												<li>Aprire il file di configurazione <b>basicrobotConfig.json</b> e cambiare l'indirizzo associato a hostname con "localhost" se si esegue sul computer, oppure mettere l'indirizzo del pc se si vuole portare la distribuzione su raspberry</b></li>
+								                <li>Mettere la configurazione della stanza che si trova in <b>it.unibo.virtualRobot2020</b> nella cartella del tuo <strong><a href="https://github.com/anatali/iss2020LabBo/tree/master/it.unibo.virtualRobot2020">virtual robot</a></strong> e farlo partire seguendo le istruzioni viste a lezione.</li>
+								                <li>Estrarre il contenuto di <b>Distribuzioni\virtual\prove.basicrobot-1.0.zip</b></li>
 												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
-												<li>Estrarre il contenuto di <b>Distribuzioni\teaRoomAnProbl2-1.0</b></li>
+												<li>Estrarre il contenuto di <b>Distribuzioni\virtual\teaRoomAnProbl2-1.0.zip</b></li>
 												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
-												<li>Estrarre il contenuto di <b>Distribuzioni\clientGui-boot-1.0</b></li>
+												<li>Estrarre il contenuto di <b>Distribuzioni\clientGui-boot-1.0.zip</b></li>
 												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
 												<li>Aprire il browser e digitare <b>localhost:7050</b></li>
-												<li>Estrarre il contenuto su pc di <b>Distribuzioni\managerGui-boot-1.0</b></li>
+												<li>Estrarre il contenuto su pc di <b>Distribuzioni\managerGui-boot-1.0.zip</b></li>
 												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
 												<li>Aprire il browser e digitare <b>localhost:7060</b></li>
+												<li>Inserire username e password che si preferiscono perchè non è collegato un database</b></li>
 								            </ol>
 										</div>
 										
 										<div class="com-container">
-											<h4 class="page-header">Installazione TeaRoom su Robot Robot</h4>
+											<h4 class="page-header">Installazione TeaRoom su Robot Fisico</h4>
 											<p style="text-decoration: underline; font-weight: 900;">E' necessario avere un robot fisico. Abbiamo usato l'mbot
 											come consigliato dal prof.
 											</p>
@@ -233,8 +224,7 @@ Requirements analysis.html
 												</tbody>
 											</table>
 											
-											<p>Per un corretto funzionamento si consiglia di usare tutti i componenti che si trovano nella cartella <b>ComponentiFunzionamento</b>.
-											Alcuni sono stati visti a lezione ma hanno subito una leggera modifica.
+											<p>Per un corretto funzionamento si consiglia di usare solamente i componenti che si trovano nella cartella <b>Distribuzioni</b>.
 											</p>
 											
 											<p>Si consiglia di usare <b>Google Chrome</b> per far funzionare correttamente la Web App. Altri browser potrebbero avere di default impostazioni
@@ -246,17 +236,21 @@ Requirements analysis.html
 											</p>
 											
 											<ol class="">
-												<li>Portare la distribuzione che si trova in <b>Distribuzioni\mbot</b> su raspberry</li>
-												<li>Aprire il file di configurazione <b>basicrobotConfig.json</b> e cambiare l'indirizzo associato a hostname con l'indirizzo del pc dato che la distribuzione gira su raspberry</li>
+												<li>Accendere l'<b>mbot</b></li>
+												<li>Portare la distribuzione che si trova in <b>Distribuzioni\mbot\prove.basicrobot-1.0.zip</b> su raspberry</li>
 												<li>Aprire il terminale da raspberry ed eseguire il file bash all'interno della cartella</li>
-												<li>Estrarre il contenuto di <b>Distribuzioni\teaRoomAnProbl2-1.0</b></li>
-												<li>Aprire il terminale su pc ed eseguire il file bash all'interno della cartella</li>
-												<li>Estrarre il contenuto di <b>Distribuzioni\clientGui-boot-1.0</b></li>
-												<li>Aprire il terminale su pc ed eseguire il file bash all'interno della cartella</li>
+												<li>Portare la distribuzione che si trova in <b>Distribuzioni\mbot\teaRoomAnProbl2.zip</b> su raspberry</li>
+												<li>Estrarre il contenuto di <b>Distribuzioni\mbot\teaRoom-1.0.zip</b></li>
+												<li>Aprire il terminale da raspberry ed eseguire il file bash all'interno della cartella</li>
+												<li>Estrarre il contenuto di <b>Distribuzioni\clientGui-boot-1.0.zip</b> su pc</li>
+												<li>Modificare il file di configurazione <b>pageConfig.json</b> inserendo al posto dell'indirizzo 127.0.0.1 del campo host, l'indirizzo del raspberry</li>
+												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
 												<li>Aprire il browser e digitare <b>localhost:7050</b></li>
-												<li>Estrarre il contenuto di <b>Distribuzioni\managerGui-boot-1.0</b></li>
-												<li>Aprire il terminale su pc ed eseguire il file bash all'interno della cartella</li>
+												<li>Estrarre il contenuto di <b>Distribuzioni\managerGui-boot-1.0.zip</b></li>
+												<li>Modificare il file di configurazione <b>pageConfig.json</b> inserendo al posto dell'indirizzo 127.0.0.1 del campo host e al posto di "localhost" di hostAddrBasiRobot, l'indirizzo del raspberry</li>
+												<li>Aprire il terminale su pc ed eseguire il file bat all'interno della cartella</li>
 												<li>Aprire il browser e digitare <b>localhost:7060</b></li>
+												<li>Inserire username e password che si preferiscono perchè non è collegato un database</b></li>
 								            </ol>
 
 										</div>
