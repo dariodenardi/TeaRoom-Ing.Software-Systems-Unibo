@@ -23,25 +23,27 @@
 		Il <b>tearoomglobalstate</b> memorizza la <b>conoscenza di base</b> della <em>tearoom</em>, ovvero dove si trovano le entità, e i futuri cambiamenti di stato in un file <b>Prolog</b>, data la predisposizione di prolog alla rappresentazione formale di basi di conoscenza e perché il metamodello dei QAK consente un facile accesso a questi tipi di file.
 		<br/>
 		<br/>
-		Quando il <em>waiter</em> ha bisogno di conoscere lo stato della <em>tearoom</em> per poter decidere quale azione eseguire non chiede al <b>tearoomglobalstate</b> lo stato ma gli delega questa decisione. Ad esempio, quando un cliente sta per entrare nella <em>tearoom</em> e il <em>waiter</em> deve sapere a quale tavolo portarlo chiede questa informazione direttamente al <b>tearoomglobalstate</b> invece di chiedergli lo stato della <em>tearoom</em>, verificare la condizione dei tavoli e infine sceglierne uno.
+		Quando il <em>waiter</em> ha bisogno di conoscere lo stato della <em>tearoom</em> per poter decidere quale azione eseguire non chiede al <b>tearoomglobalstate</b> lo stato ma gli delega questa decisione. Ad esempio, quando un cliente sta per entrare nella <em>tearoom</em> e il <em>waiter</em> deve sapere a quale tavolo portarlo chiede questa informazione direttamente al <b>tearoomglobalstate</b> invece di chiedergli lo stato della <em>tearoom</em>, verificare la condizione dei tavoli e infine sceglierne uno. Abbiamo fatto questa scelta perché se il <em>waiter</em> avesse dovuto analizzare lo stato della <em>tearoom</em> avremmo avuto bisogno di un nuovo stato del <em>waiter</em> per ogni decisione da prendere.
 		<br/>
 		<br/>
 		All'avvio del <em>waiter</em> si controlla subito che i <em>table</em> siano puliti perchè è possibile che siano sporchi dalla serata del giorno prima e in questo caso il <em>waiter</em> li pulisce
 		<br/>
 		<br/>
-		Inoltre, in seguito all'introduzione dei messaggi, nell'analisi dei requisiti, per distinguere quale fasi di pulizia effettuare, emerge la necessità di introdurre un <b>timer</b> in modo da tenere sotto controllo il tempo trascorso del task <em>clean</em> e, in caso di interruzione, riprendere il task solo per il tempo rimanente.	Questo <b>timer</b>, modellato come attore, deve ricevere un messaggio che indichi per quanto tempo si deve ancora pulire e deve inviare un messaggio quando il tempo indicato scade.
-		Dunque, quando si interrompe il task <em>clean</em>, viene memorizzato il tempo trascorso in modo da non dover ricominciare tutto da capo. 
+		Inoltre, in seguito all'introduzione dei messaggi, nell'analisi dei requisiti, per distinguere quale fasi di pulizia effettuare, emerge la necessità di introdurre un <b>timer</b> in modo da tenere sotto controllo il tempo trascorso del task <em>clean</em> e, in caso di interruzione, riprendere il task solo per il tempo rimanente.	Questo <b>timer</b>, modellato come attore, deve ricevere un messaggio che indichi per quanto tempo si deve ancora pulire, deve inviare un messaggio quando il tempo indicato scade e, in caso di sospensione della pulizia, indicare per quanto tempo la pulizia è stata portata avanti.
+		In questo modo, quando si interrompe il task <em>clean</em>, viene memorizzato il tempo trascorso in modo da non dover ricominciare tutto da capo. 
 		<br/>
 		<br/>
 
 		Sono stati aggiunti altri tre <b>attori</b> per soddisfare il requisito di <em>maxstaytime</em>.
-		Per <em>maxstaytime</em> si intende il tempo che il <em>client</em> ha a disposizione per effettuare la sua consumazione nella <em>tearoom</em> (vedi sprint0).
-		Il timer deve partire quando il <em>client</em> si siede al tavolo e deve essere bloccato quando viene fatta la <b>clientOrderReady</b> dal <em>client</em> al <em>waiter</em>. Quando il drink arriva al tavolo il timer viene fatto ripartire fino ad esaurimento o fino a ricezione di <b>clientPaymentReady</b>.
-		Per semplificare l'accesso a <em>maxstaytime</em> di ogni <em>client</em> è stato introdotto un attore chiamato <b>maxstaytimer</b>.
+		Per <em>maxstaytime</em> si intende il tempo che dipende dal <em>client</em>: il tempo deve partire quando il <em>client</em> si siede al tavolo e deve essere bloccato quando viene fatta la <b>clientOrderReady</b> dal <em>client</em> al <em>waiter</em>. Quando il drink arriva al tavolo il timer viene fatto ripartire fino ad esaurimento o fino a ricezione di <b>clientPaymentReady</b>.
+		Per semplificare la gestione dei <em>maxstaytime</em> dei tavoli è stato introdotto un attore chiamato <b>maxstaytime</b>.
 		Esso gestisce il tempo a disposizione ad ogni <em>client</em> inviando al <em>waitermind</em> un messaggio quando il tempo scade.
-		L'attore <b>maxstaytimer</b> usa due attori, <b>maxstaytimer1</b> e <b>maxstaytimer2</b>, ciascuno dei quali gestisce il tempo trascorso nella <em>tearoom</em> dal <em>client</em> associato a <em>table1</em> e <em>table2</em> rispettivamente.<br/><br/>
-		Inoltre, il modello di <em>waitermind</em> è stato <b>raffinato</b> ulteriormente:	nello sprint 1 il <em>waiter</em> controlla se ci sono altre azioni	da eseguire solo quando ritorna in <em>home</em>. Ora invece può essere interrotto mentre va verso <em>home</em>.<br/><br/>
+		L'attore <b>maxstaytime</b> usa due attori, <b>maxstaytime1</b> e <b>maxstaytime2</b>, ciascuno dei quali gestisce il tempo trascorso nella <em>tearoom</em> dal <em>client</em> associato a <em>table1</em> e <em>table2</em> rispettivamente. Usiamo l'attore <b>maxstaytime</b> per semplificare il <em>waiterminf</em> in quanto avremmo dovuto sempre distinguere tra tavolo1 e tavolo2 per comunicare con i rispettivi <b>maxstaytime</b>, mentre così basta un unico messaggio che contiene come parametro il numero del tavolo interessato verso un unico attore <b>maxstaytime</b>.<br/><br/>
+
+
+		Inoltre, il modello di <em>waitermind</em> è stato <b>raffinato</b> ulteriormente:	nello sprint 1 il <em>waiter</em> controlla se ci sono altre azioni	da eseguire solo quando ritorna in <em>home</em>. Ora invece può essere interrotto mentre esegue un task non prioritario o mentre si sta muovendo per compiere un task non prioritario. (vedi sprint 0 per task prioritari e non prioritari)<br/><br/>
 		Riassumiamo gli attori del sistema e i loro compiti
+		<br/><br/>
 		<table>
 		<thead>
 			<tr>
@@ -52,7 +54,7 @@
 		<tbody>
 			<tr>
 				<td class="tg-0lax"><em>waitermind</em></td>
-				<td class="tg-0lax">master del <em>waiterengine</em>, mantine la logica di esecuzione</td>
+				<td class="tg-0lax">master del <em>waiterengine</em>, mantiene la logica di esecuzione</td>
 			</tr>
 			<tr>
 				<td class="tg-0lax"><em>waiterengine</em></td>
@@ -64,24 +66,24 @@
 			</tr>
 			<tr>
 				<td class="tg-0lax"><em>timercleaning</em></td>
-				<td class="tg-0lax">avvia un cronometro che scorre per una quantità di tempo passata come parametro e alla terminazione informa il <em>waiterengine</em></td>
+				<td class="tg-0lax">avvia un cronometro che scorre per una quantità di tempo passata come parametro e alla terminazione informa il <em>waiterengine</em>. Eventualmente può essere interrotto e in tal caso restituisce il tempo trascorso dall'avvio</td>
 			</tr>
 			<tr>
-				<td class="tg-0lax"><em>maxstaytimer1</em></td>
+				<td class="tg-0lax"><em>maxstaytime1</em></td>
 				<td class="tg-0lax">gestisce il timer per il cliente seduto al tavolo 1</td>
 			</tr>
 			<tr>
-				<td class="tg-0lax"><em>maxstaytimer2</em></td>
+				<td class="tg-0lax"><em>maxstaytime2</em></td>
 				<td class="tg-0lax">gestisce il timer per il cliente seduto al tavolo 2</td>
 			</tr>
 			<tr>
-				<td class="tg-0lax"><em>maxstaytimer</em></td>
-				<td class="tg-0lax">endpoint di comunicazione unico per la gestione dei timer dei clienti. Nasconde la presenza degli attori <em>maxstaytimer1</em> e <em>maxstaytimer2</em></td>
+				<td class="tg-0lax"><em>maxstaytime</em></td>
+				<td class="tg-0lax">endpoint di comunicazione unico per la gestione dei timer dei clienti.</td>
 			</tr>
 		</tbody>
 		</table>
 		<br/><br/>
-		Questi sono i messaggi che abbiamo aggiunto rispetto agli sprint precedenti
+		Questi sono i messaggi che abbiamo aggiunto rispetto agli sprint precedenti<br/><br/>
 		<table>
 			<thead>
 				<tr>
@@ -215,57 +217,57 @@
 				<tr>
 					<td><em>startTimer</em></td>
 					<td>Dispatch</td>
-					<td>Usato per far partire un cronometro di <em>maxstaytime</em>. Abbiamo un solo destinatario (<em>maxstaytimer</em>) e non è prevista risposta, quindi modelliamo il messaggio come Dispatch. Questo messaggio sarà poi inoltrato da <em>maxstaytimer</em> a <em>maxstaytimer1</em> o <em>maxstaytimer2</em> </td>
-					<td><em>waitermind</em>-<em>maxstaytimer</em><br/><em>maxstaytimer</em>-<em>maxstaytimer1</em>/<em>maxstaytimer2</em></td>
+					<td>Usato per far partire un cronometro di <em>maxstaytime</em>. Abbiamo un solo destinatario (<em>maxstaytime</em>) e non è prevista risposta, quindi modelliamo il messaggio come Dispatch. Questo messaggio sarà poi inoltrato da <em>maxstaytime</em> a <em>maxstaytime1</em> o <em>maxstaytime2</em> </td>
+					<td><em>waitermind</em>-<em>maxstaytime</em><br/><em>maxstaytime</em>-<em>maxstaytime1</em>/<em>maxstaytime2</em></td>
 					<td>numero del tavolo di cui si vuole far partire il timer</td>
 				</tr>
 				<tr>
 					<td><em>stopTimer</em></td>
 					<td>Dispatch</td>
 					<td>Analogo a startTimer ma per fermare un timer.</td>
-					<td><em>waitermind</em>-<em>maxstaytimer</em><br/><em>maxstaytimer</em>-<em>maxstaytimer1</em>/<em>maxstaytimer2</em></td>
+					<td><em>waitermind</em>-<em>maxstaytime</em><br/><em>maxstaytime</em>-<em>maxstaytime1</em>/<em>maxstaytime2</em></td>
 					<td>numero del tavolo di cui si vuole stoppare il timer</td>
 				</tr>
 				<tr>
 					<td><em>resumeTimer</em></td>
 					<td>Dispatch</td>
 					<td>Analogo a startTimer ma per far ripartire un timer quando si è portato il drink.</td>
-					<td><em>waitermind</em>-<em>maxstaytimer</em><br/><em>maxstaytimer</em>-<em>maxstaytimer1</em>/<em>maxstaytimer2</em></td>
+					<td><em>waitermind</em>-<em>maxstaytime</em><br/><em>maxstaytime</em>-<em>maxstaytime1</em>/<em>maxstaytime2</em></td>
 					<td>numero del tavolo di cui si vuole far ripartire il timer</td>
 				</tr>
 				<tr>
 					<td><em>maxStayTimerExpired</em></td>
 					<td>Dispatch</td>
 					<td>Usato per comunicare la scadenza di <em>maxstaytime</em></td>
-					<td><em>maxstaytimer1</em>/<em>maxstaytimer2</em>-<em>maxstaytimer</em><br/><em>maxstaytimer</em>-<em>waitermind</em></td>
+					<td><em>maxstaytime1</em>/<em>maxstaytime2</em>-<em>maxstaytime</em><br/><em>maxstaytime</em>-<em>waitermind</em></td>
 					<td>numero del tavolo di cui è scaduto il timer</td>
 				</tr>
 				<tr>
 					<td><em>askMaxStayTimeLeftReq</em></td>
 					<td>Request</td>
-					<td>Usato per richiedere quanto rimane dei maxstaytimer</td>
-					<td><em>tearoomglobalstate</em>-<em>maxstaytimer</em></td>
+					<td>Usato per richiedere quanto rimane dei maxstaytime</td>
+					<td><em>tearoomglobalstate</em>-<em>maxstaytime</em></td>
 					<td>Numero del tavolo a cui è seduto il cliente di cui si vuole chiedere quanto tempo rimane</td>
 				</tr>
 				<tr>
 					<td><em>askMaxStayTimeLeftReply</em></td>
 					<td>Reply</td>
 					<td>Risponde a askMaxStayTimeLeftReq.</td>
-					<td><em>maxstaytimer1</em>/<em>maxstaytimer2</em>-<em>maxstaytimer</em><br/><em>maxstaytimer</em>-<em>tearoomglobalstate</em></td>
+					<td><em>maxstaytime1</em>/<em>maxstaytime2</em>-<em>maxstaytime</em><br/><em>maxstaytime</em>-<em>tearoomglobalstate</em></td>
 					<td>Tempo rimasto al cliente richiesto</td>
 				</tr>
 				<tr>
 					<td><em>getMaxStayTimeLeftReq</em></td>
 					<td>Request</td>
-					<td>Usato per richiedere quanto rimane dei maxstaytimer. Gli interlocutori sono diversi rispetto al caso di askMaxStayTimeLeftReq</td>
-					<td><em>maxstaytimer</em>-<em>maxstaytimer1</em>/<em>maxstaytimer2</em></td>
+					<td>Usato per richiedere quanto rimane dei maxstaytime. Gli interlocutori sono diversi rispetto al caso di askMaxStayTimeLeftReq</td>
+					<td><em>maxstaytime</em>-<em>maxstaytime1</em>/<em>maxstaytime2</em></td>
 					<td>Tempo rimasto al cliente richiesto</td>
 				</tr>
 				<tr>
 					<td><em>getMaxStayTimeLeftReply</em></td>
 					<td>Reply</td>
 					<td>Risponde a askMaxStayTimeLeftReq.</td>
-					<td><em>maxstaytimer1</em>/<em>maxstaytimer2</em>-<em>maxstaytimer</em></td>
+					<td><em>maxstaytime1</em>/<em>maxstaytime2</em>-<em>maxstaytime</em></td>
 					<td>Tempo rimasto al cliente richiesto</td>
 				</tr>
 				<tr>
@@ -322,8 +324,7 @@
 		<br/>
 		<br/>
 		Riassumiamo infine le <b>situazioni critiche</b> individuate:
-		<br/>
-		<br/>
+		<br/><br/>
 		<table>
 			<thead>
 				<tr>
@@ -338,11 +339,11 @@
 				</tr>
 				<tr>
 					<td class="tg-0lax">quale <em>table</em> pulisce per primo il <em>waiter</em> quando sono entrambi da pulire</td>
-					<td class="tg-0lax">il <em>waiter</em> sceglie il <em>table</em> nella fase di pulizia più avanzata.</td>
+					<td class="tg-0lax">il <em>tearoomglobalstate</em> sceglie il <em>table</em> nella fase di pulizia più avanzata.</td>
 				</tr>
 				<tr>
-					<td class="tg-0lax">gestione della richiesta di uscita a timer scaduto</td>
-					<td class="tg-0lax">se arriva una richiesta di uscita dalla stanza quando è già scattata il maxstaytime viene ingnorata.</td>
+					<td class="tg-0lax">gestione della richiesta da parte di un cliente che non risulta seduto ad un tavolo</td>
+					<td class="tg-0lax">queste richieste vengono ignorate</td>
 				</tr>
 				<tr>
 					<td class="tg-0lax">gestione drink per <em>client</em> non al <em>table</em></td>
@@ -355,13 +356,11 @@
 				</tr>
 				<tr>
 					<td class="tg-0lax">calcolo del tempo di attesa per l'<em>inform</em></td>
-					<td class="tg-0lax">il <em>client</em> viene informato dallo <em>smartbell</em> del tempo esatto massimo (maxstaytime più corto + tempo di pulizia) di attesa, senza contare interruzioni nella pulizia, prima di trovare un <em>table</em> pulito.
-					L'attesa non viene gestita tramite una coda ma il <em>client</em> deve risuonare il <em>smartbell</em>.</td>
+					<td class="tg-0lax">il <em>client</em> viene informato dallo <em>smartbell</em>, dopo aver interrogato il <em>waiter</em>, riguardo il tempo massimo di attesa per avere un tavolo pulito. Il <em>client</em> dovrà poi risuonare lo <em>smartbell</em>.
+					Il tempo restituito è: maxstaytime più corto + tempo di pulizia, nel caso di 2 tavoli occupati, altrimenti è il tempo totale di pulizia di un tavolo senza contare il tempo già passato a pulirlo.
 				</tr>
 			</tbody>
 			</table>
-			<br/>
-			
 			<br/>
 			<br/>
 			Dunque, da un punto di <b>vista logico</b> il nostro sistema è formato da più attori in contesti diversi:
