@@ -217,6 +217,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
 						println("waitermind 		|| wait Enter - pos-> EntranceDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						 readLine()  
 						println("waitermind 		|| convoyTable")
 						updateResourceRep( "convoyTable" 
 						)
@@ -298,6 +299,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
 						println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						 readLine()  
 						println("waitermind 		|| waitOrderClient")
 						updateResourceRep( "waitOrderClient"  
 						)
@@ -368,6 +370,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
 						println("waitermind 		|| wait Enter - pos-> BARMAN || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						 readLine()  
 						println("waitermind 		|| getDrink")
 						updateResourceRep( "getDrink" 
 						)
@@ -474,6 +477,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
 						println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						 readLine()  
 						println("waitermind 		|| collect")
 						updateResourceRep( "collect" 
 						)
@@ -505,6 +509,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						updateResourceRep(""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY() 
 						)
 						println("waitermind 		|| wait Enter, vado a pulire - pos-> || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})")
+						 readLine()  
 						println("waitermind 	|| reachTableClean")
 						updateResourceRep( "reachTableClean" 
 						)
@@ -614,6 +619,7 @@ class Waitermind ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 										CleaningON = false 
 										TableToClean = 0
 						}
+						forward("setWaiterState", "setWaiterState(caccioCliente)" ,"tearoomglobalstate" ) 
 						if( checkMsgContent( Term.createTerm("maxStayTimerExpired(N)"), Term.createTerm("maxStayTimerExpired(N)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								

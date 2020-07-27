@@ -34,8 +34,8 @@ class Barman ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						)
 						forward("setBarmanState", "setBarmanState(waitOrder)" ,"tearoomglobalstate" ) 
 					}
-					 transition(edgeName="t082",targetState="prepareOrder",cond=whenDispatch("waiterOrderForward"))
-					transition(edgeName="t083",targetState="endState",cond=whenDispatch("end"))
+					 transition(edgeName="t083",targetState="prepareOrder",cond=whenDispatch("waiterOrderForward"))
+					transition(edgeName="t084",targetState="endState",cond=whenDispatch("end"))
 				}	 
 				state("prepareOrder") { //this:State
 					action { //it:State

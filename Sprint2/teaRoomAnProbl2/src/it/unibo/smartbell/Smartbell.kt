@@ -17,7 +17,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		 
-				val Temp_max = 38
+				val Temp_max = 37.5
 				var ID_client = 1 
 				var ClientTemp :Double = 0.0
 		return { //this:ActionBasciFsm

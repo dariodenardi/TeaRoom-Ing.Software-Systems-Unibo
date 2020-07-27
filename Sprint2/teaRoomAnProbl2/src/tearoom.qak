@@ -2,7 +2,7 @@ System tearoom
 
 //Messages **********************************************************************
 //DIVISI PER CHI INVIA 
-
+ 
 //**********CLIENT 
 //mqttBroker "localhost" : 1883 eventTopic "event/topic" 
 
@@ -204,7 +204,7 @@ QActor waitermind context ctxtearoom{
 					whenMsg maxStayTimerExpired -> reachTableKick
 					
 	State reachHome{
-		//[# readLine() #]
+	//	[# readLine() #]
 		println("waitermind 		|| reachHome")
 		updateResource [# "reachHome" #]
 		forward tearoomglobalstate -m setWaiterState : setWaiterState(reachHome)
@@ -275,7 +275,7 @@ QActor waitermind context ctxtearoom{
 		}
 		//test inform
 		//[# readLine() #]
-	}
+	} 
 	Goto checkQueue
 	
 	State accept{ 
@@ -319,7 +319,7 @@ QActor waitermind context ctxtearoom{
 		//TEST
 		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
 		println("waitermind 		|| wait Enter - pos-> EntranceDoor || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-//		[# readLine() #]
+		[# readLine() #]
 		//TEST
 		
 		println("waitermind 		|| convoyTable")
@@ -423,7 +423,7 @@ QActor waitermind context ctxtearoom{
 		//TEST
 		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
 		println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-	//	[# readLine() #]
+		[# readLine() #]
 		//TEST
 		
 		println("waitermind 		|| waitOrderClient")
@@ -497,7 +497,7 @@ QActor waitermind context ctxtearoom{
 		//TEST
 		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
 		println("waitermind 		|| wait Enter - pos-> BARMAN || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-//		[# readLine() #]
+		[# readLine() #]
 		//TEST
 		println("waitermind 		|| getDrink")
 		updateResource [# "getDrink"#]	
@@ -611,7 +611,7 @@ QActor waitermind context ctxtearoom{
 		//TEST
 		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
 		println("waitermind 		|| wait Enter - pos-> Tavolo || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-//		[# readLine() #]
+		[# readLine() #]
 		//TEST
 		
 		println("waitermind 		|| collect")
@@ -650,7 +650,7 @@ QActor waitermind context ctxtearoom{
 		//TEST
 		updateResource [#""+itunibo.planner.plannerUtil.getPosX()+","+itunibo.planner.plannerUtil.getPosY()#]
 		println("waitermind 		|| wait Enter, vado a pulire - pos-> || (${itunibo.planner.plannerUtil.getPosX()},${itunibo.planner.plannerUtil.getPosY()})" )
-//		[# readLine() #]
+		[# readLine() #]
 		//TEST
 		
 		println("waitermind 	|| reachTableClean")
@@ -794,7 +794,7 @@ QActor waitermind context ctxtearoom{
 			#]
 		}
 			forward tearoomglobalstate -m setWaiterState : setWaiterState(caccioCliente)
-		
+			
 		onMsg ( maxStayTimerExpired : maxStayTimerExpired(N)){
 			[#
 				TableForCollect = payloadArg(0)
@@ -963,7 +963,7 @@ QActor waiterengine context ctxtearoom{
 	Transition t0	whenMsg moveTo -> planPath
 					whenMsg clean -> cleanTable
 					whenMsg stopEngineMove -> waitCmd
-	
+					whenMsg end ->		endState
 	
 	
 	State planPath{
@@ -1093,6 +1093,10 @@ QActor waiterengine context ctxtearoom{
 	}
 	Transition t0	whenReply stopTimerCleaningReply -> informStateAboutEndCleaning
 	
+	State endState{
+		println("waiterengine 		|| END")
+		terminate 0
+	}
 }
 
 QActor barman context ctxtearoom{
