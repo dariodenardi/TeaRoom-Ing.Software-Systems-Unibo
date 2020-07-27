@@ -244,7 +244,7 @@
 					<td><em>askMaxStayTimeLeftReq</em></td>
 					<td>Request</td>
 					<td>Usato per richiedere quanto rimane dei maxstaytimer</td>
-					<td><em>tearoomglobalstate</em>-<em>maxstaytimer</em><br/><em>maxstaytimer</em>-<em>maxstaytimer1</em>/<em>maxstaytimer2</em></td>
+					<td><em>tearoomglobalstate</em>-<em>maxstaytimer</em></td>
 					<td>Numero del tavolo a cui è seduto il cliente di cui si vuole chiedere quanto tempo rimane</td>
 				</tr>
 				<tr>
@@ -252,6 +252,20 @@
 					<td>Reply</td>
 					<td>Risponde a askMaxStayTimeLeftReq.</td>
 					<td><em>maxstaytimer1</em>/<em>maxstaytimer2</em>-<em>maxstaytimer</em><br/><em>maxstaytimer</em>-<em>tearoomglobalstate</em></td>
+					<td>Tempo rimasto al cliente richiesto</td>
+				</tr>
+				<tr>
+					<td><em>getMaxStayTimeLeftReq</em></td>
+					<td>Request</td>
+					<td>Usato per richiedere quanto rimane dei maxstaytimer. Gli interlocutori sono diversi rispetto al caso di askMaxStayTimeLeftReq</td>
+					<td><em>maxstaytimer</em>-<em>maxstaytimer1</em>/<em>maxstaytimer2</em></td>
+					<td>Tempo rimasto al cliente richiesto</td>
+				</tr>
+				<tr>
+					<td><em>getMaxStayTimeLeftReply</em></td>
+					<td>Reply</td>
+					<td>Risponde a askMaxStayTimeLeftReq.</td>
+					<td><em>maxstaytimer1</em>/<em>maxstaytimer2</em>-<em>maxstaytimer</em></td>
 					<td>Tempo rimasto al cliente richiesto</td>
 				</tr>
 				<tr>
@@ -304,13 +318,7 @@
 					<td>tavolo che si sta pulendo</td>
 				</tr>
 			</tbody>
-		</table>
-
-
-/*Request	 getMaxStayTimeLeftReq : getMaxStayTimeLeftReq(P)
-Reply	 getMaxStayTimeLeftReply : getMaxStayTimeLeftReply(TIMERLEFT)*/
-
-			
+		</table>			
 		<br/>
 		<br/>
 		Riassumiamo infine le <b>situazioni critiche</b> individuate:
